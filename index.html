@@ -71,7 +71,7 @@
             <!-- Section 1: Pengenalan & Identiti -->
             <section class="bg-white p-6 rounded-3xl shadow-xs border border-slate-100">
                 <div class="flex items-center gap-2 mb-4">
-                    <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-lg">STRATEGI BRADING</span>
+                    <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-lg">STRATEGI BRANDING</span>
                 </div>
                 <h2 class="text-2xl font-bold text-slate-900 kids-font mb-4">Identiti Korporat Edukids Pintar</h2>
                 
@@ -139,7 +139,7 @@
                         <pre class="mt-2 text-slate-400">
 {
   "name": "Ahmad Dani",
-  "role": "murid", // atau "guru", "ibu_bapa"
+  "role": "murid", // atau "ibu_bapa"
   "createdAt": Timestamp,
   "metadata": {
     "kindergartenName": "Tadika Pintar Bestari",
@@ -164,18 +164,6 @@
     "stars": 24,
     "badges": ["AbcMaster", "SembahyangBijak"]
   }
-}</pre>
-                    </div>
-
-                    <!-- Collection: Submissions / Tasks -->
-                    <div class="p-4 bg-slate-900 text-slate-300 rounded-xl overflow-x-auto custom-scrollbar">
-                        <span class="text-emerald-400 font-bold">/assignments</span> <span class="text-slate-500">{assignmentId}</span>
-                        <pre class="mt-2 text-slate-400">
-{
-  "title": "Kuiz Mengenal Bentuk Geometri",
-  "dueDate": Timestamp,
-  "assignedTo": "alpha_2026",
-  "createdBy": "guru_uid_456"
 }</pre>
                     </div>
                 </div>
@@ -274,9 +262,6 @@
                                 <button onclick="switchRole('student')" class="w-full py-3 bg-sky-400 hover:bg-sky-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
                                     <i class="fa-solid fa-child mr-2"></i> Masuk Sebagai Murid
                                 </button>
-                                <button onclick="switchRole('teacher')" class="w-full py-3 bg-emerald-400 hover:bg-emerald-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
-                                    <i class="fa-solid fa-chalkboard-user mr-2"></i> Portal Cikgu (Guru)
-                                </button>
                                 <button onclick="switchRole('parent')" class="w-full py-3 bg-pink-400 hover:bg-pink-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
                                     <i class="fa-solid fa-user-tie mr-2"></i> Portal Ibu Bapa
                                 </button>
@@ -314,7 +299,6 @@
 
     <!-- JAVASCRIPT: Mengawal Simulasi Interaktif Secara Tempatan -->
     <script>
-        // Data Firebase Config yang diberikan disisipkan dalam log konsol simulasi untuk pembuktian sambungan
         const firebaseConfig = {
             apiKey: "AIzaSyCpdR14Q9e0tCB3TFUIJNaCzLvl6lsercw",
             authDomain: "edukids-pintar.firebaseapp.com",
@@ -340,9 +324,6 @@
                     <div class="w-full mt-8 space-y-3">
                         <button onclick="switchRole('student')" class="w-full py-3 bg-sky-400 hover:bg-sky-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
                             <i class="fa-solid fa-child mr-2"></i> Masuk Sebagai Murid
-                        </button>
-                        <button onclick="switchRole('teacher')" class="w-full py-3 bg-emerald-400 hover:bg-emerald-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
-                            <i class="fa-solid fa-chalkboard-user mr-2"></i> Portal Cikgu (Guru)
                         </button>
                         <button onclick="switchRole('parent')" class="w-full py-3 bg-pink-400 hover:bg-pink-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
                             <i class="fa-solid fa-user-tie mr-2"></i> Portal Ibu Bapa
@@ -396,39 +377,6 @@
                         </div>
                     </div>
                 `;
-            } else if (role === 'teacher') {
-                screen.innerHTML = `
-                    <div class="p-4 bg-emerald-50 min-h-full">
-                        <div class="mb-4">
-                            <h3 class="text-lg font-bold text-slate-800">Dashboard Guru</h3>
-                            <p class="text-xs text-slate-500">Cikgu Aminah | Kelas Alpha 2026</p>
-                        </div>
-
-                        <div class="space-y-3">
-                            <div class="bg-white p-3 rounded-xl shadow-xs border border-slate-100">
-                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
-                                    <span>Kehadiran Hari Ini</span>
-                                    <span class="text-emerald-600">94%</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                    <div class="bg-emerald-400 h-full w-[94%]"></div>
-                                </div>
-                            </div>
-
-                            <div class="bg-white p-3 rounded-xl shadow-xs border border-slate-100">
-                                <h4 class="text-xs font-bold text-slate-700 mb-2">Tugasan Aktif</h4>
-                                <div class="flex justify-between items-center text-xs text-slate-600 border-b border-slate-50 pb-2">
-                                    <span>1. Kuiz Bentuk & Warna</span>
-                                    <span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full text-[10px]">12/15 Hantar</span>
-                                </div>
-                            </div>
-
-                            <button onclick="alert('Laporan PDF Prestasi Murid Berjaya Dijana secara Automatik!')" class="w-full py-2.5 bg-slate-800 text-white rounded-xl text-xs font-bold shadow-md hover:bg-slate-900 transition-all">
-                                <i class="fa-solid fa-file-pdf mr-1.5"></i> Jana Laporan PDF Kelas
-                            </button>
-                        </div>
-                    </div>
-                `;
             } else if (role === 'parent') {
                 screen.innerHTML = `
                     <div class="p-4 bg-pink-50 min-h-full">
@@ -450,8 +398,8 @@
                             </div>
 
                             <div class="pt-2 border-t border-slate-100">
-                                <span class="text-xs font-bold text-slate-700 block mb-1">Mesej daripada Cikgu Aminah:</span>
-                                <p class="text-xs text-slate-600 bg-slate-50 p-2 rounded-xl italic">"Dani sangat aktif hari ini semasa sesi hafalan doa harian. Syabas!"</p>
+                                <span class="text-xs font-bold text-slate-700 block mb-1">Catatan Prestasi Terkini:</span>
+                                <p class="text-xs text-slate-600 bg-slate-50 p-2 rounded-xl italic">"Dani sangat aktif hari ini semasa sesi latihan hafalan. Kekalkan momentum!"</p>
                             </div>
                         </div>
                     </div>
