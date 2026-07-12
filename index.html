@@ -40,7 +40,7 @@
     <div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-2xl relative flex flex-col justify-between pb-6">
         
         <!-- HEADER UTAMA -->
-        <header class="bg-gradient-to-b from-yellow-300 to-amber-400 p-4 rounded-b-3xl shadow-md flex justify-between items-center z-10">
+        <header id="main-header" class="hidden bg-gradient-to-b from-yellow-300 to-amber-400 p-4 rounded-b-3xl shadow-md flex justify-between items-center z-10">
             <div class="flex items-center space-x-2" onclick="goHome()">
                 <div class="bg-white p-2 rounded-full shadow-inner text-2xl cursor-pointer">🎒</div>
                 <div>
@@ -66,8 +66,62 @@
         <!-- KANDUNGAN UTAMA (DITUKAR SECARA DINAMIK) -->
         <main class="flex-grow p-4 flex flex-col justify-center">
             
+            <!-- 0. HALAMAN DASHBOARD PERMULAAN -->
+            <section id="view-welcome-dashboard" class="space-y-6 text-center">
+                <div class="py-6">
+                    <span class="text-6xl floating inline-block">🎒✨</span>
+                    <h2 class="font-kids text-4xl text-emerald-600 mt-4 leading-tight">Edukids Pintar</h2>
+                    <p class="text-gray-500 font-medium text-sm mt-1">Aplikasi Pembelajaran Interaktif Kanak-Kanak</p>
+                </div>
+
+                <div class="space-y-4 px-2">
+                    <!-- Butang Masuk Sebagai Anak -->
+                    <button onclick="chooseRole('anak')" class="w-full bg-gradient-to-r from-emerald-400 to-emerald-500 text-white font-kids text-xl py-4 px-6 rounded-2xl shadow-lg border-b-4 border-emerald-700 pop-button flex items-center justify-between">
+                        <span class="text-2xl">👦👧</span>
+                        <span>MASUK SEBAGAI ANAK (PIN)</span>
+                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                    </button>
+
+                    <!-- Butang Log Masuk Ibu Bapa / Guru -->
+                    <button onclick="chooseRole('parent-login')" class="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white font-kids text-lg py-4 px-6 rounded-2xl shadow-lg border-b-4 border-purple-800 pop-button flex items-center justify-between">
+                        <span class="text-2xl">🔐👨‍🏫</span>
+                        <span>LOG MASUK IBU BAPA / GURU</span>
+                        <i data-lucide="chevron-right" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </section>
+
+            <!-- 0.1 MODAL PIN ANAK -->
+            <section id="view-child-pin" class="hidden space-y-6 text-center">
+                <div class="bg-emerald-50 p-6 rounded-3xl border-4 border-emerald-200 space-y-4">
+                    <div class="text-4xl">🔑</div>
+                    <h3 class="font-kids text-xl text-emerald-800">Masukkan PIN Anak</h3>
+                    <p class="text-xs text-gray-500 font-medium">Sila masukkan 4 digit PIN (Default: 1234)</p>
+                    <input type="password" id="child-pin-input" maxlength="4" placeholder="••••" class="w-32 px-4 py-3 rounded-2xl border-2 border-emerald-300 text-2xl font-bold tracking-widest text-center focus:outline-none focus:border-emerald-500">
+                </div>
+                <div class="flex space-x-3">
+                    <button onclick="switchView('view-welcome-dashboard')" class="w-1/2 bg-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl text-sm pop-button">Kembali</button>
+                    <button onclick="verifyChildPin()" class="w-1/2 bg-emerald-500 text-white font-bold py-3.5 rounded-2xl text-sm pop-button">Masuk 🚀</button>
+                </div>
+            </section>
+
+            <!-- 0.2 MODAL LOG MASUK IBU BAPA / GURU -->
+            <section id="view-parent-gate-login" class="hidden space-y-6 text-center">
+                <div class="bg-purple-50 p-6 rounded-3xl border-4 border-purple-200 space-y-4">
+                    <div class="text-4xl">🔐</div>
+                    <h3 class="font-kids text-xl text-purple-800">Pengesahan Ibu Bapa / Guru</h3>
+                    <p id="gate-question-login" class="text-xs font-bold text-gray-500">Sila jawab soalan matematik ini untuk log masuk:</p>
+                    <div id="gate-math-quiz-login" class="font-kids text-2xl text-purple-600 bg-white py-2 rounded-xl border border-purple-200">5 + 3 = ?</div>
+                    <input type="number" id="gate-answer-login" placeholder="Jawapan anda" class="w-full px-4 py-3 border-2 border-gray-300 rounded-2xl text-center font-bold text-lg focus:outline-none focus:border-purple-500">
+                </div>
+                <div class="flex space-x-3">
+                    <button onclick="switchView('view-welcome-dashboard')" class="w-1/2 bg-gray-200 text-gray-700 font-bold py-3.5 rounded-2xl text-sm pop-button">Kembali</button>
+                    <button onclick="verifyParentLogin()" class="w-1/2 bg-purple-500 text-white font-bold py-3.5 rounded-2xl text-sm pop-button">Log Masuk</button>
+                </div>
+            </section>
+
             <!-- 1. HALAMAN PROFIL (MULA-MULA DAFTAR) -->
-            <section id="view-profile" class="space-y-6">
+            <section id="view-profile" class="hidden space-y-6">
                 <div class="text-center">
                     <h2 class="font-kids text-3xl text-emerald-600 floating mb-2">Selamat Datang!</h2>
                     <p class="text-gray-500 font-medium">Tulis nama dan pilih kawan kegemaran adik!</p>
@@ -159,6 +213,11 @@
                         <!-- Dimasukkan dinamik -->
                     </div>
                 </div>
+
+                <!-- Butang Kembali ke Dashboard Permulaan -->
+                <button onclick="logoutToWelcome()" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 rounded-2xl text-sm pop-button shadow-sm">
+                    ◀ Log Keluar Anak
+                </button>
             </section>
 
             <!-- 3. PETA LEVEL (MAP VIEW) -->
@@ -211,15 +270,12 @@
 
             <!-- 4. PERMAINAN / KUIZ AKTIF -->
             <section id="view-game" class="hidden space-y-6">
-                <!-- Progress Bar & Suara -->
+                <!-- Progress Bar -->
                 <div class="flex justify-between items-center bg-gray-50 p-2 rounded-xl">
                     <button onclick="exitGame()" class="text-gray-400 font-bold text-xs hover:text-red-500">Keluar ❌</button>
-                    <div class="w-1/2 bg-gray-200 rounded-full h-3.5 overflow-hidden">
+                    <div class="w-3/4 bg-gray-200 rounded-full h-3.5 overflow-hidden">
                         <div id="game-progress" class="bg-emerald-500 h-3.5 rounded-full" style="width: 20%"></div>
                     </div>
-                    <button onclick="speakQuestion()" class="bg-blue-500 text-white p-2 rounded-full shadow pop-button flex items-center justify-center">
-                        <i data-lucide="volume-2" class="w-4 h-4"></i>
-                    </button>
                 </div>
 
                 <!-- Kotak Soalan / Kad Pembelajaran -->
@@ -272,9 +328,9 @@
             <section id="view-parents" class="hidden space-y-4">
                 <div class="flex justify-between items-center">
                     <h2 class="font-kids text-2xl text-purple-700 flex items-center">
-                        <i data-lucide="shield-check" class="w-6 h-6 mr-1.5"></i> Ruang Ibu Bapa
+                        <i data-lucide="shield-check" class="w-6 h-6 mr-1.5"></i> Ruang Ibu Bapa/Guru
                     </h2>
-                    <button onclick="goHome()" class="bg-gray-200 text-gray-700 font-bold px-3 py-1 rounded-full text-xs pop-button">
+                    <button onclick="logoutToWelcome()" class="bg-gray-200 text-gray-700 font-bold px-3 py-1 rounded-full text-xs pop-button">
                         Keluar
                     </button>
                 </div>
@@ -343,7 +399,7 @@
             <p class="text-center text-[10px] text-gray-400 font-medium">Edukids Pintar &copy; 2026 - Aplikasi Selamat Tanpa Iklan Luar</p>
         </footer>
 
-        <!-- MODAL KAWALAN IBU BAPA (PIN GATE) -->
+        <!-- MODAL KAWALAN IBU BAPA (PIN GATE) AKSES DARI HEADER -->
         <div id="parent-gate" class="hidden absolute inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-6">
             <div class="bg-white rounded-3xl p-6 w-full max-w-xs text-center space-y-4 shadow-2xl">
                 <div class="text-4xl">🔐</div>
@@ -360,7 +416,7 @@
 
     </div>
 
-    <!-- AUDIO ENGINE SINTETIK & LOGIK PERMAINAN -->
+    <!-- LOGIK PERMAINAN & INTERAKSI -->
     <script>
         // Struktur Data Profile & Kemajuan Kanak-kanak
         let profile = {
@@ -396,67 +452,82 @@
         let questionsList = [];
         let correctAnswer = null;
         let gateCorrectResult = 0;
-
-        // Pembina Audio Sintetik Menggunakan Web Audio API (Supaya tiada fail luaran diperlukan)
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playTone(freq, type, duration) {
-            try {
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) { console.log("Audio not allowed yet."); }
-        }
-
-        function playSoundSuccess() {
-            playTone(523.25, 'sine', 0.1); // C5
-            setTimeout(() => playTone(659.25, 'sine', 0.1), 100); // E5
-            setTimeout(() => playTone(783.99, 'sine', 0.3), 200); // G5
-        }
-
-        function playSoundFail() {
-            playTone(220, 'triangle', 0.3); // A3
-        }
-
-        // Web Speech API untuk Suara Bahasa Melayu murni
-        function speakMalay(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                let utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'ms-MY'; // Set Bahasa Melayu
-                utterance.rate = 0.9; // Kelajuan mesra kanak-kanak
-                window.speechSynthesis.speak(utterance);
-            }
-        }
+        let childPinCode = "1234"; // Default PIN anak
 
         // Inisialisasi Semasa Mula
         window.onload = function() {
             lucide.createIcons();
-            // Semak storan tempatan jika ada rekod lama
+            // Ambil profile sedia ada dari localStorage jika ada
             if(localStorage.getItem('edukids_profile')) {
                 profile = JSON.parse(localStorage.getItem('edukids_profile'));
-                updateHeaderUI();
-                switchView('view-home');
-                renderBadges();
-            } else {
-                switchView('view-profile');
             }
+            switchView('view-welcome-dashboard');
             setInterval(updateParentStats, 10000); // Kemaskini masa setiap 10 saat
         };
 
         function switchView(viewId) {
-            const views = ['view-profile', 'view-home', 'view-map', 'view-game', 'view-congrats', 'view-parents'];
+            const views = [
+                'view-welcome-dashboard', 'view-child-pin', 'view-parent-gate-login', 
+                'view-profile', 'view-home', 'view-map', 'view-game', 'view-congrats', 'view-parents'
+            ];
             views.forEach(v => {
-                document.getElementById(v).classList.add('hidden');
+                const el = document.getElementById(v);
+                if(el) el.classList.add('hidden');
             });
+            
             document.getElementById(viewId).classList.remove('hidden');
+
+            // Header hanya keluar jika anak berada dalam skrin Home, Map, Game atau Congrats
+            const headerViews = ['view-home', 'view-map', 'view-game', 'view-congrats'];
+            if(headerViews.includes(viewId)) {
+                document.getElementById('main-header').classList.remove('hidden');
+            } else {
+                document.getElementById('main-header').classList.add('hidden');
+            }
+        }
+
+        // Pilihan Peranan Dashboard
+        function chooseRole(role) {
+            if(role === 'anak') {
+                document.getElementById('child-pin-input').value = '';
+                switchView('view-child-pin');
+            } else if(role === 'parent-login') {
+                let num1 = Math.floor(Math.random() * 5) + 4;
+                let num2 = Math.floor(Math.random() * 4) + 3;
+                gateCorrectResult = num1 + num2;
+                document.getElementById('gate-math-quiz-login').innerText = `${num1} + ${num2} = ?`;
+                document.getElementById('gate-answer-login').value = '';
+                switchView('view-parent-gate-login');
+            }
+        }
+
+        // Pengesahan PIN Anak
+        function verifyChildPin() {
+            let pinInput = document.getElementById('child-pin-input').value;
+            if(pinInput === childPinCode) {
+                // Jika sudah ada nama tersimpan, terus ke halaman utama. Jika tiada, buat profil baru.
+                if(localStorage.getItem('edukids_profile')) {
+                    updateHeaderUI();
+                    renderBadges();
+                    switchView('view-home');
+                } else {
+                    switchView('view-profile');
+                }
+            } else {
+                alert("PIN Salah! Cuba lagi. (PIN Lalai: 1234)");
+            }
+        }
+
+        // Pengesahan Log Masuk Ibu Bapa dari Dashboard
+        function verifyParentLogin() {
+            let ans = parseInt(document.getElementById('gate-answer-login').value);
+            if(ans === gateCorrectResult) {
+                updateParentStats();
+                switchView('view-parents');
+            } else {
+                alert("Jawapan salah! Ini hanya untuk Ibu Bapa / Guru.");
+                switchView('view-welcome-dashboard');
+            }
         }
 
         // Fungsi Profil
@@ -476,7 +547,6 @@
             localStorage.setItem('edukids_profile', JSON.stringify(profile));
             updateHeaderUI();
             switchView('view-home');
-            speakMalay("Hai " + profile.name + "! Jom belajar dan bermain!");
         }
 
         function updateHeaderUI() {
@@ -508,12 +578,15 @@
             switchView('view-home');
         }
 
+        function logoutToWelcome() {
+            switchView('view-welcome-dashboard');
+        }
+
         // Pengurusan Kategori & Peta Tahap
         function enterCategory(category) {
             currentCategory = category;
             let currentUnlocked = profile.progress[category] || 1;
             
-            // Set Tajuk Peta
             const titles = {
                 matematik: "🔢 Matematik Pintar",
                 abc: "🔤 ABC Pintar",
@@ -524,13 +597,11 @@
             };
             document.getElementById('map-title').innerText = titles[category];
 
-            // Kemaskini Visual Peta Tahap (1 hingga 4)
             for(let i = 1; i <= 4; i++) {
                 let btn = document.getElementById(`btn-lvl-${i}`).querySelector('button');
                 let lbl = document.getElementById(`lbl-lvl-${i}`);
                 
                 if (i < currentUnlocked) {
-                    // Selesai
                     btn.className = "w-16 h-16 rounded-full font-kids text-xl shadow-lg flex items-center justify-center pop-button border-4 bg-emerald-500 border-emerald-700 text-white";
                     btn.innerHTML = "✅";
                     lbl.className = "text-xs font-bold mt-1 text-emerald-600";
@@ -538,7 +609,6 @@
                     btn.disabled = false;
                     btn.style.cursor = "pointer";
                 } else if (i === currentUnlocked) {
-                    // Sedia Dimain
                     btn.className = "w-16 h-16 rounded-full font-kids text-xl shadow-lg flex items-center justify-center pop-button border-4 bg-indigo-500 border-indigo-700 text-white animate-bounce";
                     btn.innerHTML = i;
                     lbl.className = "text-xs font-bold mt-1 text-indigo-700";
@@ -546,7 +616,6 @@
                     btn.disabled = false;
                     btn.style.cursor = "pointer";
                 } else {
-                    // Terkunci
                     btn.className = "w-16 h-16 rounded-full font-kids text-xl shadow-lg flex items-center justify-center pop-button border-4 text-white bg-gray-300 border-gray-400 cursor-not-allowed";
                     btn.innerHTML = "🔒";
                     lbl.className = "text-xs font-bold mt-1 text-gray-400";
@@ -558,7 +627,6 @@
             switchView('view-map');
         }
 
-        // Pengenalan Soalan Automatik Mengikut Level & Kategori
         function startLevel(lvl) {
             currentLevel = lvl;
             currentQuestionIndex = 0;
@@ -570,72 +638,72 @@
         function generateQuestions(cat, lvl) {
             let list = [];
             if(cat === 'matematik') {
-                if(lvl === 1) { // Kenal 1-10
+                if(lvl === 1) { 
                     let targets = [2, 5, 3, 7, 6];
                     targets.forEach(t => {
-                        list.push({inst: "Mana satu nombor?", q: t, opts: shuffle([t, t+1, t-1]), speech: `Mana satu nombor ${t}?`});
+                        list.push({inst: "Mana satu nombor?", q: t, opts: shuffle([t, t+1, t-1])});
                     });
-                } else if(lvl === 2) { // Kenal 1-20
+                } else if(lvl === 2) { 
                     let targets = [12, 15, 18, 14, 20];
                     targets.forEach(t => {
-                        list.push({inst: "Mana satu nombor?", q: t, opts: shuffle([t, t-2, t+1]), speech: `Cari nombor ${t}?`});
+                        list.push({inst: "Mana satu nombor?", q: t, opts: shuffle([t, t-2, t+1])});
                     });
-                } else if(lvl === 3) { // Tambah mudah
+                } else if(lvl === 3) { 
                     list = [
-                        {inst: "Kira hasil tambah", q: "2 + 3", ans: 5, opts: [4, 5, 6], speech: "Berapakah dua tambah tiga?"},
-                        {inst: "Kira hasil tambah", q: "1 + 4", ans: 5, opts: [3, 5, 6], speech: "Berapakah satu tambah empat?"},
-                        {inst: "Kira hasil tambah", q: "4 + 2", ans: 6, opts: [5, 6, 7], speech: "Berapakah empat tambah dua?"},
-                        {inst: "Kira hasil tambah", q: "3 + 3", ans: 6, opts: [6, 7, 8], speech: "Berapakah tiga tambah tiga?"},
-                        {inst: "Kira hasil tambah", q: "5 + 2", ans: 7, opts: [6, 7, 9], speech: "Berapakah lima tambah dua?"}
+                        {inst: "Kira hasil tambah", q: "2 + 3", ans: 5, opts: [4, 5, 6]},
+                        {inst: "Kira hasil tambah", q: "1 + 4", ans: 5, opts: [3, 5, 6]},
+                        {inst: "Kira hasil tambah", q: "4 + 2", ans: 6, opts: [5, 6, 7]},
+                        {inst: "Kira hasil tambah", q: "3 + 3", ans: 6, opts: [6, 7, 8]},
+                        {inst: "Kira hasil tambah", q: "5 + 2", ans: 7, opts: [6, 7, 9]}
                     ];
-                } else { // Tolak mudah
+                } else { 
                     list = [
-                        {inst: "Kira hasil tolak", q: "5 - 2", ans: 3, opts: [2, 3, 4], speech: "Berapakah lima tolak dua?"},
-                        {inst: "Kira hasil tolak", q: "4 - 1", ans: 3, opts: [1, 3, 2], speech: "Berapakah empat tolak satu?"},
-                        {inst: "Kira hasil tolak", q: "6 - 3", ans: 3, opts: [3, 4, 5], speech: "Berapakah enam tolak tiga?"},
-                        {inst: "Kira hasil tolak", q: "7 - 2", ans: 5, opts: [4, 5, 6], speech: "Berapakah tujuh tolak dua?"},
-                        {inst: "Kira hasil tolak", q: "3 - 2", ans: 1, opts: [1, 2, 0], speech: "Berapakah tiga tolak dua?"}
+                        {inst: "Kira hasil tolak", q: "5 - 2", ans: 3, opts: [2, 3, 4]},
+                        {inst: "Kira hasil tolak", q: "4 - 1", ans: 3, opts: [1, 3, 2]},
+                        {inst: "Kira hasil tolak", q: "6 - 3", ans: 3, opts: [3, 4, 5]},
+                        {inst: "Kira hasil tolak", q: "7 - 2", ans: 5, opts: [4, 5, 6]},
+                        {inst: "Kira hasil tolak", q: "3 - 2", ans: 1, opts: [1, 2, 0]}
                     ];
                 }
             } else if(cat === 'abc') {
                 list = [
-                    {inst: "Kenali Huruf", q: "A 🍎", ans: "A", opts: ["A", "B", "C"], speech: "A... untuk Ayam atau Epal"},
-                    {inst: "Pilih gambar bermula huruf B", q: "B", ans: "Bola ⚽", opts: ["Bola ⚽", "Cawan ☕", "Ayam 🐔"], speech: "Mana satu bermula dengan huruf B?"},
-                    {inst: "Kenali Huruf", q: "C 🐱", ans: "C", opts: ["B", "C", "D"], speech: "C... untuk Cawan"},
-                    {inst: "Pilih gambar bermula huruf D", q: "D", ans: "Dinding 🧱", opts: ["Ayam 🐔", "Dinding 🧱", "Bola ⚽"], speech: "Mana satu bermula dengan huruf D?"},
-                    {inst: "Kenali Huruf", q: "E 🐘", ans: "E", opts: ["E", "F", "G"], speech: "E... untuk Gajah"}
+                    {inst: "Kenali Huruf", q: "A 🍎", ans: "A", opts: ["A", "B", "C"]},
+                    {inst: "Pilih gambar bermula huruf B", q: "B", ans: "Bola ⚽", opts: ["Bola ⚽", "Cawan ☕", "Ayam 🐔"]},
+                    {inst: "Kenali Huruf", q: "C 🐱", ans: "C", opts: ["B", "C", "D"]},
+                    {inst: "Pilih gambar bermula huruf D", q: "D", ans: "Dinding 🧱", opts: ["Ayam 🐔", "Dinding 🧱", "Bola ⚽"]},
+                    {inst: "Kenali Huruf", q: "E 🐘", ans: "E", opts: ["E", "F", "G"]}
                 ];
             } else if(cat === 'bm') {
                 list = [
-                    {inst: "Pilih gambar perkataan ini:", q: "BOLA ⚽", ans: "⚽", opts: ["⚽", "📚", "🏠"], speech: "Pilih gambar bola"},
-                    {inst: "Pilih gambar perkataan ini:", q: "BUKU 📚", ans: "📚", opts: ["🐱", "📚", "🏫"], speech: "Pilih gambar buku"},
-                    {inst: "Pilih gambar perkataan ini:", q: "RUMAH 🏠", ans: "🏠", opts: ["🧱", "⚽", "🏠"], speech: "Pilih gambar rumah"},
-                    {inst: "Pilih gambar perkataan ini:", q: "SEKOLAH 🏫", ans: "🏫", opts: ["🏫", "📚", "🐱"], speech: "Pilih gambar sekolah"},
-                    {inst: "Pilih gambar perkataan ini:", q: "KUCING 🐱", ans: "🐱", opts: ["🐔", "⚽", "🐱"], speech: "Pilih gambar kucing"}
+                    {inst: "Pilih gambar perkataan ini:", q: "BOLA ⚽", ans: "⚽", opts: ["⚽", "📚", "🏠"]},
+                    {inst: "Pilih gambar perkataan ini:", q: "BUKU 📚", ans: "📚", opts: ["🐱", "📚", "🏫"]},
+                    {inst: "Pilih gambar perkataan ini:", q: "RUMAH 🏠", ans: "🏠", opts: ["🧱", "⚽", "🏠"]},
+                    {inst: "Pilih gambar perkataan ini:", q: "SEKOLAH 🏫", ans: "🏫", opts: ["🏫", "📚", "🐱"]},
+                    {inst: "Pilih gambar perkataan ini:", q: "KUCING 🐱", ans: "🐱", opts: ["🐔", "⚽", "🐱"]}
                 ];
             } else if(cat === 'warna') {
                 list = [
-                    {inst: "Pilih warna MERAH", q: "🔴", ans: "Merah", opts: ["Merah", "Biru", "Kuning"], speech: "Pilih warna merah"},
-                    {inst: "Pilih warna BIRU", q: "🔵", ans: "Biru", opts: ["Hijau", "Biru", "Oren"], speech: "Pilih warna biru"},
-                    {inst: "Mana satu bentuk BULAT?", q: "⭕", ans: "Bulat", opts: ["Bulat", "Segi Empat", "Segi Tiga"], speech: "Mana satu bentuk bulat?"},
-                    {inst: "Mana satu bentuk BINTANG?", q: "⭐", ans: "Bintang", opts: ["Hati", "Segi Tiga", "Bintang"], speech: "Mana satu bentuk bintang?"},
-                    {inst: "Pilih warna KUNING", q: "🟡", ans: "Kuning", opts: ["Kuning", "Ungu", "Hijau"], speech: "Pilih warna kuning"}
+                    {inst: "Pilih warna MERAH", q: "🔴", ans: "Merah", opts: ["Merah", "Biru", "Kuning"]},
+                    {inst: "Pilih warna BIRU", q: "🔵", ans: "Biru", opts: ["Hijau", "Biru", "Oren"]},
+                    {inst: "Mana satu bentuk BULAT?", q: "⭕", ans: "Bulat", opts: ["Bulat", "Segi Empat", "Segi Tiga"]},
+                    {inst: "Mana satu bentuk BINTANG?", q: "⭐", ans: "Bintang", opts: ["Hati", "Segi Tiga", "Bintang"]},
+                    {inst: "Pilih warna KUNING", q: "🟡", ans: "Kuning", opts: ["Kuning", "Ungu", "Hijau"]}
                 ];
             } else if(cat === 'haiwan') {
                 list = [
-                    {inst: "Mana satu KUCING 🐱?", q: "🐱 Miau", ans: "Kucing", opts: ["Kucing", "Gajah", "Ayam"], speech: "Mana satu kucing?"},
-                    {inst: "Mana satu AYAM 🐔?", q: "🐔 Kokok", ans: "Ayam", opts: ["Anjing", "Ayam", "Harimau"], speech: "Mana satu ayam?"},
-                    {inst: "Mana satu GAJAH 🐘?", q: "🐘", ans: "Gajah", opts: ["Singa", "Monyet", "Gajah"], speech: "Mana satu gajah?"},
-                    {inst: "Mana satu HARIMAU 🐯?", q: "🐯 Aum", ans: "Harimau", opts: ["Harimau", "Ikan", "Kucing"], speech: "Mana satu harimau?"},
-                    {inst: "Mana satu MONYET 🐒?", q: "🐒", ans: "Monyet", opts: ["Ikan", "Monyet", "Singa"], speech: "Mana satu monyet?"}
+                    {inst: "Mana satu KUCING 🐱?", q: "🐱 Miau", ans: "Kucing", opts: ["Kucing", "Gajah", "Ayam"]},
+                    {inst: "Mana satu AYAM 🐔?", q: "🐔 Kokok", ans: "Ayam", opts: ["Anjing", "Ayam", "Harimau"]},
+                    {inst: "Mana satu GAJAH 🐘?", q: "🐘", ans: "Gajah", opts: ["Singa", "Monyet", "Gajah"]},
+                    {inst: "Mana satu HARIMAU 🐯?", q: "🐯 Aum", ans: "Harimau", opts: ["Harimau", "Ikan", "Kucing"]},
+                    {inst: "Mana satu MONYET 🐒?", q: "🐒", ans: "Monyet", opts: ["Ikan", "Monyet", "Singa"]}
                 ];
-            } else { // Buah & Makanan
+            } else { 
                 list = [
-                    {inst: "Kenali objek", q: "EPAL 🍎", ans: "🍎", opts: ["🍎", "🍌", "🥕"], speech: "Pilih buah epal"},
-                    {inst: "Kenali objek", q: "PISANG 🍌", ans: "🍌", opts: ["🍇", "🍌", "🍉"], speech: "Pilih buah pisang"},
-                    {inst: "Kenali objek", q: "TEMBIKAI 🍉", ans: "🍉", opts: ["🍉", "🍎", "🥕"], speech: "Pilih buah tembikai"},
-                    {inst: "Kenali objek", q: "SUSU 🥛", ans: "🥛", opts: ["🍔", "🍟", "🥛"], speech: "Pilih minuman susu yang sihat"},
-                    {inst: "Kenali objek", q: "LOBAK 🥕", ans: "🥕", opts: ["🍇", "🥕", "🍎"], speech: "Pilih sayur lobak"}
+                    {inst: "Kenali objek", q: "EPAL 🍎", ans: "🍎", opts: ["🍎", "🍌", "🥕"]},
+                    {inst: "Kenali objek", q: "PISANG 🍌", ans: "🍌", opts: ["🍇", "🍌", "🍉"]},
+                    {inst: "Kenali objek", q: "TEMBIKAI 🍉", ans: "🍉", opts: ["🍉", "🍎", "🥕"]},
+                    {inst: "Kenali objek", q: "SUSU 🥛", ans: "🥛", opts: ["🍔", "🍟", "🥛"]},
+                    {inst: "Kenali objek", q: "LOBAK 🥕", ans: "🥕", opts: ["🍇", "🥕", "🍎"]}
                 ];
             }
             return list;
@@ -648,11 +716,9 @@
         function loadQuestion() {
             let currentQ = questionsList[currentQuestionIndex];
             
-            // Kemaskini progress bar
             let pct = ((currentQuestionIndex) / questionsList.length) * 100;
             document.getElementById('game-progress').style.width = pct + "%";
 
-            // Sediakan teks instruksi & paparan
             document.getElementById('game-instruction').innerText = currentQ.inst;
             document.getElementById('game-main-display').innerText = currentQ.q;
             document.getElementById('game-feedback').classList.add('hidden');
@@ -665,7 +731,6 @@
                 document.getElementById('game-sub-display').innerText = "";
             }
 
-            // Hasilkan butang pilihan jawapan
             let optContainer = document.getElementById('game-options');
             optContainer.innerHTML = '';
             
@@ -676,14 +741,6 @@
                     </button>
                 `;
             });
-
-            // Sebut arahan secara automatik
-            setTimeout(() => { speakQuestion(); }, 400);
-        }
-
-        function speakQuestion() {
-            let currentQ = questionsList[currentQuestionIndex];
-            speakMalay(currentQ.speech);
         }
 
         function checkAnswer(chosen) {
@@ -691,15 +748,12 @@
             let fb = document.getElementById('game-feedback');
             fb.classList.remove('hidden');
 
-            // Padankan jawapan bertulis/angka sebagai string
             if(String(chosen) === String(correctAnswer)) {
-                playSoundSuccess();
                 fb.className = "p-4 rounded-2xl text-center font-bold text-lg animate-bounce bg-emerald-100 text-emerald-800";
                 fb.innerText = "Hebat! 🎉 Jawapan Betul!";
                 profile.stars += 1;
                 updateHeaderUI();
 
-                // Bergerak ke soalan seterusnya selepas 1.5 saat bersuka ria
                 setTimeout(() => {
                     currentQuestionIndex += 1;
                     if(currentQuestionIndex < questionsList.length) {
@@ -710,22 +764,18 @@
                 }, 1500);
 
             } else {
-                playSoundFail();
                 fb.className = "p-4 rounded-2xl text-center font-bold text-lg bg-orange-100 text-orange-800";
                 fb.innerText = "Cuba Lagi 😊 Kamu Boleh!";
-                speakMalay("Cuba lagi sayang, kamu boleh!");
             }
         }
 
         function endLevel() {
-            // Naikkan tahap kemajuan jika menamatkan tahap terkini
             if(currentLevel === profile.progress[currentCategory]) {
                 if(profile.progress[currentCategory] < 4) {
                     profile.progress[currentCategory] += 1;
                 }
             }
 
-            // Buka lencana secara automatik jika melengkapkan mana-mana tahap kategori pertama kali
             let badgeUnlocked = false;
             if(!profile.badges.includes(currentCategory)) {
                 profile.badges.push(currentCategory);
@@ -734,9 +784,8 @@
 
             localStorage.setItem('edukids_profile', JSON.stringify(profile));
 
-            // Kemaskini skrin tahniah
             document.getElementById('congrats-stars').innerText = `+${questionsList.length}`;
-            profile.stars += (questionsList.length - 5); // bonus tambahan ditolak bintang asas
+            profile.stars += (questionsList.length - 5); 
             
             if(badgeUnlocked) {
                 document.getElementById('congrats-badge-unlock').classList.remove('hidden');
@@ -745,14 +794,13 @@
             }
 
             switchView('view-congrats');
-            speakMalay("Tahniah! Anda telah menamatkan tahap ini. Anda memang bijak!");
         }
 
         function exitGame() {
             enterCategory(currentCategory);
         }
 
-        // KAWALAN IBU BAPA (SECURITY GATE)
+        // KAWALAN IBU BAPA (DARI SIDE HEADER LOCK)
         function openParentGate() {
             let num1 = Math.floor(Math.random() * 5) + 3;
             let num2 = Math.floor(Math.random() * 4) + 2;
@@ -780,14 +828,12 @@
         }
 
         function updateParentStats() {
-            // Hitung anggaran masa berlalu sejak aplikasi dibuka
             let elapsedMins = Math.floor((Date.now() - profile.startTime) / 60000);
             if(elapsedMins < 1) elapsedMins = 1;
             
             document.getElementById('stats-time').innerText = elapsedMins;
             document.getElementById('stats-answered').innerText = profile.totalAnswered;
 
-            // Kemaskini status bar kemajuan ibu bapa
             const categories = ['matematik', 'abc', 'bm'];
             categories.forEach(cat => {
                 let lvl = profile.progress[cat] || 1;
@@ -796,7 +842,6 @@
                 document.getElementById(`prog-bar-${cat}`).style.width = `${pct}%`;
             });
 
-            // Tukar petua nasihat secara rawak dinamik
             const tips = [
                 "Anak anda menunjukkan minat yang stabil! Galakkan mereka mencuba bahagian 'Matematik Pintar' untuk mengasah kemahiran logik asas.",
                 "Bagus! Pretasi anak anda sangat seimbang. Cuba luangkan masa 5 minit sehari bersama mereka semasa bermain kuiz Bahasa Melayu.",
