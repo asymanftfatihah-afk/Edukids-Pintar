@@ -37,7 +37,7 @@
         body { font-family: 'Nunito', sans-serif; }
         .font-kids { font-family: 'Fredoka', sans-serif; }
         .page { display: none; }
-        .page.active { display: block; }
+        .page.active { display: flex; flex-direction: column; }
         .bounce-btn:active { transform: scale(0.95); transition: transform 0.1s; }
         .card-shadow { box-shadow: 0 8px 0px rgba(0,0,0,0.06); }
         .dark-mode { background-color: #1E293B !important; color: #F8FAFC !important; }
@@ -47,8 +47,7 @@
 </head>
 <body class="bg-amber-50/40 text-slate-800 min-h-screen transition-colors duration-300">
 
-    <!-- AUDIO ELEMENT SIMULATION (Web Speech API digunakan untuk suara penuh) -->
-    <div id="app-container" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative flex flex-col justify-between overflow-hidden border-x border-gray-200">
+    <div id="app-container" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative flex flex-col justify-between overflow-y-auto border-x border-gray-200">
         
         <!-- ========================================== -->
         <!-- 1. SPLASH SCREEN                           -->
@@ -64,11 +63,12 @@
             </div>
             <h1 class="font-kids text-4xl font-bold tracking-wider drop-shadow-md">Edukids Pintar</h1>
             <p class="text-lg font-semibold bg-black/20 px-4 py-1 rounded-full mt-2">Belajar • Bermain • Jaya</p>
-            <div class="mt-12 flex flex-col gap-3 w-full px-6">
-                <button onclick="changePage('page-login')" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-kids text-xl font-bold py-4 px-8 rounded-2xl shadow-lg transform active:scale-95 transition bounce-btn">
+            
+            <div class="mt-12 flex flex-col gap-3 w-full px-6 z-50">
+                <button onclick="changePage('page-login')" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-kids text-xl font-bold py-4 px-8 rounded-2xl shadow-lg transform active:scale-95 transition bounce-btn relative z-50">
                     MULA BELAJAR! 🚀
                 </button>
-                <button onclick="changePage('page-docs')" class="bg-white/20 text-white font-semibold py-2 px-6 rounded-xl text-sm border border-white/30">
+                <button onclick="changePage('page-docs')" class="bg-white/20 text-white font-semibold py-2 px-6 rounded-xl text-sm border border-white/30 bounce-btn">
                     <i class="fas fa-file-alt mr-2"></i> Dokumentasi & Kod Flutter
                 </button>
             </div>
@@ -80,7 +80,7 @@
         <div id="page-login" class="page p-6 flex flex-col justify-center min-h-screen bg-gradient-to-br from-sky-50 to-purple-50">
             <div class="text-center mb-8">
                 <span class="text-6xl">🦉</span>
-                <h2 class="font-kids text-3xl font-bold text-purple mt-2">Log Masuk Masuk</h2>
+                <h2 class="font-kids text-3xl font-bold text-purple mt-2">Log Masuk</h2>
                 <p class="text-gray-500 text-sm">Selamat datang ke Dunia Edukids Pintar</p>
             </div>
 
@@ -113,7 +113,7 @@
                 <button onclick="prosesLogin('dewasa')" class="w-full bg-purple text-white font-kids text-xl py-4 rounded-2xl font-bold shadow-lg bounce-btn">Log Masuk 🔒</button>
             </div>
             
-            <button onclick="changePage('page-splash')" class="mt-8 text-sm text-gray-400 text-center"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Mula</button>
+            <button onclick="changePage('page-splash')" class="mt-8 text-sm text-gray-400 text-center bounce-btn"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Mula</button>
         </div>
 
         <!-- ========================================== -->
@@ -130,7 +130,7 @@
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
-                    <button onclick="toggleDarkMode()" class="w-9 h-9 bg-white/20 rounded-xl text-sm flex items-center justify-center"><i class="fas fa-moon"></i></button>
+                    <button onclick="toggleDarkMode()" class="w-9 h-9 bg-white/20 rounded-xl text-sm flex items-center justify-center bounce-btn"><i class="fas fa-moon"></i></button>
                     <div class="bg-white/20 px-3 py-1.5 rounded-full flex items-center gap-1 text-sm font-bold">
                         <span class="text-yellow-300">⭐</span> <span id="dash-star-count">150</span>
                     </div>
@@ -144,10 +144,10 @@
                     <h5 class="font-kids font-bold text-pink text-sm">Pintar Kata:</h5>
                     <p class="text-xs text-slate-600 font-semibold leading-snug">Hai Daniyal! Mari bermain kuiz Matematik atau membaca cerita hari ini!</p>
                 </div>
-                <button onclick="speakText('Hai Daniyal! Mari bermain kuiz Matematik atau membaca cerita hari ini!')" class="absolute right-3 bottom-3 w-8 h-8 bg-pink text-white rounded-full text-xs flex items-center justify-center shadow"><i class="fas fa-volume-up"></i></button>
+                <button onclick="speakText('Hai Daniyal! Mari bermain kuiz Matematik atau membaca cerita hari ini!')" class="absolute right-3 bottom-3 w-8 h-8 bg-pink text-white rounded-full text-xs flex items-center justify-center shadow bounce-btn"><i class="fas fa-volume-up"></i></button>
             </div>
 
-            <!-- Grid Grid Menu Utama Moden (Rounded Big Buttons) -->
+            <!-- Grid Menu Utama Moden -->
             <div class="px-4 grid grid-cols-2 gap-4">
                 <div onclick="openModul('abc')" class="bg-white p-5 rounded-3xl border-b-8 border-bMuda flex flex-col items-center justify-center text-center card-shadow cursor-pointer bounce-btn">
                     <span class="text-4xl mb-2">🔤</span>
@@ -249,7 +249,7 @@
                     </div>
                 </div>
 
-                <!-- Sistem Laporan PDF & Muat Turun -->
+                <!-- Laporan PDF -->
                 <div class="bg-gradient-to-r from-purple/10 to-pink/10 p-4 rounded-2xl border border-purple/20">
                     <h4 class="font-bold text-sm text-slate-800 mb-1"><i class="fas fa-file-pdf text-red-500 mr-1"></i> Dokumen Prestasi Bulanan</h4>
                     <p class="text-xs text-gray-500 mb-3">Laporan komprehensif perkembangan kognitif, bahasa & motor halus.</p>
@@ -269,12 +269,48 @@
                             </div>
                             <p class="text-gray-500 mt-0.5">Anak anda menyelesaikan kuiz Matematik Tahap Sederhana dengan markah 100%.</p>
                         </div>
-                        <div class="p-3 bg-slate-50 rounded-xl text-xs border-l-4 border-bMuda">
-                            <div class="flex justify-between font-bold text-slate-700">
-                                <span>Tugasan Baru Ditambah</span>
-                                <span class="text-gray-400">Semalam</span>
-                            </div>
-                            <p class="text-gray-500 mt-0.5">Cikgu Aminah memuat naik bahan latihan membaca "Suku Kata KV+KV".</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 6. DASHBOARD GURU                          -->
+        <!-- ========================================== -->
+        <div id="page-guru" class="page flex-col h-screen overflow-y-auto pb-24 bg-slate-50">
+            <div class="bg-purple text-white p-5 rounded-b-[2rem] shadow-md">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="font-kids text-2xl font-bold">Portal Guru Tadika 👩‍🏫</h2>
+                    <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">Mod Guru</span>
+                </div>
+                <p class="text-xs opacity-90">Urus profil, penilaian, tugasan, dan kehadiran kelas prasekolah.</p>
+            </div>
+
+            <div class="p-4 space-y-4">
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-white p-3 rounded-xl shadow-sm text-center border-b-4 border-purple">
+                        <span class="text-xs text-gray-400 block">Murid</span>
+                        <span class="text-xl font-bold text-purple">24 Orang</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl shadow-sm text-center border-b-4 border-hijau">
+                        <span class="text-xs text-gray-400 block">Hadir Hari ini</span>
+                        <span class="text-xl font-bold text-hijau">22 / 24</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl shadow-sm text-center border-b-4 border-pink">
+                        <span class="text-xs text-gray-400 block">Tugasan Aktif</span>
+                        <span class="text-xl font-bold text-pink">3 Latihan</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold text-sm text-slate-700">Senarai Penilaian Murid</h4>
+                        <button onclick="alert('Borang tambah murid disinkronisasikan ke Firebase Cloud Firestore.')" class="text-xs bg-purple text-white px-2.5 py-1 rounded-lg font-semibold shadow-sm bounce-btn">+ Tambah Murid</button>
+                    </div>
+                    <div class="space-y-2.5">
+                        <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl text-xs border border-gray-100">
+                            <span class="font-bold text-slate-800">1. Ahmad Daniyal</span>
+                            <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">Hadir</span>
                         </div>
                     </div>
                 </div>
@@ -285,19 +321,19 @@
         <!-- BOTTOM GLOBAL NAVIGATION TAB BAR           -->
         <!-- ========================================== -->
         <div id="global-nav" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-2 flex justify-around items-center z-40 shadow-xl hidden">
-            <button onclick="changePage('page-dashboard')" class="flex flex-col items-center gap-0.5 text-purple">
+            <button onclick="changePage('page-dashboard')" class="flex flex-col items-center gap-0.5 text-purple bounce-btn">
                 <i class="fas fa-th-large text-xl"></i>
                 <span class="text-[10px] font-bold">Belajar</span>
             </button>
-            <button onclick="changePage('page-waris')" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-pink transition">
+            <button onclick="changePage('page-waris')" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-pink transition bounce-btn">
                 <i class="fas fa-user-shield text-xl"></i>
                 <span class="text-[10px] font-bold">Ibu Bapa</span>
             </button>
-            <button onclick="changePage('page-guru')" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-purple transition">
+            <button onclick="changePage('page-guru')" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-purple transition bounce-btn">
                 <i class="fas fa-chalkboard-teacher text-xl"></i>
                 <span class="text-[10px] font-bold">Guru</span>
             </button>
-            <button onclick="logout()" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-red-500 transition">
+            <button onclick="logout()" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-red-500 transition bounce-btn">
                 <i class="fas fa-sign-out-alt text-xl"></i>
                 <span class="text-[10px] font-bold">Keluar</span>
             </button>
@@ -309,98 +345,28 @@
         <div id="page-docs" class="page absolute inset-0 bg-slate-900 text-slate-100 z-50 p-6 overflow-y-auto hidden">
             <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
                 <h2 class="text-xl font-bold text-yellow-400">Arsitektur & Kod Sumber Aplikasi</h2>
-                <button onclick="changePage('page-splash')" class="bg-slate-800 text-white p-2 rounded-lg text-xs font-bold">Tutup X</button>
+                <button onclick="changePage('page-splash')" class="bg-slate-800 text-white p-2 rounded-lg text-xs font-bold bounce-btn">Tutup X</button>
             </div>
             
             <div class="space-y-6 text-xs leading-relaxed font-mono">
-                <!-- 1. Struktur & Wireframe -->
                 <section>
                     <h3 class="text-sm font-bold text-purple-400 border-l-2 border-purple-400 pl-2 mb-2">1. STRUKTUR APLIKASI FLUTTER & ENGINE</h3>
-                    <p>Aplikasi menggunakan senibina MVVM terurus melalui Provider/Riverpod bagi mengekalkan kestabilan prestasi rendah penggunaan memori pada peranti Android/iOS.</p>
                     <pre class="bg-slate-950 p-2 rounded mt-1 overflow-x-auto text-[11px] text-emerald-400">
 lib/
 ├── main.dart             # Inisialisasi Firebase & Tema
 ├── models/               # Murid, RekodKehadiran, Ganjaran
-├── providers/            # AuthProvider, PembelajaranState
 └── screens/
     ├── splash_screen.dart
     ├── login_screen.dart
-    ├── dashboard_murid.dart
-    ├── modul_pembelajaran/
-    └── dashboard_guru.dart</pre>
+    └── dashboard_murid.dart</pre>
                 </section>
-
-                <!-- 2. Skema Firebase -->
                 <section>
                     <h3 class="text-sm font-bold text-purple-400 border-l-2 border-purple-400 pl-2 mb-2">2. STRUKTUR PANGKALAN DATA (CLOUD FIRESTORE)</h3>
                     <pre class="bg-slate-950 p-2 rounded mt-1 overflow-x-auto text-[11px] text-amber-300">
 /murid (Koleksi Utama)
   ├── {muridId} (Dokumen)
         ├── nama: "Ahmad Daniyal"
-        ├── kelasId: "6_pintar"
-        ├── kemajuan: { "abc": 80, "nombor": 90 }
-        ├── ganjaran: { "bintang": 150, "lencana": ["sifir_cilik"] }
-/kehadiran
-  ├── {tarikh_kelasId}: { "muridId_01": "Hadir", "muridId_02": "Sakit" }</pre>
-                </section>
-
-                <!-- 3. Contoh Kod Flutter -->
-                <section>
-                    <h3 class="text-sm font-bold text-purple-400 border-l-2 border-purple-400 pl-2 mb-2">3. CONTOH KOD FLUTTER (UI DASHBOARD UTAMA)</h3>
-                    <pre class="bg-slate-950 p-2 rounded mt-1 overflow-x-auto text-[10px] text-cyan-400">
-import 'package:flutter/material.dart';
-
-class KidDashboard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFFFEF3C7),
-      body: GridView.count(
-        crossCrossCount: 2,
-        padding: EdgeInsets.all(16),
-        children: [
-          _buildKidCard("🔤", "Belajar ABC", Color(0xFF38BDF8)),
-          _buildKidCard("🔢", "Nombor", Color(0xFF4ADE80)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildKidCard(String icon, String title, Color color) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-      elevation: 4,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(icon, style: TextStyle(fontSize: 40)),
-          Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        ],
-      ),
-    );
-  }
-}</pre>
-                </section>
-
-                <!-- 4. Contoh Kod Firebase Backend -->
-                <section>
-                    <h3 class="text-sm font-bold text-purple-400 border-l-2 border-purple-400 pl-2 mb-2">4. KOD BACKEND FIREBASE (Cloud Functions - Simpan Ganjaran)</h3>
-                    <pre class="bg-slate-950 p-2 rounded mt-1 overflow-x-auto text-[10px] text-pink-400">
-const functions = require('firebase-functions');
-const admin = require('firebase-admin');
-admin.initializeApp();
-
-exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
-  const muridId = data.muridId;
-  const jumlahBintang = data.bintang;
-  
-  const muridRef = admin.firestore().collection('murid').doc(muridId);
-  await muridRef.update({
-    'ganjaran.bintang': admin.firestore.FieldValue.increment(jumlahBintang)
-  });
-  
-  return { success: true, message: "Bintang berjaya dikemas kini di cloud!" };
-});</pre>
+        ├── ganjaran: { "bintang": 150 }</pre>
                 </section>
             </div>
         </div>
@@ -417,10 +383,20 @@ exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
             currentRole: 'murid'
         };
 
-        // Fungsi Tukar Halaman
+        // Fungsi Tukar Halaman Utama
         function changePage(pageId) {
-            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+            // Sembunyikan semua skrin halaman
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+                page.classList.add('hidden');
+            });
+            
+            // Paparkan skrin halaman sasaran
+            const targetPage = document.getElementById(pageId);
+            if(targetPage) {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('active');
+            }
             
             // Urus Paparan Bar Navigasi Bawah Global
             const nav = document.getElementById('global-nav');
@@ -440,9 +416,8 @@ exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
             const formMurid = document.getElementById('form-login-murid');
             const formDewasa = document.getElementById('form-login-dewasa');
 
-            // Reset Kelas Tab
             [tabMurid, tabIbu, tabGuru].forEach(btn => {
-                btn.classList.remove('bg-white', 'text-purple', 'shadow-sm', 'text-pink', 'text-bMuda', 'text-purple');
+                btn.classList.remove('bg-white', 'text-purple', 'shadow-sm', 'text-pink', 'text-bMuda');
                 btn.classList.add('text-gray-500');
             });
 
@@ -482,13 +457,13 @@ exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
             changePage('page-login');
         }
 
-        // Suara Sebutan Menggunakan Web Speech API (Pakej Pintar Suara Offline Terbina)
+        // Suara Sebutan Menggunakan Web Speech API
         function speakText(text, lang = 'ms-MY') {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Hentikan suara sebelumnya jika ada
+                window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.lang = lang;
-                utterance.rate = 0.85; // Kelajuan perlahan sedikit supaya jelas bagi kanak-kanak
+                utterance.rate = 0.85; 
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -504,7 +479,7 @@ exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
             }
         }
 
-        // Cetusan Konfeti Apabila Jawapan Betul Dinilai
+        // Cetusan Konfeti Ganjaran
         function triggerSuccessReward() {
             confetti({
                 particleCount: 100,
@@ -515,7 +490,7 @@ exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
             document.getElementById('dash-star-count').innerText = appState.stars;
         }
 
-        // Enjin Pembelajaran & Permainan Dinamik (Modul Interaktif)
+        // Enjin Kandungan Modul Interaktif
         function openModul(type) {
             const title = document.getElementById('modul-header-title');
             const container = document.getElementById('modul-dynamic-content');
@@ -542,7 +517,6 @@ exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
                         <div class="flex items-center justify-center gap-3 text-3xl font-bold bg-slate-50 p-4 rounded-2xl mb-4">
                             <span>🍎🍎</span> <span class="text-purple">+</span> <span>🍎</span> <span class="text-purple">=</span> <span class="text-pink">?</span>
                         </div>
-                        <p class="text-sm text-gray-500 font-semibold mb-6">Berapakah jumlah biji epal di atas?</p>
                         <div class="grid grid-cols-3 gap-3">
                             <button onclick="alert('Cuba lagi sayang! 😊')" class="bg-slate-100 p-4 rounded-xl font-bold text-xl bounce-btn">2</button>
                             <button onclick="triggerSuccessReward(); alert('Tepat Sekali! Anda Pintar! 🎉')" class="bg-hijau text-white p-4 rounded-xl font-bold text-xl bounce-btn shadow-md">3</button>
@@ -557,19 +531,18 @@ exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
                         <div class="text-6xl font-bold text-purple">ا ب ت</div>
                         <h4 class="font-kids font-bold text-lg">Mengenal Huruf Hijaiyah & Doa</h4>
                         <div class="space-y-2 text-left">
-                            <button onclick="speakText('Alif Ba Ta')" class="w-full bg-purple/10 text-purple p-3 rounded-xl text-left text-xs font-bold flex items-center justify-between"><<span>1. Sebutan Hijaiyah Utama</span> <i class="fas fa-play"></i></button>
+                            <button onclick="speakText('Alif Ba Ta')" class="w-full bg-purple/10 text-purple p-3 rounded-xl text-left text-xs font-bold flex items-center justify-between"><span>1. Sebutan Hijaiyah Utama</span> <i class="fas fa-play"></i></button>
                             <button onclick="alert('Memaparkan panduan bergambar wuduk bertahap.')" class="w-full bg-purple/10 text-purple p-3 rounded-xl text-left text-xs font-bold flex items-center justify-between"><span>2. Amalan Wuduk & Solat</span> <i class="fas fa-book"></i></button>
                         </div>
                     </div>
                 `;
             } else if (type === 'english') {
-                title.innerText = "English Alphabet & Words";
+                title.innerText = "English Alphabet";
                 container.innerHTML = `
                     <div class="bg-white p-6 rounded-3xl border-2 border-pink/30 text-center shadow-sm">
                         <span class="text-6xl block mb-2">🦁</span>
                         <h4 class="font-kids font-bold text-2xl text-pink">Lion</h4>
-                        <p class="text-xs text-gray-500 italic font-semibold mb-6">Basic Words & Animals</p>
-                        <button onclick="speakText('Lion. This is a lion.', 'en-US')" class="bg-pink text-white px-6 py-3 rounded-xl font-bold text-sm bounce-btn"><i class="fas fa-volume-up mr-1"></i> Listen Pronunciation</button>
+                        <button onclick="speakText('Lion. This is a lion.', 'en-US')" class="bg-pink text-white px-6 py-3 rounded-xl font-bold text-sm bounce-btn"><i class="fas fa-volume-up mr-1"></i> Listen</button>
                     </div>
                 `;
             } else {
@@ -577,7 +550,7 @@ exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
                 container.innerHTML = `
                     <div class="text-center bg-white p-8 rounded-3xl shadow-sm text-gray-500">
                         <span class="text-5xl block mb-2">🧩</span>
-                        <p class="text-sm font-semibold">Modul Interaktif sedang dimuatkan terus secara masa-nyata dari Cloud Firestore...</p>
+                        <p class="text-sm font-semibold">Modul sedang dimuatkan dari Firebase...</p>
                     </div>
                 `;
             }
