@@ -3,454 +3,661 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edukids Pintar - Premium App Blueprint & Simulator</title>
-    <!-- Tailwind CSS untuk reka bentuk premium -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Font Kanak-Kanak & Profesional -->
+    <title>Edukids Pintar - Aplikasi Premium Tadika Malaysia</title>
+    <!-- Google Fonts: Fredoka & Nunito untuk UI Kanak-Kanak -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Plus+Jakarta+Sans:wght@300..800&display=swap" rel="stylesheet">
-    <!-- FontAwesome untuk Ikon -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti untuk Efek Ganjaran -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bMuda: '#38BDF8', // Biru Muda
+                        hijau: '#4ADE80', // Hijau
+                        pink: '#F472B6',   // Pink
+                        purple: '#A78BFA', // Purple
+                    },
+                    fontFamily: {
+                        fredoka: ['Fredoka', 'sans-serif'],
+                        nunito: ['Nunito', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f0fdf4;
-        }
-        .kids-font {
-            font-family: 'Fredoka', sans-serif;
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        /* Simulasi Antaramuka Telefon */
-        .phone-container {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border: 12px solid #1e293b;
-            border-radius: 40px;
-            overflow: hidden;
-            background: #ffffff;
-        }
+        body { font-family: 'Nunito', sans-serif; }
+        .font-kids { font-family: 'Fredoka', sans-serif; }
+        .page { display: none; }
+        .page.active { display: block; }
+        .bounce-btn:active { transform: scale(0.95); transition: transform 0.1s; }
+        .card-shadow { box-shadow: 0 8px 0px rgba(0,0,0,0.06); }
+        .dark-mode { background-color: #1E293B !important; color: #F8FAFC !important; }
+        .dark-mode .bg-white { background-color: #334155 !important; color: #F8FAFC !important; }
+        .dark-mode .text-gray-600, .dark-mode .text-gray-700 { color: #CBD5E1 !important; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
+<body class="bg-amber-50/40 text-slate-800 min-h-screen transition-colors duration-300">
 
-    <!-- Top Navigation Bar -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 px-6 py-4 flex justify-between items-center shadow-xs">
-        <div class="flex items-center gap-3">
-            <div class="bg-blue-500 text-white p-2 rounded-xl shadow-md">
-                <i class="fa-solid fa-graduation-cap text-xl"></i>
-            </div>
-            <div>
-                <h1 class="text-xl font-bold tracking-tight text-slate-900">Edukids Pintar Blueprint</h1>
-                <p class="text-xs text-slate-500">Premium Kindergarten Ecosystem Malaysia</p>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <span class="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full border border-green-200">
-                <i class="fa-solid fa-circle text-[8px] mr-1.5 align-middle animate-pulse"></i> Simulasi Aktif
-            </span>
-            <span class="text-xs text-slate-400">v1.0.0 (2026)</span>
-        </div>
-    </header>
-
-    <div class="max-w-[1600px] mx-auto p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- AUDIO ELEMENT SIMULATION (Web Speech API digunakan untuk suara penuh) -->
+    <div id="app-container" class="max-w-md mx-auto bg-white min-h-screen shadow-2xl relative flex flex-col justify-between overflow-hidden border-x border-gray-200">
         
-        <!-- LEFT COLUMN: Documentation & Blueprints (7 Columns) -->
-        <div class="lg:col-span-7 space-y-8">
+        <!-- ========================================== -->
+        <!-- 1. SPLASH SCREEN                           -->
+        <!-- ========================================== -->
+        <div id="page-splash" class="page active absolute inset-0 bg-gradient-to-b from-bMuda via-purple to-pink flex flex-col items-center justify-center z-50 p-6 text-center text-white">
+            <div class="animate-bounce mb-6 relative">
+                <div class="w-32 h-32 bg-white rounded-full flex items-center justify-center border-4 border-yellow-300 shadow-xl">
+                    <!-- Mascot "Pintar" Owl Icon -->
+                    <span class="text-7xl">🦉</span>
+                </div>
+                <div class="absolute -top-3 -right-3 text-3xl animate-pulse">⭐</div>
+                <div class="absolute -bottom-2 -left-2 text-3xl transform -rotate-12">✏️</div>
+            </div>
+            <h1 class="font-kids text-4xl font-bold tracking-wider drop-shadow-md">Edukids Pintar</h1>
+            <p class="text-lg font-semibold bg-black/20 px-4 py-1 rounded-full mt-2">Belajar • Bermain • Jaya</p>
+            <div class="mt-12 flex flex-col gap-3 w-full px-6">
+                <button onclick="changePage('page-login')" class="bg-yellow-400 hover:bg-yellow-300 text-slate-950 font-kids text-xl font-bold py-4 px-8 rounded-2xl shadow-lg transform active:scale-95 transition bounce-btn">
+                    MULA BELAJAR! 🚀
+                </button>
+                <button onclick="changePage('page-docs')" class="bg-white/20 text-white font-semibold py-2 px-6 rounded-xl text-sm border border-white/30">
+                    <i class="fas fa-file-alt mr-2"></i> Dokumentasi & Kod Flutter
+                </button>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 2. LOGIN PAGE                              -->
+        <!-- ========================================== -->
+        <div id="page-login" class="page p-6 flex flex-col justify-center min-h-screen bg-gradient-to-br from-sky-50 to-purple-50">
+            <div class="text-center mb-8">
+                <span class="text-6xl">🦉</span>
+                <h2 class="font-kids text-3xl font-bold text-purple mt-2">Log Masuk Masuk</h2>
+                <p class="text-gray-500 text-sm">Selamat datang ke Dunia Edukids Pintar</p>
+            </div>
+
+            <!-- Tab Peranan -->
+            <div class="bg-gray-200/60 p-1.5 rounded-2xl flex mb-6">
+                <button id="btn-tab-murid" onclick="switchLoginTab('murid')" class="w-1/3 py-2.5 font-bold rounded-xl text-sm transition-all bg-white text-purple shadow-sm">Murid</button>
+                <button id="btn-tab-ibu" onclick="switchLoginTab('ibu')" class="w-1/3 py-2.5 font-bold rounded-xl text-sm transition-all text-gray-500">Ibu Bapa</button>
+                <button id="btn-tab-guru" onclick="switchLoginTab('guru')" class="w-1/3 py-2.5 font-bold rounded-xl text-sm transition-all text-gray-500">Guru</button>
+            </div>
+
+            <!-- Form Murid -->
+            <div id="form-login-murid" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 mb-1">Nombor ID Murid / Kad Pintar</label>
+                    <input type="text" id="input-id-murid" value="EK-2026-05" class="w-full p-4 rounded-2xl border-2 border-bMuda focus:outline-none text-center font-bold text-lg text-slate-700 tracking-wider">
+                </div>
+                <button onclick="prosesLogin('murid')" class="w-full bg-pink text-white font-kids text-xl py-4 rounded-2xl font-bold shadow-lg bounce-btn">Masuk Sini! 🌟</button>
+            </div>
+
+            <!-- Form Ibu Bapa / Guru -->
+            <div id="form-login-dewasa" class="space-y-4 hidden">
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 mb-1">E-mel Pentadbir/Waris</label>
+                    <input type="email" id="input-email" placeholder="contoh@email.com" class="w-full p-4 rounded-2xl border-2 border-purple focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-sm font-bold text-gray-600 mb-1">Kata Laluan</label>
+                    <input type="password" id="input-password" value="••••••••" class="w-full p-4 rounded-2xl border-2 border-purple focus:outline-none">
+                </div>
+                <button onclick="prosesLogin('dewasa')" class="w-full bg-purple text-white font-kids text-xl py-4 rounded-2xl font-bold shadow-lg bounce-btn">Log Masuk 🔒</button>
+            </div>
             
-            <!-- Section 1: Pengenalan & Identiti -->
-            <section class="bg-white p-6 rounded-3xl shadow-xs border border-slate-100">
-                <div class="flex items-center gap-2 mb-4">
-                    <span class="bg-amber-100 text-amber-700 text-xs font-bold px-2.5 py-1 rounded-lg">STRATEGI BRANDING</span>
-                </div>
-                <h2 class="text-2xl font-bold text-slate-900 kids-font mb-4">Identiti Korporat Edukids Pintar</h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="p-4 bg-sky-50 rounded-2xl border border-sky-100">
-                        <p class="text-xs text-sky-600 font-bold uppercase tracking-wider">Maskot Rasmi</p>
-                        <h4 class="text-lg font-bold text-slate-800 mt-1">Pintar Si Burung Hantu</h4>
-                        <p class="text-xs text-slate-500 mt-1">Membawa imej bijak, mesra, dan sedia membantu kanak-kanak melayari aktiviti.</p>
-                    </div>
-                    <div class="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-                        <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider">Bahasa Utama</p>
-                        <h4 class="text-lg font-bold text-slate-800 mt-1">Bahasa Melayu</h4>
-                        <p class="text-xs text-slate-500 mt-1">Diselaraskan dengan Kurikulum Standard Prasekolah Kebangsaan (KSPK).</p>
-                    </div>
-                    <div class="p-4 bg-purple-50 rounded-2xl border border-purple-100">
-                        <p class="text-xs text-purple-600 font-bold uppercase tracking-wider">Tipografi</p>
-                        <h4 class="text-lg font-bold text-slate-800 mt-1">Fredoka & Jakarta</h4>
-                        <p class="text-xs text-slate-500 mt-1">Geometrik melingkar yang selamat dipandang dan mudah dibaca oleh anak-anak 4-6 tahun.</p>
+            <button onclick="changePage('page-splash')" class="mt-8 text-sm text-gray-400 text-center"><i class="fas fa-arrow-left mr-1"></i> Kembali ke Mula</button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 3. DASHBOARD UTAMA MURID                   -->
+        <!-- ========================================== -->
+        <div id="page-dashboard" class="page flex-col h-screen overflow-y-auto pb-24">
+            <!-- Top App Bar -->
+            <div class="bg-gradient-to-r from-bMuda to-purple p-4 text-white flex items-center justify-between sticky top-0 z-30 shadow-md">
+                <div class="flex items-center gap-3">
+                    <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Ahmad" alt="Avatar" class="w-12 h-12 bg-white rounded-full border-2 border-white shadow">
+                    <div>
+                        <h4 class="font-kids font-bold text-lg leading-tight">Ahmad Daniyal</h4>
+                        <p class="text-xs text-yellow-200 font-semibold"><i class="fas fa-school mr-1"></i> Kelas 6 Pintar</p>
                     </div>
                 </div>
-
-                <!-- Palet Warna Semantik -->
-                <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-2">Palet Warna Aplikasi</h4>
-                <div class="grid grid-cols-5 gap-2">
-                    <div class="text-center">
-                        <div class="h-10 bg-sky-400 rounded-lg shadow-inner"></div>
-                        <span class="text-[10px] text-slate-500 font-mono mt-1 block">#38BDF8</span>
-                    </div>
-                    <div class="text-center">
-                        <div class="h-10 bg-emerald-400 rounded-lg shadow-inner"></div>
-                        <span class="text-[10px] text-slate-500 font-mono mt-1 block">#34D399</span>
-                    </div>
-                    <div class="text-center">
-                        <div class="h-10 bg-pink-400 rounded-lg shadow-inner"></div>
-                        <span class="text-[10px] text-slate-500 font-mono mt-1 block">#F472B6</span>
-                    </div>
-                    <div class="text-center">
-                        <div class="h-10 bg-purple-400 rounded-lg shadow-inner"></div>
-                        <span class="text-[10px] text-slate-500 font-mono mt-1 block">#C084FC</span>
-                    </div>
-                    <div class="text-center">
-                        <div class="h-10 bg-white border border-slate-200 rounded-lg shadow-inner"></div>
-                        <span class="text-[10px] text-slate-500 font-mono mt-1 block">#FFFFFF</span>
+                <div class="flex items-center gap-2">
+                    <button onclick="toggleDarkMode()" class="w-9 h-9 bg-white/20 rounded-xl text-sm flex items-center justify-center"><i class="fas fa-moon"></i></button>
+                    <div class="bg-white/20 px-3 py-1.5 rounded-full flex items-center gap-1 text-sm font-bold">
+                        <span class="text-yellow-300">⭐</span> <span id="dash-star-count">150</span>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <!-- Section 2: Arsitektur Pangkalan Data Firebase -->
-            <section class="bg-white p-6 rounded-3xl shadow-xs border border-slate-100">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-database text-amber-500"></i> Struktur Cloud Firestore
-                    </h2>
-                    <span class="text-xs font-mono bg-slate-100 text-slate-600 px-2 py-1 rounded">NoSQL Schema</span>
+            <!-- Maskot Selamat Datang Widget -->
+            <div class="m-4 bg-gradient-to-r from-pink/20 to-purple/20 p-4 rounded-3xl border border-pink/20 flex items-center gap-4 relative">
+                <div class="text-4xl">🦉</div>
+                <div>
+                    <h5 class="font-kids font-bold text-pink text-sm">Pintar Kata:</h5>
+                    <p class="text-xs text-slate-600 font-semibold leading-snug">Hai Daniyal! Mari bermain kuiz Matematik atau membaca cerita hari ini!</p>
                 </div>
-                
-                <p class="text-sm text-slate-600 mb-4">
-                    Struktur pangkalan data dipisahkan mengikut peranan pengguna (Role-Based Access Control) bagi menjamin keselamatan data kanak-kanak prasekolah.
-                </p>
+                <button onclick="speakText('Hai Daniyal! Mari bermain kuiz Matematik atau membaca cerita hari ini!')" class="absolute right-3 bottom-3 w-8 h-8 bg-pink text-white rounded-full text-xs flex items-center justify-center shadow"><i class="fas fa-volume-up"></i></button>
+            </div>
 
-                <div class="space-y-4 font-mono text-xs text-slate-700">
-                    <!-- Collection: Users -->
-                    <div class="p-4 bg-slate-900 text-slate-300 rounded-xl overflow-x-auto custom-scrollbar">
-                        <span class="text-emerald-400 font-bold">/users</span> <span class="text-slate-500">{uid}</span>
-                        <pre class="mt-2 text-slate-400">
-{
-  "name": "Ahmad Dani",
-  "role": "murid", // atau "ibu_bapa"
-  "createdAt": Timestamp,
-  "metadata": {
-    "kindergartenName": "Tadika Pintar Bestari",
-    "classId": "alpha_2026"
-  }
-}</pre>
+            <!-- Grid Grid Menu Utama Moden (Rounded Big Buttons) -->
+            <div class="px-4 grid grid-cols-2 gap-4">
+                <div onclick="openModul('abc')" class="bg-white p-5 rounded-3xl border-b-8 border-bMuda flex flex-col items-center justify-center text-center card-shadow cursor-pointer bounce-btn">
+                    <span class="text-4xl mb-2">🔤</span>
+                    <span class="font-kids font-bold text-lg text-slate-700">Belajar ABC</span>
+                </div>
+                <div onclick="openModul('nombor')" class="bg-white p-5 rounded-3xl border-b-8 border-hijau flex flex-col items-center justify-center text-center card-shadow cursor-pointer bounce-btn">
+                    <span class="text-4xl mb-2">🔢</span>
+                    <span class="font-kids font-bold text-lg text-slate-700">Nombor</span>
+                </div>
+                <div onclick="openModul('islam')" class="bg-white p-5 rounded-3xl border-b-8 border-purple flex flex-col items-center justify-center text-center card-shadow cursor-pointer bounce-btn">
+                    <span class="text-4xl mb-2">🕌</span>
+                    <span class="font-kids font-bold text-lg text-slate-700">P. Islam</span>
+                </div>
+                <div onclick="openModul('english')" class="bg-white p-5 rounded-3xl border-b-8 border-pink flex flex-col items-center justify-center text-center card-shadow cursor-pointer bounce-btn">
+                    <span class="text-4xl mb-2">🇬🇧</span>
+                    <span class="font-kids font-bold text-lg text-slate-700">English</span>
+                </div>
+                <div onclick="openModul('permainan')" class="bg-white p-5 rounded-3xl border-b-8 border-yellow-400 flex flex-col items-center justify-center text-center card-shadow cursor-pointer bounce-btn">
+                    <span class="text-4xl mb-2">🎮</span>
+                    <span class="font-kids font-bold text-lg text-slate-700">Permainan</span>
+                </div>
+                <div onclick="openModul('mewarna')" class="bg-white p-5 rounded-3xl border-b-8 border-indigo-400 flex flex-col items-center justify-center text-center card-shadow cursor-pointer bounce-btn">
+                    <span class="text-4xl mb-2">🎨</span>
+                    <span class="font-kids font-bold text-lg text-slate-700">Mewarna</span>
+                </div>
+                <div onclick="openModul('cerita')" class="bg-white p-5 rounded-3xl border-b-8 border-amber-500 flex flex-col items-center justify-center text-center card-shadow cursor-pointer bounce-btn">
+                    <span class="text-4xl mb-2">📚</span>
+                    <span class="font-kids font-bold text-lg text-slate-700">Cerita</span>
+                </div>
+                <div onclick="openModul('lagu')" class="bg-white p-5 rounded-3xl border-b-8 border-rose-400 flex flex-col items-center justify-center text-center card-shadow cursor-pointer bounce-btn">
+                    <span class="text-4xl mb-2">🎵</span>
+                    <span class="font-kids font-bold text-lg text-slate-700">Lagu</span>
+                </div>
+            </div>
+
+            <!-- Ganjaran Cepat Widget -->
+            <div class="m-4 bg-white border-2 border-dashed border-gray-300 p-4 rounded-3xl flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🏆</span>
+                    <div>
+                        <h4 class="font-bold text-sm">Lencana Terkini</h4>
+                        <p class="text-xs text-gray-500">Juara Sifir Cilik Prasekolah</p>
                     </div>
+                </div>
+                <span class="text-2xl">🥇</span>
+            </div>
+        </div>
 
-                    <!-- Collection: Students Profile -->
-                    <div class="p-4 bg-slate-900 text-slate-300 rounded-xl overflow-x-auto custom-scrollbar">
-                        <span class="text-emerald-400 font-bold">/students_profile</span> <span class="text-slate-500">{studentId}</span>
-                        <pre class="mt-2 text-slate-400">
-{
-  "parentId": "parent_uid_123",
-  "age": 5,
-  "avatarUrl": "assets/avatars/owl_avatar.png",
-  "learningProgress": {
-    "abc_completed_letters": ["A", "B", "C"],
-    "math_score": 85
-  },
-  "rewards": {
-    "stars": 24,
-    "badges": ["AbcMaster", "SembahyangBijak"]
-  }
-}</pre>
+        <!-- ========================================== -->
+        <!-- 4. MODUL KANDUNGAN INTERAKTIF DINAMIK      -->
+        <!-- ========================================== -->
+        <div id="page-modul" class="page flex-col h-screen overflow-y-auto pb-24 bg-gradient-to-b from-sky-50 to-white">
+            <div class="p-4 flex items-center justify-between border-b border-gray-100 bg-white sticky top-0 z-20">
+                <button onclick="changePage('page-dashboard')" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center bounce-btn"><i class="fas fa-chevron-left text-slate-700"></i></button>
+                <h3 id="modul-header-title" class="font-kids font-bold text-xl text-purple">Modul</h3>
+                <div class="w-10"></div>
+            </div>
+
+            <!-- Content Container Dinamik -->
+            <div id="modul-dynamic-content" class="p-4">
+                <!-- Data dimasukkan secara dinamik oleh JavaScript -->
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 5. DASHBOARD IBU BAPA                      -->
+        <!-- ========================================== -->
+        <div id="page-waris" class="page flex-col h-screen overflow-y-auto pb-24 bg-slate-50">
+            <div class="bg-pink text-white p-5 rounded-b-[2rem] shadow-md">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="font-kids text-2xl font-bold">Portal Ibu Bapa 👨‍👩‍👧</h2>
+                    <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">Mod Waris</span>
+                </div>
+                <p class="text-xs opacity-90">Pantau perkembangan kognitif dan rekod tadika anak secara langsung.</p>
+            </div>
+
+            <div class="p-4 space-y-4">
+                <!-- Profil Ringkasan Anak -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Ahmad" alt="Anak" class="w-12 h-12 bg-pink/10 rounded-full">
+                        <div>
+                            <h4 class="font-bold text-slate-800">Ahmad Daniyal</h4>
+                            <p class="text-xs text-gray-500">Tadika Pintar Bestari • Kelas 6 Pintar</p>
+                        </div>
+                    </div>
+                    <span class="bg-green-100 text-green-700 text-xs px-2.5 py-1 rounded-full font-bold">Hadir Hari Ini</span>
+                </div>
+
+                <!-- Kad Metrik Ringkas -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+                        <span class="text-xs font-semibold text-gray-400 block mb-1">Purata Markah Kuiz</span>
+                        <span class="text-2xl font-black text-purple">92 / 100</span>
+                    </div>
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 text-center">
+                        <span class="text-xs font-semibold text-gray-400 block mb-1">Kehadiran Bulanan</span>
+                        <span class="text-2xl font-black text-bMuda">96.8%</span>
                     </div>
                 </div>
-            </section>
 
-            <!-- Section 3: Arsitektur Kod Flutter (Clean Architecture) -->
-            <section class="bg-white p-6 rounded-3xl shadow-xs border border-slate-100">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
-                        <i class="fa-solid fa-code text-blue-500"></i> Contoh Implementasi Flutter & Firebase
-                    </h2>
-                    <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded font-bold">Dart</span>
+                <!-- Sistem Laporan PDF & Muat Turun -->
+                <div class="bg-gradient-to-r from-purple/10 to-pink/10 p-4 rounded-2xl border border-purple/20">
+                    <h4 class="font-bold text-sm text-slate-800 mb-1"><i class="fas fa-file-pdf text-red-500 mr-1"></i> Dokumen Prestasi Bulanan</h4>
+                    <p class="text-xs text-gray-500 mb-3">Laporan komprehensif perkembangan kognitif, bahasa & motor halus.</p>
+                    <button onclick="alert('Laporan PDF dijana! Fail bersaiz 1.2MB telah dimuat turun dari Firebase Storage.')" class="w-full bg-white text-purple border border-purple font-bold text-xs py-2.5 rounded-xl shadow-sm bounce-btn">
+                        <i class="fas fa-download mr-1"></i> Muat Turun PDF (Julai 2026)
+                    </button>
                 </div>
-                
-                <p class="text-sm text-slate-600 mb-4">
-                    Contoh kod Flutter menggunakan strategi *State Management* modern untuk mengurus kuiz interaktif kanak-kanak tadika.
-                </p>
 
-                <div class="p-4 bg-slate-900 text-slate-300 rounded-xl font-mono text-xs overflow-x-auto custom-scrollbar">
-<pre class="text-slate-400">
-<span class="text-purple-400">import</span> 'package:flutter/material.dart';
-<span class="text-purple-400">import</span> 'package:cloud_firestore/cloud_firestore.dart';
+                <!-- Notifikasi Stream Semasa -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <h4 class="font-bold text-sm text-slate-700 mb-3"><i class="fas fa-bell text-yellow-400 mr-1"></i> Log Notifikasi Semasa</h4>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-slate-50 rounded-xl text-xs border-l-4 border-hijau">
+                            <div class="flex justify-between font-bold text-slate-700">
+                                <span>Ganjaran Baru Diperoleh!</span>
+                                <span class="text-gray-400">10:30 AM</span>
+                            </div>
+                            <p class="text-gray-500 mt-0.5">Anak anda menyelesaikan kuiz Matematik Tahap Sederhana dengan markah 100%.</p>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-xl text-xs border-l-4 border-bMuda">
+                            <div class="flex justify-between font-bold text-slate-700">
+                                <span>Tugasan Baru Ditambah</span>
+                                <span class="text-gray-400">Semalam</span>
+                            </div>
+                            <p class="text-gray-500 mt-0.5">Cikgu Aminah memuat naik bahan latihan membaca "Suku Kata KV+KV".</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<span class="text-amber-400">class</span> <span class="text-sky-400">QuizScreen</span> <span class="text-amber-400">extends</span> <span class="text-sky-400">StatefulWidget</span> {
-  <span class="text-purple-400">@override</span>
-  _QuizScreenState createState() => _QuizScreenState();
-}
+        <!-- ========================================== -->
+        <!-- 6. DASHBOARD GURU                          -->
+        <!-- ========================================== -->
+        <div id="page-guru" class="page flex-col h-screen overflow-y-auto pb-24 bg-slate-50">
+            <div class="bg-purple text-white p-5 rounded-b-[2rem] shadow-md">
+                <div class="flex justify-between items-center mb-2">
+                    <h2 class="font-kids text-2xl font-bold">Portal Guru Tadika 👩‍🏫</h2>
+                    <span class="bg-white/20 px-3 py-1 rounded-full text-xs font-semibold">Mod Guru</span>
+                </div>
+                <p class="text-xs opacity-90">Urus profil, penilaian, tugasan, dan kehadiran kelas prasekolah.</p>
+            </div>
 
-<span class="text-amber-400">class</span> <span class="text-sky-400">_QuizScreenState</span> <span class="text-amber-400">extends</span> <span class="text-sky-400">State</span>&lt;<span class="text-sky-400">QuizScreen</span>&gt; {
-  int _stars = 0;
+            <div class="p-4 space-y-4">
+                <!-- Kawalan Kelas Quick Count -->
+                <div class="grid grid-cols-3 gap-2">
+                    <div class="bg-white p-3 rounded-xl shadow-sm text-center border-b-4 border-purple">
+                        <span class="text-xs text-gray-400 block">Murid</span>
+                        <span class="text-xl font-bold text-purple">24 Orang</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl shadow-sm text-center border-b-4 border-hijau">
+                        <span class="text-xs text-gray-400 block">Hadir Hari ini</span>
+                        <span class="text-xl font-bold text-hijau">22 / 24</span>
+                    </div>
+                    <div class="bg-white p-3 rounded-xl shadow-sm text-center border-b-4 border-pink">
+                        <span class="text-xs text-gray-400 block">Tugasan Aktif</span>
+                        <span class="text-xl font-bold text-pink">3 Latihan</span>
+                    </div>
+                </div>
 
-  <span class="text-purple-400">void</span> _awardStar(String studentId) <span class="text-purple-400">async</span> {
-    <span class="text-purple-400">await</span> FirebaseFirestore.instance
-        .collection('students_profile')
-        .doc(studentId)
-        .update({'rewards.stars': FieldValue.increment(1)});
-    
-    setState(() { _stars++; });
-  }
+                <!-- Urus Kemajuan & Kehadiran Murid (Table List) -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold text-sm text-slate-700">Senarai Penilaian Murid</h4>
+                        <button onclick="alert('Borang tambah murid disinkronisasikan ke Firebase Cloud Firestore.')" class="text-xs bg-purple text-white px-2.5 py-1 rounded-lg font-semibold shadow-sm">+ Tambah Murid</button>
+                    </div>
+                    <div class="space-y-2.5">
+                        <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl text-xs border border-gray-100">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-800">1. Ahmad Daniyal</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-gray-500 font-semibold">Prestasi: 92%</span>
+                                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">Hadir</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl text-xs border border-gray-100">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-800">2. Nur Sarah Balqis</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-gray-500 font-semibold">Prestasi: 88%</span>
+                                <span class="bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">Hadir</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between p-2 hover:bg-slate-50 rounded-xl text-xs border border-gray-100">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-800">3. Muhammad Ammar</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <span class="text-gray-500 font-semibold">Prestasi: 45%</span>
+                                <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold">Sakit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-  <span class="text-purple-400">@override</span>
+                <!-- Muat Naik Bahan Pembelajaran Simulation -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <h4 class="font-bold text-sm text-slate-700 mb-2"><i class="fas fa-cloud-upload-alt text-purple mr-1"></i> Muat Naik Bahan Latihan</h4>
+                    <div class="border-2 border-dashed border-purple/30 bg-purple/5 p-4 rounded-xl text-center cursor-pointer" onclick="alert('Sistem membuka fail lokal untuk dimuat naik ke Firebase Storage.')">
+                        <i class="fas fa-file-image text-2xl text-purple/60 mb-1"></i>
+                        <p class="text-xs text-gray-500">Klik untuk muat naik helaian mewarna / gambar pelajaran</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- BOTTOM GLOBAL NAVIGATION TAB BAR           -->
+        <!-- ========================================== -->
+        <div id="global-nav" class="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-2 flex justify-around items-center z-40 shadow-xl hidden">
+            <button onclick="changePage('page-dashboard')" class="flex flex-col items-center gap-0.5 text-purple">
+                <i class="fas fa-th-large text-xl"></i>
+                <span class="text-[10px] font-bold">Belajar</span>
+            </button>
+            <button onclick="changePage('page-waris')" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-pink transition">
+                <i class="fas fa-user-shield text-xl"></i>
+                <span class="text-[10px] font-bold">Ibu Bapa</span>
+            </button>
+            <button onclick="changePage('page-guru')" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-purple transition">
+                <i class="fas fa-chalkboard-teacher text-xl"></i>
+                <span class="text-[10px] font-bold">Guru</span>
+            </button>
+            <button onclick="logout()" class="flex flex-col items-center gap-0.5 text-gray-400 hover:text-red-500 transition">
+                <i class="fas fa-sign-out-alt text-xl"></i>
+                <span class="text-[10px] font-bold">Keluar</span>
+            </button>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- ARCHITECTURE & DOCUMENTATION LAYER (MODAL)  -->
+        <!-- ========================================== -->
+        <div id="page-docs" class="page absolute inset-0 bg-slate-900 text-slate-100 z-50 p-6 overflow-y-auto hidden">
+            <div class="flex justify-between items-center mb-6 border-b border-slate-800 pb-3">
+                <h2 class="text-xl font-bold text-yellow-400">Arsitektur & Kod Sumber Aplikasi</h2>
+                <button onclick="changePage('page-splash')" class="bg-slate-800 text-white p-2 rounded-lg text-xs font-bold">Tutup X</button>
+            </div>
+            
+            <div class="space-y-6 text-xs leading-relaxed font-mono">
+                <!-- 1. Struktur & Wireframe -->
+                <section>
+                    <h3 class="text-sm font-bold text-purple-400 border-l-2 border-purple-400 pl-2 mb-2">1. STRUKTUR APLIKASI FLUTTER & ENGINE</h3>
+                    <p>Aplikasi menggunakan senibina MVVM terurus melalui Provider/Riverpod bagi mengekalkan kestabilan prestasi rendah penggunaan memori pada peranti Android/iOS.</p>
+                    <pre class="bg-slate-950 p-2 rounded mt-1 overflow-x-auto text-[11px] text-emerald-400">
+lib/
+├── main.dart             # Inisialisasi Firebase & Tema
+├── models/               # Murid, RekodKehadiran, Ganjaran
+├── providers/            # AuthProvider, PembelajaranState
+└── screens/
+    ├── splash_screen.dart
+    ├── login_screen.dart
+    ├── dashboard_murid.dart
+    ├── modul_pembelajaran/
+    └── dashboard_guru.dart</pre>
+                </section>
+
+                <!-- 2. Skema Firebase -->
+                <section>
+                    <h3 class="text-sm font-bold text-purple-400 border-l-2 border-purple-400 pl-2 mb-2">2. STRUKTUR PANGKALAN DATA (CLOUD FIRESTORE)</h3>
+                    <pre class="bg-slate-950 p-2 rounded mt-1 overflow-x-auto text-[11px] text-amber-300">
+/murid (Koleksi Utama)
+  ├── {muridId} (Dokumen)
+        ├── nama: "Ahmad Daniyal"
+        ├── kelasId: "6_pintar"
+        ├── kemajuan: { "abc": 80, "nombor": 90 }
+        ├── ganjaran: { "bintang": 150, "lencana": ["sifir_cilik"] }
+/kehadiran
+  ├── {tarikh_kelasId}: { "muridId_01": "Hadir", "muridId_02": "Sakit" }</pre>
+                </section>
+
+                <!-- 3. Contoh Kod Flutter -->
+                <section>
+                    <h3 class="text-sm font-bold text-purple-400 border-l-2 border-purple-400 pl-2 mb-2">3. CONTOH KOD FLUTTER (UI DASHBOARD UTAMA)</h3>
+                    <pre class="bg-slate-950 p-2 rounded mt-1 overflow-x-auto text-[10px] text-cyan-400">
+import 'package:flutter/material.dart';
+
+class KidDashboard extends StatelessWidget {
+  @override
   Widget build(BuildContext context) {
-    <span class="text-purple-400">return</span> Scaffold(
-      backgroundColor: Color(0xFFF0FDF4),
-      body: Center(
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF34D399),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          ),
-          onPressed: () => _awardStar("sample_student_id"),
-          child: Text('Jawapan Betul! Syabas!', style: TextStyle(fontFamily: 'Fredoka', fontSize: 24)),
-        ),
+    return Scaffold(
+      backgroundColor: Color(0xFFFEF3C7),
+      body: GridView.count(
+        crossCrossCount: 2,
+        padding: EdgeInsets.all(16),
+        children: [
+          _buildKidCard("🔤", "Belajar ABC", Color(0xFF38BDF8)),
+          _buildKidCard("🔢", "Nombor", Color(0xFF4ADE80)),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildKidCard(String icon, String title, Color color) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+      elevation: 4,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(icon, style: TextStyle(fontSize: 40)),
+          Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+        ],
       ),
     );
   }
 }</pre>
-                </div>
-            </section>
-        </div>
+                </section>
 
-        <!-- RIGHT COLUMN: Fully Interactive Simulator Container (5 Columns) -->
-        <div class="lg:col-span-5">
-            <div class="sticky top-24">
-                
-                <!-- Simulasi Penerangan Atas Kotak -->
-                <div class="mb-4 text-center">
-                    <span class="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-1">Interactive Sandbox Prototype</span>
-                    <p class="text-sm text-slate-600">Klik butang di dalam simulasi skrin telefon untuk menguji peranan pengguna yang berbeza.</p>
-                </div>
+                <!-- 4. Contoh Kod Firebase Backend -->
+                <section>
+                    <h3 class="text-sm font-bold text-purple-400 border-l-2 border-purple-400 pl-2 mb-2">4. KOD BACKEND FIREBASE (Cloud Functions - Simpan Ganjaran)</h3>
+                    <pre class="bg-slate-950 p-2 rounded mt-1 overflow-x-auto text-[10px] text-pink-400">
+const functions = require('firebase-functions');
+const admin = require('firebase-admin');
+admin.initializeApp();
 
-                <!-- PHONE CONTAINER SIMULATOR -->
-                <div class="phone-container max-w-[400px] mx-auto aspect-[9/19] flex flex-col justify-between">
-                    
-                    <!-- Screen Header Status Bar -->
-                    <div class="bg-slate-900 text-white px-6 py-2 flex justify-between items-center text-xs">
-                        <span class="font-bold">20:26</span>
-                        <div class="flex items-center gap-1.5">
-                            <i class="fa-solid fa-wifi"></i>
-                            <i class="fa-solid fa-battery-three-quarters"></i>
-                        </div>
-                    </div>
-
-                    <!-- SCREEN DYNAMIC CONTENT (Controlled by JS below) -->
-                    <div id="simulator-screen" class="flex-1 bg-white overflow-y-auto custom-scrollbar flex flex-col justify-between">
-                        
-                        <!-- DEFAULT: Splash & Entry Screen -->
-                        <div class="flex-1 flex flex-col items-center justify-center p-6 text-center bg-radial from-sky-100 to-white">
-                            <div class="w-24 h-24 bg-sky-400 rounded-3xl shadow-lg flex items-center justify-center text-white text-4xl mb-4 animate-bounce">
-                                <i class="fa-solid fa-owl text-amber-300"></i>
-                            </div>
-                            <h2 class="text-2xl font-bold tracking-tight text-slate-800 kids-font">Edukids Pintar</h2>
-                            <p class="text-xs text-slate-500 mt-1 max-w-[200px]">Belajar dengan gembira bersama Maskot Pintar!</p>
-                            
-                            <div class="w-full mt-8 space-y-3">
-                                <button onclick="switchRole('student')" class="w-full py-3 bg-sky-400 hover:bg-sky-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
-                                    <i class="fa-solid fa-child mr-2"></i> Masuk Sebagai Murid
-                                </button>
-                                <button onclick="switchRole('parent')" class="w-full py-3 bg-pink-400 hover:bg-pink-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
-                                    <i class="fa-solid fa-user-tie mr-2"></i> Portal Ibu Bapa
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Screen Navigation Bottom Bar -->
-                    <div class="bg-white border-t border-slate-100 px-4 py-3 grid grid-cols-4 text-center text-xs text-slate-400">
-                        <button onclick="resetSimulator()" class="hover:text-sky-500 flex flex-col items-center gap-1">
-                            <i class="fa-solid fa-house text-lg"></i>
-                            <span class="text-[9px]">Utama</span>
-                        </button>
-                        <button onclick="alert('Fungsi audio diaktifkan secara lalai di Flutter')" class="hover:text-emerald-500 flex flex-col items-center gap-1">
-                            <i class="fa-solid fa-volume-high text-lg text-emerald-400"></i>
-                            <span class="text-[9px]">Suara</span>
-                        </button>
-                        <button onclick="alert('Mod luar talian aktif - Caching Diaktifkan')" class="hover:text-amber-500 flex flex-col items-center gap-1">
-                            <i class="fa-solid fa-cloud-arrow-down text-lg"></i>
-                            <span class="text-[9px]">Offline</span>
-                        </button>
-                        <button onclick="toggleDarkModeSim()" class="hover:text-purple-500 flex flex-col items-center gap-1">
-                            <i class="fa-solid fa-moon text-lg"></i>
-                            <span class="text-[9px]">Tema</span>
-                        </button>
-                    </div>
-
-                </div>
-
+exports.tambahBintangMurid = functions.https.onCall(async (data, context) => {
+  const muridId = data.muridId;
+  const jumlahBintang = data.bintang;
+  
+  const muridRef = admin.firestore().collection('murid').doc(muridId);
+  await muridRef.update({
+    'ganjaran.bintang': admin.firestore.FieldValue.increment(jumlahBintang)
+  });
+  
+  return { success: true, message: "Bintang berjaya dikemas kini di cloud!" };
+});</pre>
+                </section>
             </div>
         </div>
 
     </div>
 
-    <!-- JAVASCRIPT: Mengawal Simulasi Interaktif Secara Tempatan -->
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT APP INTERACTION ENGINE          -->
+    <!-- ========================================== -->
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyCpdR14Q9e0tCB3TFUIJNaCzLvl6lsercw",
-            authDomain: "edukids-pintar.firebaseapp.com",
-            databaseURL: "https://edukids-pintar-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "edukids-pintar",
-            storageBucket: "edukids-pintar.firebasestorage.app",
-            messagingSenderId: "534474162243",
-            appId: "1:534474162243:web:5919243186616f673c94f6"
+        let appState = {
+            stars: 150,
+            isDarkMode: false,
+            currentRole: 'murid'
         };
-        console.log("Edukids Pintar - Firebase terkonfigurasi menggunakan App ID:", firebaseConfig.appId);
 
-        const screen = document.getElementById('simulator-screen');
-
-        function resetSimulator() {
-            screen.innerHTML = `
-                <div class="flex-1 flex flex-col items-center justify-center p-6 text-center bg-radial from-sky-100 to-white">
-                    <div class="w-24 h-24 bg-sky-400 rounded-3xl shadow-lg flex items-center justify-center text-white text-4xl mb-4 animate-bounce">
-                        <i class="fa-solid fa-graduation-cap text-amber-300"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold tracking-tight text-slate-800 kids-font">Edukids Pintar</h2>
-                    <p class="text-xs text-slate-500 mt-1 max-w-[200px]">Belajar dengan gembira bersama Maskot Pintar!</p>
-                    
-                    <div class="w-full mt-8 space-y-3">
-                        <button onclick="switchRole('student')" class="w-full py-3 bg-sky-400 hover:bg-sky-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
-                            <i class="fa-solid fa-child mr-2"></i> Masuk Sebagai Murid
-                        </button>
-                        <button onclick="switchRole('parent')" class="w-full py-3 bg-pink-400 hover:bg-pink-500 text-white font-bold rounded-2xl shadow-md transition-all text-sm kids-font">
-                            <i class="fa-solid fa-user-tie mr-2"></i> Portal Ibu Bapa
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function switchRole(role) {
-            if (role === 'student') {
-                screen.innerHTML = `
-                    <div class="p-4 bg-sky-50 min-h-full flex flex-col justify-between">
-                        <!-- Profil Murid Ringkas -->
-                        <div class="flex justify-between items-center bg-white p-3 rounded-2xl shadow-xs border border-sky-100">
-                            <div class="flex items-center gap-2">
-                                <div class="w-10 h-10 bg-purple-400 text-white rounded-full flex items-center justify-center font-bold">AD</div>
-                                <div>
-                                    <h4 class="text-sm font-bold text-slate-800 kids-font">Ahmad Dani</h4>
-                                    <p class="text-[10px] text-slate-400">Tadika Pintar Alpha</p>
-                                </div>
-                            </div>
-                            <div class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-star"></i> 24
-                            </div>
-                        </div>
-
-                        <!-- Menu Utama Pembelajaran -->
-                        <div class="my-4 grid grid-cols-2 gap-3">
-                            <div onclick="startLesson('abc')" class="p-4 bg-white hover:bg-sky-100 border border-slate-100 rounded-2xl text-center shadow-xs transition-all cursor-pointer">
-                                <span class="text-2xl block mb-1">📖</span>
-                                <span class="text-xs font-bold kids-font text-slate-700">Mengenal ABC</span>
-                            </div>
-                            <div onclick="startLesson('math')" class="p-4 bg-white hover:bg-emerald-100 border border-slate-100 rounded-2xl text-center shadow-xs transition-all cursor-pointer">
-                                <span class="text-2xl block mb-1">🔢</span>
-                                <span class="text-xs font-bold kids-font text-slate-700">Kira Nombor</span>
-                            </div>
-                            <div onclick="alert('Modul Pendidikan Islam Berjaya Dimuatkan')" class="p-4 bg-white hover:bg-purple-100 border border-slate-100 rounded-2xl text-center shadow-xs transition-all cursor-pointer">
-                                <span class="text-2xl block mb-1">🕌</span>
-                                <span class="text-xs font-bold kids-font text-slate-700">Pendidikan Islam</span>
-                            </div>
-                            <div onclick="alert('Permainan Memori Dimuatkan')" class="p-4 bg-white hover:bg-pink-100 border border-slate-100 rounded-2xl text-center shadow-xs transition-all cursor-pointer">
-                                <span class="text-2xl block mb-1">🎮</span>
-                                <span class="text-xs font-bold kids-font text-slate-700">Permainan</span>
-                            </div>
-                        </div>
-
-                        <div class="bg-amber-50 p-3 rounded-2xl border border-amber-200 flex items-center gap-2">
-                            <span class="text-xl">🦉</span>
-                            <p class="text-[11px] text-amber-800 font-medium">"Hai Dani! Mari kita selesaikan latihan hari ini untuk dapatkan lencana baharu!" - <strong>Pintar</strong></p>
-                        </div>
-                    </div>
-                `;
-            } else if (role === 'parent') {
-                screen.innerHTML = `
-                    <div class="p-4 bg-pink-50 min-h-full">
-                        <div class="mb-4">
-                            <h3 class="text-lg font-bold text-slate-800">Portal Ibu Bapa</h3>
-                            <p class="text-xs text-slate-500">Penjaga kepada: <strong>Ahmad Dani</strong></p>
-                        </div>
-
-                        <div class="bg-white p-4 rounded-2xl shadow-xs space-y-4">
-                            <div>
-                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kemajuan Minggu Ini</h4>
-                                <div class="flex items-center gap-3 mt-1">
-                                    <span class="text-2xl">🏆</span>
-                                    <div>
-                                        <p class="text-xs font-bold text-slate-800">Modul Matematik Selesai</p>
-                                        <p class="text-[10px] text-slate-500">Dani menunjukkan peningkatan 20% dalam operasi tambah mudah.</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="pt-2 border-t border-slate-100">
-                                <span class="text-xs font-bold text-slate-700 block mb-1">Catatan Prestasi Terkini:</span>
-                                <p class="text-xs text-slate-600 bg-slate-50 p-2 rounded-xl italic">"Dani sangat aktif hari ini semasa sesi latihan hafalan. Kekalkan momentum!"</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
+        // Fungsi Tukar Halaman
+        function changePage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            
+            // Urus Paparan Bar Navigasi Bawah Global
+            const nav = document.getElementById('global-nav');
+            if(pageId === 'page-splash' || pageId === 'page-login' || pageId === 'page-docs') {
+                nav.classList.add('hidden');
+            } else {
+                nav.classList.remove('hidden');
             }
         }
 
-        function startLesson(type) {
-            if (type === 'abc') {
-                screen.innerHTML = `
-                    <div class="p-4 bg-white min-h-full flex flex-col justify-between text-center">
-                        <div>
-                            <span class="text-xs font-bold text-sky-600 tracking-widest uppercase">Modul ABC</span>
-                            <h3 class="text-3xl font-bold text-slate-800 kids-font mt-2">Huruf "A"</h3>
-                        </div>
+        // Tukar Tab Log Masuk
+        function switchLoginTab(role) {
+            appState.currentRole = role;
+            const tabMurid = document.getElementById('btn-tab-murid');
+            const tabIbu = document.getElementById('btn-tab-ibu');
+            const tabGuru = document.getElementById('btn-tab-guru');
+            const formMurid = document.getElementById('form-login-murid');
+            const formDewasa = document.getElementById('form-login-dewasa');
 
-                        <div class="my-6">
-                            <span class="text-8xl block animate-pulse font-bold text-sky-400 kids-font">Aa</span>
-                            <p class="text-lg font-bold text-slate-600 mt-2 kids-font">A untuk Ayam 🐓</p>
-                        </div>
+            // Reset Kelas Tab
+            [tabMurid, tabIbu, tabGuru].forEach(btn => {
+                btn.classList.remove('bg-white', 'text-purple', 'shadow-sm', 'text-pink', 'text-bMuda', 'text-purple');
+                btn.classList.add('text-gray-500');
+            });
 
-                        <button onclick="switchRole('student')" class="w-full py-3 bg-slate-800 text-white font-bold rounded-2xl text-xs">
-                            <i class="fa-solid fa-arrow-left mr-1.5"></i> Kembali ke Menu
-                        </button>
-                    </div>
-                `;
-            } else if (type === 'math') {
-                screen.innerHTML = `
-                    <div class="p-4 bg-white min-h-full flex flex-col justify-between text-center">
-                        <div>
-                            <span class="text-xs font-bold text-emerald-600 tracking-widest uppercase">Kuiz Matematik</span>
-                            <h3 class="text-xl font-bold text-slate-800 kids-font mt-2">Kira Objek</h3>
-                        </div>
-
-                        <div class="my-4 bg-emerald-50 p-4 rounded-3xl border border-emerald-100">
-                            <div class="text-3xl mb-3">🍎 🍎 🍎</div>
-                            <p class="text-sm font-bold text-slate-700">Ada berapa biji epal di atas?</p>
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="alert('Cuba lagi, adik panda!')" class="py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-700">2</button>
-                            <button onclick="alert('TAHNIAH! Anda dapat 1 🌟!'); switchRole('student');" class="py-3 bg-emerald-400 hover:bg-emerald-500 text-white rounded-xl font-bold">3</button>
-                            <button onclick="alert('Sikit lagi tepat!')" class="py-3 bg-slate-100 hover:bg-slate-200 rounded-xl font-bold text-slate-700">4</button>
-                        </div>
-                    </div>
-                `;
+            if(role === 'murid') {
+                tabMurid.classList.add('bg-white', 'text-purple', 'shadow-sm');
+                formMurid.classList.remove('hidden');
+                formDewasa.classList.add('hidden');
+            } else if(role === 'ibu') {
+                tabIbu.classList.add('bg-white', 'text-pink', 'shadow-sm');
+                formMurid.classList.add('hidden');
+                formDewasa.classList.remove('hidden');
+            } else if(role === 'guru') {
+                tabGuru.classList.add('bg-white', 'text-bMuda', 'shadow-sm');
+                formMurid.classList.add('hidden');
+                formDewasa.classList.remove('hidden');
             }
         }
 
-        function toggleDarkModeSim() {
-            alert('Ciri pertukaran Dark Mode / Light Mode automatik sedia untuk dijalankan berdasarkan tetapan sistem operasi (Android/iOS).');
+        // Simulasi Pengesahan Log Masuk Pintar
+        function prosesLogin(type) {
+            if (type === 'murid') {
+                const id = document.getElementById('input-id-murid').value;
+                if(!id) return alert('Sila masukkan ID Murid anda!');
+                changePage('page-dashboard');
+                speakText("Selamat datang Daniyal! Mari belajar.");
+            } else {
+                if(appState.currentRole === 'guru') {
+                    changePage('page-guru');
+                } else {
+                    changePage('page-waris');
+                }
+            }
+        }
+
+        // Log Keluar Pintar
+        function logout() {
+            changePage('page-login');
+        }
+
+        // Suara Sebutan Menggunakan Web Speech API (Pakej Pintar Suara Offline Terbina)
+        function speakText(text, lang = 'ms-MY') {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Hentikan suara sebelumnya jika ada
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = lang;
+                utterance.rate = 0.85; // Kelajuan perlahan sedikit supaya jelas bagi kanak-kanak
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Kawalan Mod Gelap (Dark Mode Switch)
+        function toggleDarkMode() {
+            appState.isDarkMode = !appState.isDarkMode;
+            const container = document.getElementById('app-container');
+            if(appState.isDarkMode) {
+                container.classList.add('dark-mode');
+            } else {
+                container.classList.remove('dark-mode');
+            }
+        }
+
+        // Cetusan Konfeti Apabila Jawapan Betul Dinilai
+        function triggerSuccessReward() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+            appState.stars += 10;
+            document.getElementById('dash-star-count').innerText = appState.stars;
+        }
+
+        // Enjin Pembelajaran & Permainan Dinamik (Modul Interaktif)
+        function openModul(type) {
+            const title = document.getElementById('modul-header-title');
+            const container = document.getElementById('modul-dynamic-content');
+            changePage('page-modul');
+
+            if(type === 'abc') {
+                title.innerText = "Mengenal Huruf ABC";
+                container.innerHTML = `
+                    <div class="text-center bg-white p-6 rounded-3xl border-2 border-bMuda/30 shadow-sm">
+                        <div class="text-8xl font-kids font-bold text-bMuda animate-pulse mb-2">Aa</div>
+                        <p class="text-xl font-bold text-gray-700">A untuk <span class="text-pink">Ayam</span></p>
+                        <div class="w-28 h-28 mx-auto my-4 text-6xl bg-sky-50 rounded-full flex items-center justify-center">🐓</div>
+                        <div class="flex gap-2 justify-center">
+                            <button onclick="speakText('Huruf A. A untuk Ayam.')" class="bg-bMuda text-white px-5 py-3 rounded-xl font-bold text-sm bounce-hover shadow"><i class="fas fa-volume-up mr-1"></i> Sebutan Suara</button>
+                            <button onclick="triggerSuccessReward(); alert('Hebat! Anda dapat 10 bintang tambahan!')" class="bg-hijau text-white px-5 py-3 rounded-xl font-bold text-sm bounce-hover shadow">Seterusnya <i class="fas fa-arrow-right ml-1"></i></button>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'nombor') {
+                title.innerText = "Mengira & Matematik";
+                container.innerHTML = `
+                    <div class="bg-white p-6 rounded-3xl border-2 border-hijau/30 text-center shadow-sm">
+                        <h4 class="font-kids font-bold text-xl text-slate-700 mb-4">Mari Tambah Mudah (Tahap Mudah)</h4>
+                        <div class="flex items-center justify-center gap-3 text-3xl font-bold bg-slate-50 p-4 rounded-2xl mb-4">
+                            <span>🍎🍎</span> <span class="text-purple">+</span> <span>🍎</span> <span class="text-purple">=</span> <span class="text-pink">?</span>
+                        </div>
+                        <p class="text-sm text-gray-500 font-semibold mb-6">Berapakah jumlah biji epal di atas?</p>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button onclick="alert('Cuba lagi sayang! 😊')" class="bg-slate-100 p-4 rounded-xl font-bold text-xl bounce-btn">2</button>
+                            <button onclick="triggerSuccessReward(); alert('Tepat Sekali! Anda Pintar! 🎉')" class="bg-hijau text-white p-4 rounded-xl font-bold text-xl bounce-btn shadow-md">3</button>
+                            <button onclick="alert('Cuba lagi sayang! 😊')" class="bg-slate-100 p-4 rounded-xl font-bold text-xl bounce-btn">4</button>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'islam') {
+                title.innerText = "Pendidikan Islam";
+                container.innerHTML = `
+                    <div class="bg-white p-6 rounded-3xl border-2 border-purple/30 text-center shadow-sm space-y-4">
+                        <div class="text-6xl font-bold text-purple">ا ب ت</div>
+                        <h4 class="font-kids font-bold text-lg">Mengenal Huruf Hijaiyah & Doa</h4>
+                        <div class="space-y-2 text-left">
+                            <button onclick="speakText('Alif Ba Ta')" class="w-full bg-purple/10 text-purple p-3 rounded-xl text-left text-xs font-bold flex items-center justify-between"><<span>1. Sebutan Hijaiyah Utama</span> <i class="fas fa-play"></i></button>
+                            <button onclick="alert('Memaparkan panduan bergambar wuduk bertahap.')" class="w-full bg-purple/10 text-purple p-3 rounded-xl text-left text-xs font-bold flex items-center justify-between"><span>2. Amalan Wuduk & Solat</span> <i class="fas fa-book"></i></button>
+                        </div>
+                    </div>
+                `;
+            } else if (type === 'english') {
+                title.innerText = "English Alphabet & Words";
+                container.innerHTML = `
+                    <div class="bg-white p-6 rounded-3xl border-2 border-pink/30 text-center shadow-sm">
+                        <span class="text-6xl block mb-2">🦁</span>
+                        <h4 class="font-kids font-bold text-2xl text-pink">Lion</h4>
+                        <p class="text-xs text-gray-500 italic font-semibold mb-6">Basic Words & Animals</p>
+                        <button onclick="speakText('Lion. This is a lion.', 'en-US')" class="bg-pink text-white px-6 py-3 rounded-xl font-bold text-sm bounce-btn"><i class="fas fa-volume-up mr-1"></i> Listen Pronunciation</button>
+                    </div>
+                `;
+            } else {
+                title.innerText = "Modul Edukids";
+                container.innerHTML = `
+                    <div class="text-center bg-white p-8 rounded-3xl shadow-sm text-gray-500">
+                        <span class="text-5xl block mb-2">🧩</span>
+                        <p class="text-sm font-semibold">Modul Interaktif sedang dimuatkan terus secara masa-nyata dari Cloud Firestore...</p>
+                    </div>
+                `;
+            }
         }
     </script>
 </body>
