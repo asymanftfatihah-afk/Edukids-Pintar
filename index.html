@@ -4,281 +4,492 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edukids Pintar - Jom Belajar & Bermain!</title>
+    <!-- Tailwind CSS untuk reka bentuk UI yang responsif dan moden -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts untuk font kanak-kanak yang comel -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons untuk ikon yang bersih -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
             font-family: 'Quicksand', sans-serif;
-            background-color: #F0FDF4;
+            background-color: #E0F2FE;
+            background-image: radial-gradient(#bae6fd 1px, transparent 1px);
+            background-size: 20px 20px;
         }
         .font-kids {
-            font-family: 'Fredoka One', cursive;
+            font-family: 'Fredoka', cursive;
+            font-weight: 700;
         }
+        /* Kesan Butang 3D Jeli */
         .pop-button {
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.1s ease;
         }
         .pop-button:active {
-            transform: scale(0.92);
+            transform: translateY(4px);
+            border-bottom-width: 2px !important;
         }
         .floating {
             animation: floating 3s ease-in-out infinite;
         }
         @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(3deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .pulse-slow {
+            animation: pulse-slow 2s infinite;
+        }
+        @keyframes pulse-slow {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+        #confetti-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
         }
     </style>
 </head>
-<body class="select-none overflow-x-hidden text-slate-700">
+<body class="select-none overflow-x-hidden text-slate-700 min-h-screen py-4">
 
-    <div id="app" class="max-w-md mx-auto min-h-screen bg-white shadow-2xl relative flex flex-col justify-between pb-6">
+    <!-- APP CONTAINER -->
+    <div id="app" class="max-w-md mx-auto min-h-[92vh] bg-amber-50 rounded-[40px] shadow-2xl relative flex flex-col justify-between pb-6 border-8 border-white overflow-hidden">
         
+        <!-- CANVAS UNTUK KONFETI HANYA PADA VIEW TAHNIAH -->
+        <canvas id="confetti-canvas" class="hidden"></canvas>
+
         <!-- HEADER UTAMA -->
-        <header id="main-header" class="hidden bg-gradient-to-b from-yellow-300 to-amber-400 p-4 rounded-b-3xl shadow-md flex justify-between items-center z-10">
-            <div class="flex items-center space-x-2" onclick="goHome()">
-                <div class="bg-white p-2 rounded-full shadow-inner text-2xl cursor-pointer">🎒</div>
+        <header id="main-header" class="hidden bg-gradient-to-r from-yellow-400 via-orange-400 to-pink-500 p-4 rounded-b-[32px] shadow-lg flex justify-between items-center z-10 border-b-4 border-orange-600">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome(); playSound('click');">
+                <div class="bg-white p-2 rounded-2xl shadow-md text-3xl animate-bounce">🎒</div>
                 <div>
-                    <h1 class="font-kids text-2xl text-amber-900 tracking-wide leading-none">Edukids Pintar</h1>
-                    <div class="flex items-center space-x-1 mt-0.5 text-xs font-bold text-amber-950 bg-yellow-200 px-2 py-0.5 rounded-full">
+                    <h1 class="font-kids text-2xl text-white drop-shadow-[0_2px_2px_rgba(0,0,0,0.3)] tracking-wide leading-none">Edukids</h1>
+                    <div class="flex items-center space-x-1 mt-1 text-xs font-bold text-orange-900 bg-white/80 backdrop-blur-sm px-2 py-0.5 rounded-full shadow-inner">
                         <span id="header-avatar">👦</span> <span id="header-name">Adik</span>
                     </div>
                 </div>
             </div>
             <div class="flex items-center space-x-2">
-                <div class="bg-amber-100 px-3 py-1.5 rounded-full flex items-center space-x-1 shadow-sm font-bold text-amber-800">
-                    <span>⭐</span>
+                <div class="bg-white px-3 py-1.5 rounded-2xl flex items-center space-x-1 shadow-md font-kids text-amber-600 border-2 border-amber-400">
+                    <span class="animate-pulse">⭐</span>
                     <span id="global-stars">0</span>
                 </div>
-                <button onclick="logoutToWelcome()" class="bg-red-500 hover:bg-red-600 text-white p-2.5 rounded-full shadow pop-button">
+                <button onclick="logoutToWelcome(); playSound('click');" class="bg-rose-500 hover:bg-rose-600 text-white p-2.5 rounded-2xl shadow-md border-b-4 border-rose-700 pop-button">
                     <i data-lucide="log-out" class="w-5 h-5"></i>
                 </button>
             </div>
         </header>
 
         <!-- KANDUNGAN UTAMA -->
-        <main class="flex-grow p-4 flex flex-col justify-center">
+        <main class="flex-grow p-5 flex flex-col justify-center">
             
-            <!-- 0. HALAMAN WELCOME -->
-            <section id="view-welcome" class="space-y-6 text-center">
-                <div class="floating text-6xl my-4">🎒✨🏫</div>
-                <h2 class="font-kids text-4xl text-emerald-600 mb-2">Edukids Pintar</h2>
-                <p class="text-gray-500 font-bold px-4">Selamat datang! Sila pilih mod log masuk di bawah.</p>
-                <div class="space-y-4 pt-4 px-2">
-                    <button onclick="switchView('view-select-child')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-kids text-xl py-4 rounded-2xl shadow-lg border-b-4 border-emerald-700 pop-button flex items-center justify-center space-x-3">
-                        <span>👦👧</span> <span>MASUK SEBAGAI ANAK</span>
+            <!-- 0. HALAMAN PERMULAAN UTAMA -->
+            <section id="view-welcome" class="space-y-6 text-center py-4">
+                <div class="floating text-7xl my-4 drop-shadow-lg">🎒✨🏫</div>
+                <h2 class="font-kids text-5xl bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent drop-shadow-sm">Edukids Pintar</h2>
+                <p class="text-slate-600 font-bold px-6 text-base">Selamat datang, kawan-kawan! Jom pilih menu di bawah untuk mula bermain! 🎉</p>
+                
+                <div class="space-y-5 pt-4 px-2">
+                    <button onclick="switchView('view-select-child'); playSound('click');" class="w-full bg-emerald-400 hover:bg-emerald-500 text-white font-kids text-2xl py-5 rounded-3xl shadow-xl border-b-8 border-emerald-600 pop-button flex items-center justify-center space-x-3 transition-all pulse-slow">
+                        <span>👦👧</span> <span>MASUK BERMAIN</span>
                     </button>
-                    <button onclick="switchView('view-parents')" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-kids text-xl py-4 rounded-2xl shadow-lg border-b-4 border-purple-800 pop-button flex items-center justify-center space-x-3">
-                        <span>🛠️</span> <span>RUANG IBU BAPA</span>
+                    
+                    <button onclick="switchView('view-parents'); playSound('click');" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-kids text-lg py-3.5 rounded-2xl shadow-lg border-b-4 border-purple-700 pop-button flex items-center justify-center space-x-3 opacity-90">
+                        <span>🛠️</span> <span>RUANG IBU BAPA / GURU</span>
                     </button>
                 </div>
             </section>
 
             <!-- 0.1 PILIH PROFIL ANAK -->
             <section id="view-select-child" class="hidden space-y-4">
-                <div class="flex items-center space-x-2 mb-4">
-                    <button onclick="switchView('view-welcome')" class="bg-gray-200 p-2 rounded-full pop-button"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
-                    <h2 class="font-kids text-2xl text-emerald-600">Pilih Profil Anda</h2>
+                <div class="flex items-center space-x-3 mb-4">
+                    <button onclick="switchView('view-welcome'); playSound('click');" class="bg-white p-3 rounded-2xl shadow border-b-4 border-gray-300 pop-button text-slate-600"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+                    <h2 class="font-kids text-3xl text-emerald-600">Siapa Nama Kamu?</h2>
                 </div>
-                <div id="child-profiles-list" class="grid grid-cols-2 gap-4"></div>
-            </section>
-
-            <!-- 2. MENU UTAMA -->
-            <section id="view-home" class="hidden space-y-4">
-                <div class="text-center bg-blue-50 py-3 px-4 rounded-2xl border-2 border-blue-200">
-                    <h2 class="font-kids text-xl text-blue-600">Hai <span id="user-greeting-name">Adik</span>! 👋</h2>
-                    <p class="text-sm font-bold text-blue-800">Skor Bintang: <span id="streak-count">0</span> ⭐</p>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <button onclick="enterCategory('matematik')" class="bg-rose-100 hover:bg-rose-200 p-4 rounded-2xl border-b-4 border-rose-300 text-left space-y-1 pop-button flex flex-col justify-between h-28">
-                        <span class="text-3xl">🔢</span>
-                        <div>
-                            <h3 class="font-kids text-sm text-rose-700">Matematik</h3>
-                            <p class="text-[9px] text-rose-600 font-bold">Nombor & Gambar</p>
-                        </div>
-                    </button>
-                    <button onclick="enterCategory('bm')" class="bg-amber-100 hover:bg-amber-200 p-4 rounded-2xl border-b-4 border-amber-300 text-left space-y-1 pop-button flex flex-col justify-between h-28">
-                        <span class="text-3xl">📖</span>
-                        <div>
-                            <h3 class="font-kids text-sm text-amber-700">Abjad Melayu</h3>
-                            <p class="text-[9px] text-amber-600 font-bold">Huruf Kecil & Besar</p>
-                        </div>
-                    </button>
-                    <button onclick="enterCategory('haiwan')" class="bg-emerald-100 hover:bg-emerald-200 p-4 rounded-2xl border-b-4 border-emerald-300 text-left space-y-1 pop-button flex flex-col justify-between h-28">
-                        <span class="text-3xl">🐯</span>
-                        <div>
-                            <h3 class="font-kids text-sm text-emerald-700">Kenali Haiwan</h3>
-                            <p class="text-[9px] text-emerald-600 font-bold">Teka Nama Haiwan</p>
-                        </div>
-                    </button>
-                    <button onclick="enterCategory('warna')" class="bg-purple-100 hover:bg-purple-200 p-4 rounded-2xl border-b-4 border-purple-300 text-left space-y-1 pop-button flex flex-col justify-between h-28">
-                        <span class="text-3xl">🎨</span>
-                        <div>
-                            <h3 class="font-kids text-sm text-purple-700">Warna & Bentuk</h3>
-                            <p class="text-[9px] text-purple-600 font-bold">Cari Warna Seiras</p>
-                        </div>
-                    </button>
-                    <button onclick="enterCategory('buah')" class="bg-orange-100 hover:bg-orange-200 p-4 rounded-2xl border-b-4 border-orange-300 text-left space-y-1 pop-button flex flex-col justify-between h-28 col-span-2">
-                        <span class="text-3xl">🍎</span>
-                        <div>
-                            <h3 class="font-kids text-sm text-orange-700">Kenali Buah-Buahan</h3>
-                            <p class="text-[9px] text-orange-600 font-bold">Belajar Nama Buah Sihat</p>
-                        </div>
-                    </button>
+                <div id="child-profiles-list" class="grid grid-cols-2 gap-4 pt-2">
+                    <!-- Senarai anak dijana secara dinamik -->
                 </div>
             </section>
 
-            <!-- 3. PETA LEVEL & TETAPAN PERMAINAN -->
+            <!-- 2. HALAMAN MENU UTAMA KANAK-KANAK -->
+            <section id="view-home" class="hidden space-y-6">
+                <div class="text-center bg-gradient-to-r from-sky-400 to-blue-500 py-4 px-4 rounded-3xl border-b-4 border-blue-600 shadow-md text-white">
+                    <h2 class="font-kids text-2xl">Hai <span id="user-greeting-name">Adik</span>! 👋</h2>
+                    <p class="text-sm font-medium opacity-90">Jom Kumpul Bintang Lagi! ⭐ Skor Bintang: <span id="streak-count" class="font-bold text-yellow-300 text-lg">0</span></p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <button onclick="enterCategory('matematik'); playSound('click');" class="bg-rose-400 text-white p-4 rounded-[32px] border-b-8 border-rose-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
+                        <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">🔢</span>
+                        <div>
+                            <h3 class="font-kids text-base leading-tight">Kira Gambar</h3>
+                            <p class="text-[11px] text-rose-100 font-bold">Buah & Haiwan</p>
+                        </div>
+                    </button>
+                    <button onclick="enterCategory('abc'); playSound('click');" class="bg-sky-400 text-white p-4 rounded-[32px] border-b-8 border-sky-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
+                        <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">🔤</span>
+                        <div>
+                            <h3 class="font-kids text-base leading-tight">ABC Pintar</h3>
+                            <p class="text-[11px] text-sky-100 font-bold">Belajar Huruf A-Z</p>
+                        </div>
+                    </button>
+                    <button onclick="enterCategory('bm'); playSound('click');" class="bg-amber-400 text-white p-4 rounded-[32px] border-b-8 border-amber-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
+                        <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">📖</span>
+                        <div>
+                            <h3 class="font-kids text-base leading-tight">Abjad Melayu</h3>
+                            <p class="text-[11px] text-amber-100 font-bold">Mudah Umur 2-3</p>
+                        </div>
+                    </button>
+                    <button onclick="enterCategory('warna'); playSound('click');" class="bg-purple-400 text-white p-4 rounded-[32px] border-b-8 border-purple-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
+                        <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">🎨</span>
+                        <div>
+                            <h3 class="font-kids text-base leading-tight">Warna & Bentuk</h3>
+                            <p class="text-[11px] text-purple-100 font-bold">Kenali Corak Asas</p>
+                        </div>
+                    </button>
+                    <button onclick="enterCategory('haiwan'); playSound('click');" class="bg-emerald-400 text-white p-4 rounded-[32px] border-b-8 border-emerald-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
+                        <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">🐯</span>
+                        <div>
+                            <h3 class="font-kids text-base leading-tight">Kenali Haiwan</h3>
+                            <p class="text-[11px] text-emerald-100 font-bold">Bunyi & Nama</p>
+                        </div>
+                    </button>
+                    <button onclick="enterCategory('buah'); playSound('click');" class="bg-orange-400 text-white p-4 rounded-[32px] border-b-8 border-orange-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
+                        <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">🍎</span>
+                        <div>
+                            <h3 class="font-kids text-base leading-tight">Buah & Makanan</h3>
+                            <p class="text-[11px] text-orange-100 font-bold">Makanan Sihat</p>
+                        </div>
+                    </button>
+                </div>
+
+                <div class="bg-white p-4 rounded-3xl border-2 border-slate-200 shadow-sm">
+                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">🏆 Lencana Hebat Saya</h4>
+                    <div id="badges-container" class="flex flex-wrap gap-2"></div>
+                </div>
+            </section>
+
+            <!-- 3. PETA LEVEL -->
             <section id="view-map" class="hidden space-y-6">
                 <div class="flex justify-between items-center">
-                    <button onclick="goHome()" class="bg-gray-200 text-gray-700 font-bold px-3 py-1.5 rounded-full text-xs pop-button flex items-center">
-                        <i data-lucide="arrow-left" class="w-3.5 h-3.5 mr-1"></i> Utama
+                    <button onclick="goHome(); playSound('click');" class="bg-white text-slate-700 font-bold px-4 py-2 rounded-2xl text-xs pop-button border-b-4 border-gray-300 flex items-center shadow shadow-gray-200">
+                        <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> Utama
                     </button>
-                    <h2 id="map-title" class="font-kids text-xl text-indigo-600">Peta Pembelajaran</h2>
+                    <h2 id="map-title" class="font-kids text-2xl text-indigo-600 drop-shadow-sm">Peta Pembelajaran</h2>
                     <div class="w-14"></div>
                 </div>
 
-                <div class="bg-indigo-50 p-4 rounded-2xl border border-indigo-200 space-y-3 text-sm">
-                    <div>
-                        <label class="block font-bold text-indigo-900 mb-1">1. Bilangan Soalan:</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="setQuestionCount(5, this)" class="btn-qcount bg-indigo-600 text-white font-bold py-1.5 rounded-xl border-2 border-indigo-700 pop-button">5</button>
-                            <button onclick="setQuestionCount(10, this)" class="btn-qcount bg-white text-indigo-700 font-bold py-1.5 rounded-xl border border-gray-300 pop-button">10</button>
-                            <button onclick="setQuestionCount(20, this)" class="btn-qcount bg-white text-indigo-700 font-bold py-1.5 rounded-xl border border-gray-300 pop-button">20</button>
-                        </div>
+                <div class="bg-gradient-to-b from-sky-100 to-indigo-100 rounded-[36px] p-6 min-h-[380px] flex flex-col items-center justify-around relative border-4 border-white shadow-inner">
+                    <div id="btn-lvl-4" class="flex flex-col items-center z-10">
+                        <button onclick="startLevel(4); playSound('click');" class="w-16 h-16 rounded-full font-kids text-xl shadow-lg flex items-center justify-center pop-button border-4 text-white bg-gray-400 border-gray-500 cursor-not-allowed"><span>4</span></button>
+                        <span id="lbl-lvl-4" class="text-xs font-bold mt-1 text-gray-400">🔒 Tahap 4</span>
                     </div>
-                </div>
-
-                <!-- PETA KESUKARAN (PERKATAAN TAHAP DIBUANG) -->
-                <div class="bg-slate-50 rounded-3xl p-6 min-h-[300px] flex flex-col items-center justify-around relative border-4 border-dashed border-slate-200">
-                    <div class="flex flex-col items-center z-10">
-                        <button onclick="startLevel('pro')" class="w-24 h-14 rounded-2xl font-kids text-sm shadow-lg flex items-center justify-center pop-button border-4 bg-red-500 border-red-700 text-white"><span>PRO</span></button>
+                    <div id="btn-lvl-3" class="flex flex-col items-center z-10 translate-x-12">
+                        <button onclick="startLevel(3); playSound('click');" class="w-16 h-16 rounded-full font-kids text-xl shadow-lg flex items-center justify-center pop-button border-4 text-white bg-gray-400 border-gray-500 cursor-not-allowed"><span>3</span></button>
+                        <span id="lbl-lvl-3" class="text-xs font-bold mt-1 text-gray-400">🔒 Tahap 3</span>
                     </div>
-                    <div class="flex flex-col items-center z-10">
-                        <button onclick="startLevel('sederhana')" class="w-24 h-14 rounded-2xl font-kids text-sm shadow-lg flex items-center justify-center pop-button border-4 bg-orange-400 border-orange-600 text-white"><span>SEDERHANA</span></button>
+                    <div id="btn-lvl-2" class="flex flex-col items-center z-10 -translate-x-12">
+                        <button onclick="startLevel(2); playSound('click');" class="w-16 h-16 rounded-full font-kids text-xl shadow-lg flex items-center justify-center pop-button border-4 text-white bg-gray-400 border-gray-500 cursor-not-allowed"><span>2</span></button>
+                        <span id="lbl-lvl-2" class="text-xs font-bold mt-1 text-gray-400">🔒 Tahap 2</span>
                     </div>
-                    <div class="flex flex-col items-center z-10">
-                        <button onclick="startLevel('mudah')" class="w-24 h-14 rounded-2xl font-kids text-sm shadow-lg flex items-center justify-center pop-button border-4 bg-emerald-500 border-emerald-700 text-white animate-bounce"><span>MUDAH</span></button>
+                    <div id="btn-lvl-1" class="flex flex-col items-center z-10">
+                        <button onclick="startLevel(1); playSound('click');" class="w-18 h-18 rounded-full font-kids text-2xl shadow-xl flex items-center justify-center pop-button border-b-8 bg-indigo-500 border-indigo-700 text-white animate-bounce"><span>1</span></button>
+                        <span id="lbl-lvl-1" class="text-xs font-bold mt-1 text-indigo-700">Mula ✨</span>
                     </div>
                 </div>
             </section>
 
             <!-- 4. PERMAINAN / KUIZ AKTIF -->
             <section id="view-game" class="hidden space-y-6">
-                <div class="flex justify-between items-center bg-gray-50 p-2 rounded-xl">
-                    <button onclick="exitGame()" class="text-gray-400 font-bold text-xs hover:text-red-500">Keluar ❌</button>
-                    <div class="w-2/3 bg-gray-200 rounded-full h-3.5 overflow-hidden">
-                        <div id="game-progress" class="bg-emerald-500 h-3.5 rounded-full" style="width: 0%"></div>
+                <div class="flex justify-between items-center bg-white p-2 rounded-2xl shadow-inner border border-slate-100">
+                    <button onclick="exitGame(); playSound('click');" class="text-rose-500 font-bold text-xs bg-rose-50 px-3 py-1.5 rounded-xl hover:bg-rose-100">Keluar ❌</button>
+                    <div class="w-2/3 bg-slate-100 rounded-full h-4 overflow-hidden p-0.5 border border-slate-200">
+                        <div id="game-progress" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-300" style="width: 20%"></div>
                     </div>
-                    <div class="text-xs font-bold text-slate-500"><span id="q-current">1</span>/<span id="q-total">5</span></div>
+                    <div class="w-4"></div>
                 </div>
 
-                <div class="bg-amber-50 rounded-3xl p-6 border-4 border-amber-300 text-center min-h-[180px] flex flex-col justify-center items-center relative">
-                    <h3 id="game-instruction" class="text-sm font-bold text-amber-800 uppercase tracking-wider mb-2"></h3>
-                    <div id="game-main-display" class="font-kids text-4xl text-amber-900 my-4 tracking-widest break-all flex flex-col items-center justify-center"></div>
+                <div class="bg-gradient-to-br from-amber-100 to-orange-100 rounded-[32px] p-6 border-4 border-amber-300 text-center min-h-[200px] flex flex-col justify-center items-center relative shadow-md">
+                    <h3 id="game-instruction" class="text-xs font-bold text-amber-800 uppercase tracking-widest bg-amber-200/60 px-3 py-1 rounded-full mb-3">Sila Pilih Jawapan Betul</h3>
+                    <div id="game-main-display" class="font-kids text-5xl text-amber-950 my-3 tracking-widest break-all drop-shadow-sm select-text"></div>
+                    <p id="game-sub-display" class="text-xl font-bold text-slate-700 mt-2"></p>
                 </div>
 
-                <div id="game-options" class="grid grid-cols-1 gap-3"></div>
-                <div id="game-feedback" class="hidden p-4 rounded-2xl text-center font-bold text-lg animate-pulse"></div>
+                <div id="game-options" class="grid grid-cols-1 gap-3.5"></div>
+                <div id="game-feedback" class="hidden p-4 rounded-2xl text-center font-kids text-xl shadow-md border-b-4"></div>
             </section>
 
             <!-- 5. SKRIN TAHNIAH -->
-            <section id="view-congrats" class="hidden text-center space-y-6">
-                <div class="floating text-7xl my-4">🏆🎉⭐</div>
-                <h2 class="font-kids text-3xl text-yellow-600">Tahniah! Kamu Hebat!</h2>
-                <div class="bg-yellow-50 p-6 rounded-3xl border-4 border-yellow-300 inline-block min-w-[200px]">
-                    <p class="text-sm font-bold text-yellow-800 uppercase tracking-wider">Bintang Diperoleh</p>
-                    <div class="flex justify-center items-center space-x-2 my-2">
-                        <span class="text-3xl">⭐</span>
-                        <span id="congrats-stars" class="font-kids text-4xl text-amber-700">+5</span>
+            <section id="view-congrats" class="hidden text-center space-y-6 relative z-10">
+                <div class="floating text-8xl my-4 drop-shadow-md">🏆🎉⭐</div>
+                <div class="space-y-2">
+                    <h2 class="font-kids text-4xl text-amber-600 drop-shadow-sm">Tahniah! Kamu Hebat!</h2>
+                    <p class="text-slate-600 font-bold text-base">Adik berjaya menamatkan tahap ini! 🌟</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-[32px] border-4 border-yellow-400 inline-block min-w-[240px] shadow-xl">
+                    <p class="text-xs font-bold text-amber-800 uppercase tracking-wider">Ganjaran Bintang Bintang</p>
+                    <div class="flex justify-center items-center space-x-2 my-3">
+                        <span class="text-4xl animate-spin" style="animation-duration: 3s;">⭐</span>
+                        <span id="congrats-stars" class="font-kids text-5xl text-amber-600 font-bold">+5</span>
+                    </div>
+                    <div id="congrats-badge-unlock" class="text-xs font-bold text-emerald-800 mt-2 hidden bg-emerald-100 border border-emerald-300 py-1.5 px-4 rounded-full animate-pulse">
+                        🏆 Lencana Baru Dibuka!
                     </div>
                 </div>
-                <button onclick="goHome()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-kids text-xl py-4 rounded-2xl shadow-lg border-b-4 border-emerald-700 pop-button">
-                    MAIN LAGI! 🎮
+
+                <button onclick="goHome(); playSound('click');" class="w-full bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-kids text-2xl py-5 rounded-3xl shadow-xl border-b-8 border-emerald-600 pop-button">
+                    TERUSKAN BELAJAR! 🎮
                 </button>
             </section>
 
-            <!-- 6. PARENTS DASHBOARD -->
+            <!-- 6. DASHBOARD IBU BAPA / GURU -->
             <section id="view-parents" class="hidden space-y-4">
                 <div class="flex justify-between items-center">
-                    <h2 class="font-kids text-2xl text-purple-700">Ruang Pentadbir</h2>
-                    <button onclick="switchView('view-welcome')" class="bg-gray-200 text-gray-700 font-bold px-3 py-1 rounded-full text-xs pop-button">Keluar</button>
+                    <h2 class="font-kids text-2xl text-purple-700 flex items-center">
+                        <i data-lucide="settings" class="w-6 h-6 mr-1.5"></i> Ruang Pentadbir
+                    </h2>
+                    <button onclick="switchView('view-welcome'); playSound('click');" class="bg-white text-slate-700 border border-gray-300 font-bold px-4 py-1.5 rounded-xl text-xs pop-button shadow-sm">
+                        Keluar
+                    </button>
                 </div>
-                <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200 space-y-3">
-                    <input type="text" id="new-child-name" placeholder="Nama Anak" class="w-full px-3 py-2 border rounded-xl text-sm focus:outline-none">
-                    <button onclick="addNewChildProfile()" class="w-full bg-purple-600 text-white font-bold py-2 rounded-xl text-sm pop-button shadow">+ Simpan Profil</button>
+
+                <!-- BORANG TAMBAH ANAK/MURID -->
+                <div class="bg-purple-100/70 p-4 rounded-3xl border-2 border-purple-200 space-y-3">
+                    <h3 class="text-sm font-bold text-purple-800 flex items-center"><i data-lucide="user-plus" class="w-4 h-4 mr-1"></i> Tambah Profil Anak / Murid</h3>
+                    <div class="space-y-2">
+                        <input type="text" id="new-child-name" placeholder="Nama Anak / Murid" class="w-full px-4 py-2.5 border-2 border-purple-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 bg-white">
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-purple-700 mb-1">Pilih Avatar:</label>
+                            <div class="flex space-x-2 overflow-x-auto py-1">
+                                <button onclick="selectNewAvatar('👦', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-purple-500">👦</button>
+                                <button onclick="selectNewAvatar('👧', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-transparent">👧</button>
+                                <button onclick="selectNewAvatar('🐼', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-transparent">🐼</button>
+                                <button onclick="selectNewAvatar('🦁', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-transparent">🦁</button>
+                                <button onclick="selectNewAvatar('🐰', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-transparent">🐰</button>
+                                <button onclick="selectNewAvatar('🐯', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-transparent">🐯</button>
+                            </div>
+                        </div>
+                        <button onclick="addNewChildProfile()" class="w-full bg-purple-600 text-white font-bold py-2.5 rounded-xl text-sm border-b-4 border-purple-800 pop-button shadow-md">
+                            + Simpan Profil Baru
+                        </button>
+                    </div>
                 </div>
-                <div id="parent-users-list" class="space-y-2"></div>
+
+                <!-- SENARAI PROFIL & PRESTASI -->
+                <div class="bg-white p-4 rounded-3xl border-2 border-slate-200 space-y-3 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-700">Senarai Users & Kemajuan Semasa:</h3>
+                    <div id="parent-users-list" class="space-y-3 max-h-48 overflow-y-auto pr-1">
+                        <!-- Senarai dipaparkan secara dinamik -->
+                    </div>
+                </div>
             </section>
 
         </main>
 
-        <footer class="px-4 pt-2 border-t border-gray-100">
-            <p class="text-center text-[10px] text-gray-400 font-medium">Edukids Pintar &copy; 2026</p>
+        <!-- FOOTER -->
+        <footer class="px-4 pt-2 border-t border-slate-100">
+            <p class="text-center text-[10px] text-slate-400 font-medium">Edukids Pintar &copy; 2026 - Aplikasi Pendidikan Selamat</p>
         </footer>
+
     </div>
 
+    <!-- LOGIK JAVASCRIPT PERMAINAN -->
     <script>
         let usersDatabase = [];
         let activeUserIndex = null;
-        let selectedQuestionCount = 5; 
+        let selectedAvatarForNew = "👦";
+        let confettiInterval = null;
+
+        const badgeData = {
+            matematik: { title: "Kira Visual", icon: "🏆🍎" },
+            abc: { title: "Raja ABC", icon: "🏆🔤" },
+            bm: { title: "Abjad Melayu", icon: "🏆📖" },
+            warna: { title: "Pakar Warna", icon: "🏆🎨" },
+            haiwan: { title: "Sahabat Haiwan", icon: "🏆🐯" },
+            buah: { title: "Pakar Buah", icon: "🏆🍎" }
+        };
+
         let currentCategory = '';
-        let currentLevel = 'mudah';
+        let currentLevel = 1;
         let currentQuestionIndex = 0;
         let questionsList = [];
         let correctAnswer = null;
 
-        const buahList = ["🍎", "🍌", "🍇", "🍊", "🍓", "🍉"];
-        const haiwanList = ["🐱", "🦁", "🐰", "🐼", "🐵", "🐤"];
-        const abjadBMList = ["A", "B", "C", "D", "E", "I", "U", "O"];
-        
-        const dataHaiwan = [
-            { nama: "Kucing", visual: "🐱" }, { nama: "Singa", visual: "🦁" },
-            { nama: "Arnab", visual: "🐰" }, { nama: "Panda", visual: "🐼" },
-            { nama: "Monyet", visual: "🐵" }, { nama: "Ayam", visual: "🐔" },
-            { nama: "Gajah", visual: "🐘" }, { nama: "Katak", visual: "🐸" }
-        ];
+        const buahList = ["🍎", "🍌", "🍇", "🍊", "🍓", "🍉", "🍒", "🍍"];
+        const haiwanList = ["🐱", "🦁", "🐰", "🐼", "🐵", "🐤", "🐸", "🐷"];
 
-        const dataWarnaBentuk = [
-            { nama: "Merah", visual: "🔴" }, { nama: "Biru", visual: "🔵" },
-            { nama: "Kuning", visual: "🟡" }, { nama: "Hijau", visual: "🟢" },
-            { nama: "Segitiga", visual: "🔺" }, { nama: "Bulat", visual: "⭕" }
-        ];
+        // ELEMEN AUDIO SYNTH (BUNYI DIGITAL TANPA FAIL LUARAN)
+        function playSound(type) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
 
-        const dataBuahDua = [
-            { nama: "Epal", visual: "🍎" }, { nama: "Pisang", visual: "🍌" },
-            { nama: "Anggur", visual: "🍇" }, { nama: "Oren", visual: "🍊" },
-            { nama: "Strawberi", visual: "🍓" }, { nama: "Tembikai", visual: "🍉" }
-        ];
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.1);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.4);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+                    osc.frequency.linearRampToValueAtTime(120, audioCtx.currentTime + 0.25);
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.25);
+                } else if (type === 'cheer') {
+                    // Bunyi Fanfare Tahniah Ringkas
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.15); 
+                    osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); 
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.6);
+                }
+            } catch (e) {
+                console.log("Audio API not supported or context blocked");
+            }
+        }
+
+        // ANIMASI KONFETI
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.classList.remove('hidden');
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.parentElement.offsetWidth;
+            canvas.height = canvas.parentElement.offsetHeight;
+
+            let particles = [];
+            const colors = ['#f43f5e', '#3b82f6', '#10b981', '#eab308', '#a855f7', '#ff7849'];
+
+            for (let i = 0; i < 60; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 4,
+                    d: Math.random() * canvas.height,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    tilt: Math.random() * 10 - 5,
+                    tiltAngleIncremental: Math.random() * 0.07 + 0.02,
+                    tiltAngle: 0
+                });
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach((p, idx) => {
+                    p.tiltAngle += p.tiltAngleIncremental;
+                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
+                    p.x += Math.sin(p.tiltAngle);
+                    p.tilt = Math.sin(p.tiltAngle - idx / 3) * 15;
+
+                    ctx.beginPath();
+                    ctx.lineWidth = p.r;
+                    ctx.strokeStyle = p.color;
+                    ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
+                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                    ctx.stroke();
+                });
+
+                // Reset partikel terkeluar atas balik
+                particles.forEach(p => {
+                    if (p.y > canvas.height) {
+                        p.y = -20;
+                        p.x = Math.random() * canvas.width;
+                    }
+                });
+            }
+
+            if(confettiInterval) clearInterval(confettiInterval);
+            confettiInterval = setInterval(draw, 20);
+        }
+
+        function stopConfetti() {
+            if(confettiInterval) clearInterval(confettiInterval);
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.classList.add('hidden');
+        }
 
         window.onload = function() {
             lucide.createIcons();
             loadDatabase();
+            switchView('view-welcome');
         };
 
         function loadDatabase() {
-            let saved = localStorage.getItem('edukids_db_v4');
+            let saved = localStorage.getItem('edukids_users_db');
             if (saved) {
                 usersDatabase = JSON.parse(saved);
             } else {
-                usersDatabase = [{ name: "Adik", avatar: "👦", stars: 0 }];
-                localStorage.setItem('edukids_db_v4', JSON.stringify(usersDatabase));
+                usersDatabase = [{
+                    name: "Adik",
+                    avatar: "👦",
+                    stars: 0,
+                    badges: [],
+                    progress: { matematik: 1, abc: 1, bm: 1, warna: 1, haiwan: 1, buah: 1 }
+                }];
+                saveDatabase();
             }
             renderChildProfilesSelect();
+            renderParentUsersList();
+        }
+
+        function saveDatabase() {
+            localStorage.setItem('edukids_users_db', JSON.stringify(usersDatabase));
         }
 
         function switchView(viewId) {
             const views = ['view-welcome', 'view-select-child', 'view-home', 'view-map', 'view-game', 'view-congrats', 'view-parents'];
-            views.forEach(v => document.getElementById(v)?.classList.add('hidden'));
-            document.getElementById(viewId)?.classList.remove('hidden');
-
-            if (['view-home', 'view-map', 'view-game', 'view-congrats'].includes(viewId)) {
+            views.forEach(v => {
+                const element = document.getElementById(v);
+                if (element) element.classList.add('hidden');
+            });
+            
+            const targetView = document.getElementById(viewId);
+            if (targetView) targetView.classList.remove('hidden');
+            
+            if (viewId === 'view-select-child') {
+                renderChildProfilesSelect();
+            } else if (viewId === 'view-parents') {
+                renderParentUsersList();
+            }
+            
+            if (viewId === 'view-home' || viewId === 'view-map' || viewId === 'view-game' || viewId === 'view-congrats') {
                 document.getElementById('main-header').classList.remove('hidden');
             } else {
                 document.getElementById('main-header').classList.add('hidden');
             }
+
+            if(viewId === 'view-congrats') {
+                startConfetti();
+            } else {
+                stopConfetti();
+            }
+            
             lucide.createIcons();
         }
 
@@ -288,8 +499,8 @@
             container.innerHTML = '';
             usersDatabase.forEach((user, index) => {
                 container.innerHTML += `
-                    <button onclick="loginAsChild(${index})" class="bg-white border-4 border-emerald-300 rounded-3xl p-4 flex flex-col items-center justify-center space-y-2 pop-button shadow-sm w-full">
-                        <span class="text-4xl">${user.avatar}</span>
+                    <button onclick="loginAsChild(${index}); playSound('click');" class="bg-white border-4 border-emerald-400 rounded-3xl p-4 flex flex-col items-center justify-center space-y-2 pop-button shadow-md w-full border-b-8">
+                        <span class="text-5xl">${user.avatar}</span>
                         <span class="font-kids text-lg text-emerald-800">${user.name}</span>
                     </button>
                 `;
@@ -298,152 +509,287 @@
 
         function loginAsChild(index) {
             activeUserIndex = index;
+            updateChildHeaderUI();
+            renderBadges();
+            switchView('view-home');
+        }
+
+        function updateChildHeaderUI() {
+            if (activeUserIndex === null) return;
             let user = usersDatabase[activeUserIndex];
+            document.getElementById('header-avatar').innerText = user.avatar;
             document.getElementById('header-name').innerText = user.name;
             document.getElementById('user-greeting-name').innerText = user.name;
             document.getElementById('global-stars').innerText = user.stars;
             document.getElementById('streak-count').innerText = user.stars;
+        }
+
+        function renderBadges() {
+            const container = document.getElementById('badges-container');
+            if (!container) return;
+            container.innerHTML = '';
+            let user = usersDatabase[activeUserIndex];
+            if(!user.badges || user.badges.length === 0) {
+                container.innerHTML = '<span class="text-xs text-slate-400 font-bold">Belum ada lencana. Cuba satu permainan! ✨</span>';
+                return;
+            }
+            user.badges.forEach(b => {
+                let item = badgeData[b];
+                if(item) {
+                    container.innerHTML += `<span class="bg-amber-100 border-2 border-amber-300 text-amber-900 px-2.5 py-1 rounded-xl text-xs font-bold shadow-sm animate-pulse">${item.icon} ${item.title}</span>`;
+                }
+            });
+        }
+
+        function logoutToWelcome() {
+            activeUserIndex = null;
+            switchView('view-welcome');
+        }
+
+        function goHome() {
+            updateChildHeaderUI();
+            renderBadges();
             switchView('view-home');
         }
 
-        function setQuestionCount(count, btn) {
-            selectedQuestionCount = count;
-            document.querySelectorAll('.btn-qcount').forEach(b => {
-                b.classList.replace('bg-indigo-600', 'bg-white');
-                b.classList.replace('text-white', 'text-indigo-700');
+        function selectNewAvatar(avatar, btn) {
+            playSound('click');
+            selectedAvatarForNew = avatar;
+            document.querySelectorAll('.avatar-new-opt').forEach(b => {
+                b.classList.remove('border-purple-500');
+                b.classList.add('border-transparent');
             });
-            btn.classList.replace('bg-white', 'bg-indigo-600');
-            btn.classList.replace('text-indigo-700', 'text-white');
+            btn.classList.remove('border-transparent');
+            btn.classList.add('border-purple-500');
+        }
+
+        function addNewChildProfile() {
+            let nameInput = document.getElementById('new-child-name').value.trim();
+            if (!nameInput) {
+                alert("Sila isi nama profil anak!");
+                return;
+            }
+            let newProfile = {
+                name: nameInput,
+                avatar: selectedAvatarForNew,
+                stars: 0,
+                badges: [],
+                progress: { matematik: 1, abc: 1, bm: 1, warna: 1, haiwan: 1, buah: 1 }
+            };
+            usersDatabase.push(newProfile);
+            saveDatabase();
+            document.getElementById('new-child-name').value = '';
+            renderChildProfilesSelect();
+            renderParentUsersList();
+            playSound('correct');
+            alert("Profil " + nameInput + " berjaya ditambah!");
+        }
+
+        function renderParentUsersList() {
+            const container = document.getElementById('parent-users-list');
+            if (!container) return;
+            container.innerHTML = '';
+            usersDatabase.forEach((user, index) => {
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border-2 border-slate-100 text-xs shadow-sm">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-3xl">${user.avatar}</span>
+                            <div>
+                                <div class="font-bold text-slate-800">${user.name}</div>
+                                <div class="text-[11px] text-amber-600 font-bold">⭐ ${user.stars} Bintang</div>
+                            </div>
+                        </div>
+                        <div class="text-right text-[10px] text-purple-700 font-bold bg-purple-50 px-2 py-1 rounded-lg">
+                            Kira: T${user.progress.matematik} | ABC: T${user.progress.abc} | BM: T${user.progress.bm}
+                        </div>
+                    </div>
+                `;
+            });
         }
 
         function enterCategory(category) {
             currentCategory = category;
-            const titles = { 
-                matematik: "🔢 Matematik Pintar", 
-                bm: "📖 Abjad Melayu", 
-                haiwan: "🐯 Kenali Haiwan",
+            let user = usersDatabase[activeUserIndex];
+            let currentUnlocked = user.progress[category] || 1;
+            
+            const titles = {
+                matematik: "🍎 Kira Gambar",
+                abc: "🔤 ABC Pintar",
+                bm: "📖 Abjad Bahasa Melayu",
                 warna: "🎨 Warna & Bentuk",
-                buah: "🍎 Kenali Buah"
+                haiwan: "🐯 Kenali Haiwan",
+                buah: "🍎 Buah & Makanan"
             };
-            document.getElementById('map-title').innerText = titles[category] || "Pintar";
+            document.getElementById('map-title').innerText = titles[category];
+
+            for(let i = 1; i <= 4; i++) {
+                let btn = document.getElementById(`btn-lvl-${i}`).querySelector('button');
+                let lbl = document.getElementById(`lbl-lvl-${i}`);
+                
+                if (i < currentUnlocked) {
+                    btn.className = "w-16 h-16 rounded-full font-kids text-xl shadow-lg flex items-center justify-center pop-button border-b-4 bg-emerald-400 border-emerald-600 text-white";
+                    btn.innerHTML = "✅";
+                    lbl.className = "text-xs font-bold mt-1 text-emerald-600";
+                    lbl.innerText = `Tahap ${i} (Selesai)`;
+                    btn.disabled = false;
+                    btn.style.cursor = "pointer";
+                } else if (i === currentUnlocked) {
+                    btn.className = "w-18 h-18 rounded-full font-kids text-2xl shadow-xl flex items-center justify-center pop-button border-b-8 bg-indigo-500 border-indigo-700 text-white animate-bounce";
+                    btn.innerHTML = i;
+                    lbl.className = "text-xs font-bold mt-1 text-indigo-700 font-black";
+                    lbl.innerText = `Tahap ${i} (Sedia)`;
+                    btn.disabled = false;
+                    btn.style.cursor = "pointer";
+                } else {
+                    btn.className = "w-16 h-16 rounded-full font-kids text-xl shadow-md flex items-center justify-center pop-button text-white bg-slate-300 border-slate-400 cursor-not-allowed";
+                    btn.innerHTML = "🔒";
+                    lbl.className = "text-xs font-bold mt-1 text-slate-400";
+                    lbl.innerText = `Tahap ${i}`;
+                    btn.disabled = true;
+                    btn.style.cursor = "not-allowed";
+                }
+            }
             switchView('view-map');
         }
 
         function startLevel(lvl) {
             currentLevel = lvl;
             currentQuestionIndex = 0;
-            questionsList = generateQuestions(currentCategory, lvl, selectedQuestionCount);
-            document.getElementById('q-total').innerText = questionsList.length;
+            questionsList = shuffle(generateQuestions(currentCategory, lvl));
             loadQuestion();
             switchView('view-game');
         }
 
-        function generateQuestions(cat, lvl, count) {
+        function generateQuestions(cat, lvl) {
             let list = [];
-            for (let i = 0; i < count; i++) {
-                if (cat === 'matematik') {
-                    // LEVEL 1 & LEVEL 2: NOMBOR SAHAJA
-                    if (lvl === 'mudah' || lvl === 'sederhana') {
-                        let targetNum = lvl === 'mudah' ? Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 5) + 6;
-                        let options = shuffle([targetNum, targetNum + 1, targetNum - 1].filter(n => n > 0));
-                        if(options.length < 3) options.push(targetNum + 2);
-                        list.push({
-                            inst: "Pilih nombor yang betul:",
-                            q: targetNum,
-                            ans: targetNum,
-                            opts: shuffle(options)
-                        });
-                    } 
-                    // LEVEL 3 (PRO): KIRA GAMBAR (TAMBAH & TOLAK VISUAL)
-                    else {
+            
+            if(cat === 'matematik') {
+                if(lvl === 1 || lvl === 2) {
+                    let totalItems = lvl === 1 ? [1, 2, 3] : [3, 4, 5];
+                    shuffle(totalItems).forEach(count => {
                         let pool = Math.random() > 0.5 ? buahList : haiwanList;
                         let icon = pool[Math.floor(Math.random() * pool.length)];
-                        if (Math.random() > 0.5) {
-                            let n1 = Math.floor(Math.random() * 2) + 1;
-                            let n2 = Math.floor(Math.random() * 2) + 1;
-                            let total = n1 + n2;
-                            list.push({
-                                inst: "Kira jumlah semua gambar:",
-                                q: icon.repeat(n1) + " ➕ " + icon.repeat(n2),
-                                ans: total,
-                                opts: shuffle([total, total + 1, total - 1].filter(n => n > 0))
-                            });
-                        } else {
-                            let n1 = Math.floor(Math.random() * 2) + 3; 
-                            let n2 = Math.floor(Math.random() * 2) + 1; 
-                            let baki = n1 - n2;
-                            list.push({
-                                inst: "Kira gambar yang tinggal:",
-                                q: icon.repeat(n1) + " ➖ " + icon.repeat(n2),
-                                ans: baki,
-                                opts: shuffle([baki, baki + 1, baki + 2])
-                            });
-                        }
+                        let display = icon.repeat(count);
+                        let opts = shuffle([count, count + 1, count - 1].filter(n => n > 0));
+                        if(opts.length < 3) opts.push(count + 2);
+
+                        list.push({
+                            inst: "Jom kira! Ada berapa ya?",
+                            q: display,
+                            ans: count,
+                            opts: shuffle(opts)
+                        });
+                    });
+                } 
+                else if(lvl === 3) {
+                    for(let i=0; i<3; i++) {
+                        let pool = Math.random() > 0.5 ? buahList : haiwanList;
+                        let icon = pool[Math.floor(Math.random() * pool.length)];
+                        let n1 = Math.floor(Math.random() * 2) + 1;
+                        let n2 = Math.floor(Math.random() * 2) + 1;
+                        let total = n1 + n2;
+                        
+                        let display = icon.repeat(n1) + " ➕ " + icon.repeat(n2);
+                        let opts = shuffle([total, total+1, Math.abs(total-1) || total+2]);
+
+                        list.push({
+                            inst: "Kira semua sekali gembira!",
+                            q: display,
+                            ans: total,
+                            opts: opts
+                        });
                     }
-                } else if (cat === 'bm') {
-                    let targetAbjad = abjadBMList[Math.floor(Math.random() * abjadBMList.length)];
-                    let wrongOpts = abjadBMList.filter(a => a !== targetAbjad);
-                    shuffle(wrongOpts);
-                    list.push({
-                        inst: "Mana abjad yang sepadan?",
-                        q: targetAbjad,
-                        ans: targetAbjad,
-                        opts: shuffle([targetAbjad, wrongOpts[0], wrongOpts[1]])
-                    });
-                } else if (cat === 'haiwan') {
-                    let target = dataHaiwan[Math.floor(Math.random() * dataHaiwan.length)];
-                    let wrg = dataHaiwan.filter(h => h.nama !== target.nama);
-                    shuffle(wrg);
-                    list.push({
-                        inst: "Ini haiwan apa ya?",
-                        q: target.visual,
-                        ans: target.nama,
-                        opts: shuffle([target.nama, wrg[0].nama, wrg[1].nama])
-                    });
-                } else if (cat === 'warna') {
-                    let target = dataWarnaBentuk[Math.floor(Math.random() * dataWarnaBentuk.length)];
-                    let wrg = dataWarnaBentuk.filter(w => w.nama !== target.nama);
-                    shuffle(wrg);
-                    list.push({
-                        inst: "Pilih nama warna/bentuk ini:",
-                        q: target.visual,
-                        ans: target.nama,
-                        opts: shuffle([target.nama, wrg[0].nama, wrg[1].nama])
-                    });
-                } else if (cat === 'buah') {
-                    let target = dataBuahDua[Math.floor(Math.random() * dataBuahDua.length)];
-                    let wrg = dataBuahDua.filter(b => b.nama !== target.nama);
-                    shuffle(wrg);
-                    list.push({
-                        inst: "Ini buah apa?",
-                        q: target.visual,
-                        ans: target.nama,
-                        opts: shuffle([target.nama, wrg[0].nama, wrg[1].nama])
-                    });
+                } 
+                else {
+                    for(let i=0; i<3; i++) {
+                        let pool = Math.random() > 0.5 ? buahList : haiwanList;
+                        let icon = pool[Math.floor(Math.random() * pool.length)];
+                        let n1 = Math.floor(Math.random() * 2) + 3;
+                        let n2 = Math.floor(Math.random() * 2) + 1;
+                        let baki = n1 - n2;
+                        
+                        let display = icon.repeat(n1) + " ➖ " + icon.repeat(n2);
+                        let opts = shuffle([baki, baki+1, baki+2]);
+
+                        list.push({
+                            inst: "Kira baki gambar yang tinggal:",
+                            q: display,
+                            ans: baki,
+                            opts: opts
+                        });
+                    }
                 }
+            } 
+            else if(cat === 'bm') {
+                let bmPool = [
+                    { inst: "Mana satu abjad A?", q: "A", ans: "A", opts: ["A", "B", "C"] },
+                    { inst: "Mana satu abjad B?", q: "B", ans: "B", opts: ["D", "B", "E"] },
+                    { inst: "Mana satu abjad C?", q: "C", ans: "C", opts: ["F", "A", "C"] },
+                    { inst: "Mana satu abjad D?", q: "D", ans: "D", opts: ["D", "E", "B"] },
+                    { inst: "Mana satu abjad E?", q: "E", ans: "E", opts: ["C", "F", "E"] },
+                    { inst: "Mana satu abjad I?", q: "I", ans: "I", opts: ["O", "I", "U"] },
+                    { inst: "Mana satu abjad U?", q: "U", ans: "U", opts: ["A", "U", "I"] }
+                ];
+                list = shuffle(bmPool).slice(0, 3);
+            }
+            else if(cat === 'abc') {
+                let pools = [
+                    {inst: "Kenali Huruf", q: "A 🍎", ans: "A", opts: ["A", "B", "C"]},
+                    {inst: "Pilih objek bermula huruf B", q: "B", ans: "Bola ⚽", opts: ["Bola ⚽", "Cawan ☕", "Ayam 🐔"]},
+                    {inst: "Kenali Huruf", q: "C 🐱", ans: "C", opts: ["B", "C", "D"]}
+                ];
+                list = shuffle(pools).slice(0, 3);
+            } else if(cat === 'warna') {
+                let pools = [
+                    {inst: "Pilih warna MERAH", q: "🔴", ans: "Merah", opts: ["Merah", "Biru", "Kuning"]},
+                    {inst: "Mana satu bentuk BULAT?", q: "⭕", ans: "Bulat", opts: ["Bulat", "Segi Empat", "Segi Tiga"]}
+                ];
+                list = shuffle(pools).slice(0, 3);
+            } else if(cat === 'haiwan') {
+                let pools = [
+                    {inst: "Mana satu KUCING?", q: "🐱 Miau", ans: "Kucing", opts: ["Kucing", "Gajah", "Ayam"]},
+                    {inst: "Mana satu AYAM?", q: "🐔 Kokok", ans: "Ayam", opts: ["Anjing", "Ayam", "Harimau"]}
+                ];
+                list = shuffle(pools).slice(0, 3);
+            } else {
+                let pools = [
+                    {inst: "Kenali objek", q: "EPAL 🍎", ans: "🍎", opts: ["🍎", "🍌", "🥕"]},
+                    {inst: "Kenali objek", q: "PISANG 🍌", ans: "🍌", opts: ["🍇", "🍌", "🍉"]}
+                ];
+                list = shuffle(pools).slice(0, 3);
             }
             return list;
         }
 
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
         function loadQuestion() {
             let currentQ = questionsList[currentQuestionIndex];
-            document.getElementById('q-current').innerText = currentQuestionIndex + 1;
-            
-            let pct = (currentQuestionIndex / questionsList.length) * 100;
+            let pct = ((currentQuestionIndex) / questionsList.length) * 100;
             document.getElementById('game-progress').style.width = pct + "%";
 
             document.getElementById('game-instruction').innerText = currentQ.inst;
             document.getElementById('game-main-display').innerText = currentQ.q;
             document.getElementById('game-feedback').classList.add('hidden');
+            document.getElementById('game-sub-display').innerText = "";
 
-            correctAnswer = currentQ.ans;
+            correctAnswer = currentQ.ans !== undefined ? currentQ.ans : currentQ.q;
 
             let optContainer = document.getElementById('game-options');
             optContainer.innerHTML = '';
             
-            currentQ.opts.forEach(opt => {
+            let randomizedOptions = shuffle([...currentQ.opts]);
+            randomizedOptions.forEach(opt => {
                 optContainer.innerHTML += `
-                    <button onclick="checkAnswer('${opt}')" class="w-full bg-white hover:bg-amber-100 text-slate-800 font-kids text-xl py-3 rounded-2xl border-2 border-gray-300 shadow-sm pop-button">
+                    <button onclick="checkAnswer('${opt}')" class="w-full bg-white hover:bg-slate-50 text-slate-800 font-kids text-xl py-4 px-6 rounded-2xl border-2 border-slate-300 shadow-sm border-b-6 pop-button">
                         ${opt}
                     </button>
                 `;
@@ -454,45 +800,59 @@
             let fb = document.getElementById('game-feedback');
             fb.classList.remove('hidden');
 
-            if (String(chosen) === String(correctAnswer)) {
-                fb.className = "p-3 rounded-2xl text-center font-bold text-base bg-emerald-100 text-emerald-800 animate-bounce";
-                fb.innerText = "Hebat! Jawapan Betul! 🎉";
+            if(String(chosen) === String(correctAnswer)) {
+                playSound('correct');
+                fb.className = "p-4 rounded-2xl text-center font-kids text-xl animate-bounce bg-emerald-100 text-emerald-800 border-emerald-300 border-b-4";
+                fb.innerText = "Hebat! 🎉 Jawapan Betul!";
                 
                 usersDatabase[activeUserIndex].stars += 1;
-                localStorage.setItem('edukids_db_v4', JSON.stringify(usersDatabase));
-                document.getElementById('global-stars').innerText = usersDatabase[activeUserIndex].stars;
+                saveDatabase();
+                updateChildHeaderUI();
 
                 setTimeout(() => {
-                    currentQuestionIndex++;
-                    if (currentQuestionIndex < questionsList.length) {
+                    currentQuestionIndex += 1;
+                    if(currentQuestionIndex < questionsList.length) {
                         loadQuestion();
                     } else {
-                        document.getElementById('congrats-stars').innerText = `+${questionsList.length}`;
-                        switchView('view-congrats');
+                        endLevel();
                     }
-                }, 1200);
+                }, 1400);
             } else {
-                fb.className = "p-3 rounded-2xl text-center font-bold text-base bg-orange-100 text-orange-800";
-                fb.innerText = "Cuba lagi sayang! 😊";
+                playSound('wrong');
+                fb.className = "p-4 rounded-2xl text-center font-kids text-xl bg-rose-100 text-rose-800 border-rose-300 border-b-4";
+                fb.innerText = "Cuba Lagi 😊 Kamu Boleh!";
             }
         }
 
-        function shuffle(array) {
-            return array.sort(() => Math.random() - 0.5);
+        function endLevel() {
+            playSound('cheer');
+            let user = usersDatabase[activeUserIndex];
+            if(currentLevel === user.progress[currentCategory]) {
+                if(user.progress[currentCategory] < 4) {
+                    user.progress[currentCategory] += 1;
+                }
+            }
+
+            let badgeUnlocked = false;
+            if(!user.badges.includes(currentCategory)) {
+                user.badges.push(currentCategory);
+                badgeUnlocked = true;
+            }
+
+            saveDatabase();
+            document.getElementById('congrats-stars').innerText = `+${questionsList.length}`;
+            
+            if(badgeUnlocked) {
+                document.getElementById('congrats-badge-unlock').classList.remove('hidden');
+            } else {
+                document.getElementById('congrats-badge-unlock').classList.add('hidden');
+            }
+
+            switchView('view-congrats');
         }
 
-        function goHome() { switchView('view-home'); }
-        function exitGame() { switchView('view-map'); }
-        function logoutToWelcome() { switchView('view-welcome'); }
-
-        function addNewChildProfile() {
-            let nameInput = document.getElementById('new-child-name').value.trim();
-            if (!nameInput) return alert("Sila isi nama profil!");
-            usersDatabase.push({ name: nameInput, avatar: "👧", stars: 0 });
-            localStorage.setItem('edukids_db_v4', JSON.stringify(usersDatabase));
-            document.getElementById('new-child-name').value = '';
-            renderChildProfilesSelect();
-            alert("Profil berjaya disimpan!");
+        function exitGame() {
+            enterCategory(currentCategory);
         }
     </script>
 </body>
