@@ -736,7 +736,10 @@
                 list = shuffle(pools).slice(0, 3);
             } else if(cat === 'warna') {
                 let pools = [
-                    {inst: "Pilih warna MERAH", q: "🔴", ans: "Merah", opts: ["Merah", "Biru", "Kuning"]},
+                    {inst: "Pilih warna MERAH", q: "🔴", ans: "Merah", opts: ["Merah 🔴", "Biru🔵", "Kuning🟡"]},
+                    {inst: "Pilih warna MERAH", q: "🟢", ans: "Hijau", opts: ["Merah 🔴", "Hijau 🟢", "Hitam⚫️"]},
+                    {inst: "Pilih warna MERAH", q: "🟡", ans: "Kuning", opts: ["Merah 🔴", "Biru🔵", "Kuning 🟡"]}
+                    {inst: "Pilih warna MERAH", q: "🔵", ans: "Biru", opts: ["Hijau", "Biru", "Merah"]}
                     {inst: "Mana satu bentuk BULAT?", q: "⭕", ans: "Bulat", opts: ["Bulat", "Segi Empat", "Segi Tiga"]}
                 ];
                 list = shuffle(pools).slice(0, 3);
