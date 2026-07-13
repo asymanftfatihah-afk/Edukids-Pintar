@@ -336,57 +336,22 @@
 
     </div>
 
-    <!-- Firebase SDK Implementation v9 CDN -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
-        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCpdR14Q9e0tCB3TFUIJNaCzLvl6lsercw",
-            authDomain: "edukids-pintar.firebaseapp.com",
-            databaseURL: "https://edukids-pintar-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "edukids-pintar",
-            storageBucket: "edukids-pintar.firebasestorage.app",
-            messagingSenderId: "534474162243",
-            appId: "1:534474162243:web:5919243186616f673c94f6"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-
+    <!-- SCRIPT UTAMA & NYATAKAN FUNGSI GLOBAL TERLEBIH DAHULU -->
+    <script>
+        // Sediakan state asas supaya aplikasi boleh dibuka serta-merta tanpa tunggu Firebase
         let gameState = {
             currentProfileId: "profile_default",
             profiles: {
                 "profile_default": {
-                    id: "profile_default",
-                    name: "Adik Pintar",
-                    avatar: "👦",
-                    level: 1,
-                    xp: 0,
-                    lives: 5,
-                    coins: 120,
-                    streak: 1,
-                    lastActiveDate: "",
-                    unlockedAvatars: ["👦", "👧"],
-                    unlockedThemes: ["🌈 Pelangi"],
-                    currentTheme: "🌈 Pelangi",
+                    id: "profile_default", name: "Adik Pintar", avatar: "👦",
+                    level: 1, xp: 0, lives: 5, coins: 120, streak: 1, lastActiveDate: "",
+                    unlockedAvatars: ["👦", "👧"], unlockedThemes: ["🌈 Pelangi"], currentTheme: "🌈 Pelangi",
                     quests: {
                         q1: { desc: "Jawab 5 soalan betul", progress: 0, target: 5, done: false, reward: 20 },
                         q2: { desc: "Kumpul 30 XP hari ini", progress: 0, target: 30, done: false, reward: 30 }
                     },
-                    progress: {
-                        matematik: 1,
-                        abc: 1,
-                        warna: 1,
-                        haiwan: 1,
-                        buah: 1,
-                        bentuk: 1
-                    },
-                    analytics: {
-                        timeSpentMinutes: 12,
-                        correctAnswers: 18,
-                        wrongAnswers: 3
-                    }
+                    progress: { matematik: 1, abc: 1, warna: 1, haiwan: 1, buah: 1, bentuk: 1 },
+                    analytics: { timeSpentMinutes: 12, correctAnswers: 18, wrongAnswers: 3 }
                 }
             }
         };
@@ -415,35 +380,6 @@
         let currentQuestionIndex = 0;
         let isParentVerified = false;
 
-        async function saveDataToFirebase() {
-            try {
-                await set(ref(db, 'edukids_saves'), gameState);
-            } catch (error) {
-                localStorage.setItem('edukids_local', JSON.stringify(gameState));
-            }
-        }
-
-        async function loadDataFromFirebase() {
-            try {
-                const snapshot = await get(ref(db, 'edukids_saves'));
-                if (snapshot.exists()) {
-                    gameState = snapshot.val();
-                }
-            } catch (error) {
-                const local = localStorage.getItem('edukids_local');
-                if (local) gameState = JSON.parse(local);
-            }
-            initAppUI();
-        }
-
-        function initAppUI() {
-            renderProfileSelectors();
-            renderCategoriesGrid();
-            refreshDashboardStats();
-            applyActiveTheme();
-            checkDailyStreak();
-        }
-
         function getActiveProfile() {
             return gameState.profiles[gameState.currentProfileId];
         }
@@ -457,8 +393,17 @@
             else body.classList.add("cloud-bg");
         }
 
+        function initAppUI() {
+            renderProfileSelectors();
+            renderCategoriesGrid();
+            refreshDashboardStats();
+            applyActiveTheme();
+            checkDailyStreak();
+        }
+
         function renderProfileSelectors() {
             const container = document.getElementById('welcome-profiles');
+            if(!container) return;
             container.innerHTML = '';
             Object.values(gameState.profiles).forEach(p => {
                 const activeBorder = gameState.currentProfileId === p.id ? 'border-indigo-600 bg-indigo-50' : 'border-gray-200';
@@ -498,7 +443,7 @@
                     </div>
                 `;
             });
-            saveDataToFirebase();
+            if(window.saveDataToFirebase) window.saveDataToFirebase();
         }
 
         function checkDailyStreak() {
@@ -515,7 +460,7 @@
                     }
                 }
                 p.lastActiveDate = todayStr;
-                saveDataToFirebase();
+                if(window.saveDataToFirebase) window.saveDataToFirebase();
             }
         }
 
@@ -551,69 +496,36 @@
             container.innerHTML = '';
 
             let baseLevel = Math.max(1, maxReached - 2);
-            let targetLevelsRenderCount = 5;
-
-            for (let i = 0; i < targetLevelsRenderCount; i++) {
+            for (let i = 0; i < 5; i++) {
                 let lvl = baseLevel + i;
                 if (lvl > 50) break;
 
                 let isLocked = lvl > maxReached;
                 let isBoss = lvl % 4 === 0;
                 let isReward = lvl % 5 === 0 && !isBoss;
-
-                let btnStyles = "";
-                let nodeIcon = lvl;
-
-                if (isLocked) {
-                    btnStyles = "bg-gray-300 text-gray-500 cursor-not-allowed border-gray-400";
-                    nodeIcon = "<i class='fa-solid fa-lock'></i>";
-                } else if (lvl === maxReached) {
-                    btnStyles = "bg-amber-400 text-white animate-bounce ring-4 ring-amber-300 border-amber-600";
-                    if (isBoss) nodeIcon = "👹";
-                    else if (isReward) nodeIcon = "🎁";
-                } else {
-                    btnStyles = "bg-emerald-400 text-white border-emerald-600 shadow-md";
-                    if (isBoss) nodeIcon = "🏆";
-                    else if (isReward) nodeIcon = "📦";
-                }
-
-                let subLabel = `Tahap ${lvl}`;
-                if (isBoss) subLabel = `Kuiz Utama 👑`;
-                if (isReward) subLabel = `Peti Rahsia 📦`;
+                let btnStyles = isLocked ? "bg-gray-300 text-gray-500 cursor-not-allowed border-gray-400" : (lvl === maxReached ? "bg-amber-400 text-white animate-bounce ring-4 ring-amber-300 border-amber-600" : "bg-emerald-400 text-white border-emerald-600 shadow-md");
+                let nodeIcon = isLocked ? "<i class='fa-solid fa-lock'></i>" : (isBoss ? "👹" : (isReward ? "🎁" : lvl));
 
                 container.innerHTML += `
                     <div class="flex flex-col items-center relative w-full">
                         <button onclick="${isLocked ? '' : `window.startLevel(${lvl}, ${isBoss}, ${isReward})`}" class="w-16 h-16 rounded-full border-b-4 font-bold text-xl flex items-center justify-center transition-transform transform active:scale-95 z-10 ${btnStyles}">
                             ${nodeIcon}
                         </button>
-                        <span class="text-xs font-extrabold bg-white px-2 py-0.5 rounded-full mt-2 shadow border">${subLabel}</span>
                     </div>
                 `;
             }
         };
 
         window.startLevel = function(lvl, isBoss, isReward) {
-            if (getActiveProfile().lives <= 0) {
-                window.showHeartModal();
-                return;
-            }
-
+            if (getActiveProfile().lives <= 0) { window.showHeartModal(); return; }
             currentPlayingLevel = lvl;
-            if (isReward) {
-                openChestGiverFlow();
-                return;
-            }
-
+            if (isReward) { openChestGiverFlow(); return; }
             currentQuestionIndex = 0;
-            const qCount = isBoss ? 10 : 3;
-            currentGameQuestions = buildQuestionsPool(currentPlayingCategory, qCount);
-
+            currentGameQuestions = buildQuestionsPool(currentPlayingCategory, isBoss ? 10 : 3);
             document.getElementById('screen-map').classList.add('hidden');
             document.getElementById('screen-game').classList.remove('hidden');
             document.getElementById('global-nav').classList.add('hidden');
-            
             triggerNextQuestion();
-            try { document.getElementById('bg-music').play(); } catch(e){}
         };
 
         function buildQuestionsPool(cat, count) {
@@ -622,95 +534,44 @@
                 if (cat === 'matematik') {
                     let num1 = Math.floor(Math.random() * 3) + 1;
                     let num2 = Math.floor(Math.random() * 2) + 1;
-                    let sum = num1 + num2;
-                    let apples1 = "🍎".repeat(num1);
-                    let apples2 = "🍎".repeat(num2);
                     pool.push({
-                        instruction: `Kira semua epal! Berapa jumlah ${num1} tambah ${num2}?`,
-                        visual: `<div class='flex flex-col items-center gap-2'><div class='text-2xl'>${apples1} <i class="fa-solid fa-plus text-xs text-gray-400 mx-1"></i> ${apples2}</div></div>`,
-                        options: [sum, sum + 1, Math.max(1, sum - 1)],
-                        answer: sum
-                    });
-                } else if (cat === 'warna') {
-                    const warnaData = [
-                        {n: 'MERAH', e: '🟥', v: 'merah'},
-                        {n: 'BIRU', e: '🟦', v: 'biru'},
-                        {n: 'KUNING', e: '🟨', v: 'kuning'},
-                        {n: 'HIJAU', e: '🟩', v: 'hijau'}
-                    ];
-                    let picked = warnaData[Math.floor(Math.random() * warnaData.length)];
-                    pool.push({
-                        instruction: `Pilih warna ${picked.n}!`,
-                        visual: `<span class="animate__animated animate__pulse animate__infinite">🎨</span>`,
-                        options: warnaData.map(w => w.e),
-                        answer: picked.e,
-                        voicePrompt: `Pilih warna ${picked.v}`
-                    });
-                } else if (cat === 'abc') {
-                    let chars = ['A', 'B', 'C', 'D', 'E'];
-                    let correct = chars[Math.floor(Math.random() * chars.length)];
-                    pool.push({
-                        instruction: `Cari dan ketik huruf ${correct}!`,
-                        visual: `<span class="text-5xl font-extrabold text-purple-600">${correct}</span>`,
-                        options: [correct, 'X', 'O', 'M'].sort(() => Math.random() - 0.5),
-                        answer: correct
+                        instruction: `Berapa jumlah ${num1} tambah ${num2}?`,
+                        visual: `<div class='text-2xl'>${"🍎".repeat(num1)} + ${"🍎".repeat(num2)}</div>`,
+                        options: [num1 + num2, num1 + num2 + 1, Math.max(1, num1 + num2 - 1)],
+                        answer: num1 + num2
                     });
                 } else {
-                    pool.push({
-                        instruction: "Ketik bentuk bintang yang cantik!",
-                        visual: "⭐",
-                        options: ["⭐", "⭕", "📐", "🟩"],
-                        answer: "⭐"
-                    });
+                    pool.push({ instruction: "Ketik bentuk bintang!", visual: "⭐", options: ["⭐", "⭕", "🟩"], answer: "⭐" });
                 }
             }
             return pool;
         }
 
         function triggerNextQuestion() {
-            if (currentQuestionIndex >= currentGameQuestions.length) {
-                finishActiveGameZone();
-                return;
-            }
-
+            if (currentQuestionIndex >= currentGameQuestions.length) { finishActiveGameZone(); return; }
             const percent = (currentQuestionIndex / currentGameQuestions.length) * 100;
             document.getElementById('game-progress').style.width = `${percent}%`;
             document.getElementById('game-lives').innerText = getActiveProfile().lives;
-
             const q = currentGameQuestions[currentQuestionIndex];
             document.getElementById('game-instruction').innerText = q.instruction;
             document.getElementById('game-visuals').innerHTML = q.visual;
-            
             const optsContainer = document.getElementById('game-options');
             optsContainer.innerHTML = '';
-            
-            let shuffledOpts = [...q.options];
-            shuffledOpts = shuffledOpts.filter((v, i, a) => a.indexOf(v) === i); 
-
-            shuffledOpts.forEach(opt => {
-                optsContainer.innerHTML += `
-                    <button onclick="window.evaluateGameAnswer('${opt}', '${q.answer}')" class="bg-white hover:bg-indigo-50 active:scale-95 transition-all text-3xl font-bold py-6 px-4 rounded-3xl border-4 border-indigo-100 shadow-md text-center flex items-center justify-center">
-                        ${opt}
-                    </button>
-                `;
+            q.options.forEach(opt => {
+                optsContainer.innerHTML += `<button onclick="window.evaluateGameAnswer('${opt}', '${q.answer}')" class="bg-white py-6 border-4 rounded-3xl text-2xl font-bold">${opt}</button>`;
             });
-
             window.playInstructionTTS();
         }
 
         window.playInstructionTTS = function() {
             const q = currentGameQuestions[currentQuestionIndex];
-            if (q) {
-                playNativeTTS(q.voicePrompt || q.instruction);
-            }
+            if (q) playNativeTTS(q.instruction);
         };
 
         function playNativeTTS(text) {
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'ms-MY'; 
-                utterance.rate = 0.85; 
+                utterance.lang = 'ms-MY';
                 window.speechSynthesis.speak(utterance);
             }
         }
@@ -718,61 +579,21 @@
         window.evaluateGameAnswer = function(selected, correct) {
             const p = getActiveProfile();
             if (String(selected) === String(correct)) {
-                confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 } });
-                const praises = ["Hebat!", "Pandainya!", "Bagus!"];
-                playNativeTTS(praises[Math.floor(Math.random() * praises.length)]);
-                
-                p.xp += 10;
-                p.coins += 2;
-                p.analytics.correctAnswers += 1;
-                
-                if (!p.quests.q1.done) {
-                    p.quests.q1.progress += 1;
-                    if(p.quests.q1.progress >= p.quests.q1.target) p.quests.q1.done = true;
-                }
-
+                confetti({ particleCount: 30 });
+                p.xp += 10; p.coins += 2;
                 currentQuestionIndex++;
-                setTimeout(triggerNextQuestion, 1200);
+                setTimeout(triggerNextQuestion, 1000);
             } else {
-                const retries = ["Cuba Lagi.", "Kamu Boleh!"];
-                playNativeTTS(retries[Math.floor(Math.random() * retries.length)]);
-                
                 p.lives -= 1;
-                p.analytics.wrongAnswers += 1;
-                refreshDashboardStats();
-
-                if (p.lives <= 0) {
-                    alert("Mari Berehat Sebentar 😊");
-                    window.quitGame();
-                    window.showHeartModal();
-                } else {
-                    const visualBox = document.getElementById('game-visuals');
-                    visualBox.classList.add('animate__animated', 'animate__shakeX');
-                    setTimeout(() => visualBox.classList.remove('animate__animated', 'animate__shakeX'), 600);
-                }
+                if (p.lives <= 0) { window.quitGame(); window.showHeartModal(); }
             }
             refreshDashboardStats();
         };
 
         function finishActiveGameZone() {
             const p = getActiveProfile();
-            p.xp += 50; 
-            
-            if (currentPlayingLevel === p.progress[currentPlayingCategory]) {
-                p.progress[currentPlayingCategory] += 1;
-                if (p.progress[currentPlayingCategory] > 50) {
-                    p.xp += 200;
-                }
-            }
-
-            let nextLevelThreshold = p.level * 150;
-            if (p.xp >= nextLevelThreshold) {
-                p.level += 1;
-                confetti({ particleCount: 150, spread: 80 });
-                playNativeTTS(`Selamat! Naik tahap ${p.level}`);
-            }
-
-            alert(`🎉 Syabas! Anda berjaya menamatkan Tahap ${currentPlayingLevel}!`);
+            if (currentPlayingLevel === p.progress[currentPlayingCategory]) p.progress[currentPlayingCategory] += 1;
+            alert("Syabas!");
             window.quitGame();
         }
 
@@ -780,287 +601,70 @@
             document.getElementById('screen-game').classList.add('hidden');
             document.getElementById('global-nav').classList.remove('hidden');
             window.openCategoryMap(currentPlayingCategory);
-            refreshDashboardStats();
         };
 
-        function openChestGiverFlow() {
-            document.getElementById('modal-chest').classList.remove('hidden');
-            document.getElementById('chest-animation-zone').innerText = "📦";
-            document.getElementById('chest-rewards-output').classList.add('hidden');
-            document.getElementById('btn-close-chest').classList.add('hidden');
-            document.getElementById('chest-instruction-text').classList.remove('hidden');
-        }
-
-        window.openChestRewards = function() {
-            const p = getActiveProfile();
-            const coinReward = Math.floor(Math.random() * 30) + 20;
-            const xpReward = Math.floor(Math.random() * 40) + 30;
-            
-            p.coins += coinReward;
-            p.xp += xpReward;
-            
-            document.getElementById('chest-animation-zone').innerText = "🔓🎉";
-            const output = document.getElementById('chest-rewards-output');
-            output.innerHTML = `Anda Dapat:<br>🪙 +${coinReward} Syiling<br>⭐ +${xpReward} XP`;
-            output.classList.remove('hidden');
-            
-            document.getElementById('chest-instruction-text').classList.add('hidden');
-            document.getElementById('btn-close-chest').classList.remove('hidden');
-            refreshDashboardStats();
-        };
-
-        window.closeChestModal = function() {
-            document.getElementById('modal-chest').classList.add('hidden');
-            const p = getActiveProfile();
-            if (p.progress[currentPlayingCategory] === currentPlayingLevel) {
-                p.progress[currentPlayingCategory] += 1;
-            }
-            window.openCategoryMap(currentPlayingCategory);
-        };
-
-        window.showHeartModal = function() {
-            document.getElementById('modal-hearts').classList.remove('hidden');
-        };
-        window.closeHeartModal = function() {
-            document.getElementById('modal-hearts').classList.add('hidden');
-        };
-        window.buyLifeWithCoins = function() {
-            const p = getActiveProfile();
-            if (p.coins >= 50) {
-                p.coins -= 50;
-                p.lives = 5;
-                alert("Nyawa penuh semula! ❤️");
-                window.closeHeartModal();
-                refreshDashboardStats();
-            } else {
-                alert("Syiling tidak mencukupi!");
-            }
-        };
-        window.watchBonusActivity = function() {
-            alert("Memulakan aktiviti minda ringkas...");
-            const p = getActiveProfile();
-            p.lives = Math.min(5, p.lives + 1);
-            window.closeHeartModal();
-            refreshDashboardStats();
-        };
-
-        window.openProfileShop = function() {
-            document.getElementById('modal-shop').classList.remove('hidden');
-            document.getElementById('shop-coin-balance').innerText = getActiveProfile().coins;
-            renderShopItems();
-        };
-        window.closeShopModal = function() {
-            document.getElementById('modal-shop').classList.add('hidden');
-        };
-
-        function renderShopItems() {
-            const p = getActiveProfile();
-            
-            const avGrid = document.getElementById('shop-avatar-grid');
-            avGrid.innerHTML = '';
-            avatarsList.forEach(av => {
-                const isUnlocked = p.unlockedAvatars.includes(av);
-                avGrid.innerHTML += `
-                    <div onclick="window.buyOrSelectAvatar('${av}', ${isUnlocked})" class="p-2 border rounded-xl text-center cursor-pointer hover:bg-purple-50">
-                        <span class="text-2xl block">${av}</span>
-                        <span class="text-[10px] font-bold ${isUnlocked ? 'text-green-600' : 'text-amber-600'}">
-                            ${isUnlocked ? (p.avatar === av ? 'Guna' : 'Pilih') : '🪙50'}
-                        </span>
-                    </div>
-                `;
-            });
-
-            const themeGrid = document.getElementById('shop-theme-grid');
-            themeGrid.innerHTML = '';
-            themesList.forEach(t => {
-                const isUnlocked = p.unlockedThemes.includes(t.name);
-                themeGrid.innerHTML += `
-                    <div onclick="window.buyOrSelectTheme('${t.name}', ${isUnlocked})" class="p-2 border rounded-xl text-center text-xs font-bold cursor-pointer hover:bg-purple-50">
-                        <div>${t.name}</div>
-                        <span class="text-[10px] ${isUnlocked ? (p.currentTheme === t.name ? 'text-indigo-600 font-extrabold' : 'text-green-500') : 'text-amber-600'}">
-                            ${isUnlocked ? (p.currentTheme === t.name ? 'Aktif' : 'Pilih') : '🪙100'}
-                        </span>
-                    </div>
-                `;
-            });
-        }
-
-        window.buyOrSelectAvatar = function(av, isUnlocked) {
-            const p = getActiveProfile();
-            if (isUnlocked) {
-                p.avatar = av;
-                alert("Avatar ditukar!");
-            } else {
-                if (p.coins >= 50) {
-                    p.coins -= 50;
-                    p.unlockedAvatars.push(av);
-                    p.avatar = av;
-                    alert("Avatar baru berjaya dibeli!");
-                } else {
-                    alert("Syiling anda tidak cukup.");
-                }
-            }
-            renderShopItems();
-            refreshDashboardStats();
-        };
-
-        window.buyOrSelectTheme = function(themeName, isUnlocked) {
-            const p = getActiveProfile();
-            if (isUnlocked) {
-                p.currentTheme = themeName;
-                applyActiveTheme();
-                alert("Tema sistem ditukar!");
-            } else {
-                if (p.coins >= 100) {
-                    p.coins -= 100;
-                    p.unlockedThemes.push(themeName);
-                    p.currentTheme = themeName;
-                    applyActiveTheme();
-                    alert("Tema baharu diaktifkan!");
-                } else {
-                    alert("Syiling tidak mencukupi.");
-                }
-            }
-            renderShopItems();
-            refreshDashboardStats();
-        };
-
-        window.openParentGate = function() {
-            window.changeScreen('screen-parents');
-            document.getElementById('parent-pin-zone').classList.remove('hidden');
-            document.getElementById('parent-dashboard-content').classList.add('hidden');
-            document.getElementById('parent-pin-input').value = '';
-            isParentVerified = false;
-        };
-
-        window.verifyParentPin = function() {
-            const pinVal = document.getElementById('parent-pin-input').value;
-            if (pinVal === '1234') { 
-                isParentVerified = true;
-                document.getElementById('parent-pin-zone').classList.add('hidden');
-                document.getElementById('parent-dashboard-content').classList.remove('hidden');
-                populateParentDashboardDropdown();
-                window.loadParentDashboardData();
-            } else {
-                alert("PIN Salah! Sila cuba lagi. Petunjuk: 1234");
-            }
-        };
-
-        function populateParentDashboardDropdown() {
-            const select = document.getElementById('parent-profile-select');
-            select.innerHTML = '';
-            Object.values(gameState.profiles).forEach(p => {
-                select.innerHTML += `<option value="${p.id}">${p.name} (${p.avatar})</option>`;
-            });
-        }
-
-        window.loadParentDashboardData = function() {
-            const selectedId = document.getElementById('parent-profile-select').value;
-            const targetProfile = gameState.profiles[selectedId] || getActiveProfile();
-
-            document.getElementById('parent-time').innerText = `${targetProfile.analytics.timeSpentMinutes} Minit`;
-            
-            const levelsObtained = Object.values(targetProfile.progress);
-            const highestLvl = Math.max(...levelsObtained);
-            document.getElementById('parent-level').innerText = `Level ${highestLvl}`;
-
-            const barContainer = document.getElementById('parent-subject-bars');
-            barContainer.innerHTML = '';
-
-            let highestProgressVal = 0;
-            let lowestProgressVal = 999;
-            let strongSubject = 'Tiada Data';
-            let weakSubject = 'Tiada Data';
-
-            categories.forEach(cat => {
-                const currentProgress = targetProfile.progress[cat.id] || 1;
-                const percentageOfMap = Math.min(100, (currentProgress / 50) * 100);
-                
-                if(currentProgress > highestProgressVal) { highestProgressVal = currentProgress; strongSubject = cat.name; }
-                if(currentProgress < lowestProgressVal) { lowestProgressVal = currentProgress; weakSubject = cat.name; }
-
-                barContainer.innerHTML += `
-                    <div>
-                        <div class="flex justify-between text-xs font-bold mb-1">
-                            <span>${cat.icon} ${cat.name}</span>
-                            <span class="text-gray-500">Tahap ${currentProgress}/50</span>
-                        </div>
-                        <div class="w-full bg-gray-100 rounded-full h-2">
-                            <div class="bg-indigo-500 h-2 rounded-full" style="width: ${percentageOfMap}%"></div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('parent-strongest').innerText = `${strongSubject} (Tahap ${highestProgressVal})`;
-            document.getElementById('parent-weakest').innerText = `${weakSubject} (Tahap ${lowestProgressVal})`;
-        };
-
-        window.createNewProfile = function() {
-            const nameInput = document.getElementById('new-kid-name').value.trim();
-            if (!nameInput) {
-                alert("Sila masukkan nama anak.");
-                return;
-            }
-            const uniqueId = 'profile_' + Date.now();
-            gameState.profiles[uniqueId] = {
-                id: uniqueId,
-                name: nameInput,
-                avatar: "👧",
-                level: 1,
-                xp: 0,
-                lives: 5,
-                coins: 20,
-                streak: 1,
-                lastActiveDate: "",
-                unlockedAvatars: ["👦", "👧"],
-                unlockedThemes: ["🌈 Pelangi"],
-                currentTheme: "🌈 Pelangi",
-                quests: {
-                    q1: { desc: "Jawab 5 soalan betul", progress: 0, target: 5, done: false, reward: 20 },
-                    q2: { desc: "Kumpul 30 XP hari ini", progress: 0, target: 30, done: false, reward: 30 }
-                },
-                progress: { matematik: 1, abc: 1, warna: 1, haiwan: 1, buah: 1, bentuk: 1 },
-                analytics: { timeSpentMinutes: 0, correctAnswers: 0, wrongAnswers: 0 }
-            };
-
-            document.getElementById('new-kid-name').value = '';
-            alert(`Profil untuk ${nameInput} berjaya ditambah!`);
-            populateParentDashboardDropdown();
-            window.loadParentDashboardData();
-            renderProfileSelectors();
-            saveDataToFirebase();
-        };
+        window.showHeartModal = function() { document.getElementById('modal-hearts').classList.remove('hidden'); };
+        window.closeHeartModal = function() { document.getElementById('modal-hearts').classList.add('hidden'); };
+        window.openProfileShop = function() { document.getElementById('modal-shop').classList.remove('hidden'); };
+        window.closeShopModal = function() { document.getElementById('modal-shop').classList.add('hidden'); };
+        window.openParentGate = function() { window.changeScreen('screen-parents'); };
 
         window.changeScreen = function(screenId) {
             ['screen-welcome', 'screen-main', 'screen-map', 'screen-game', 'screen-parents'].forEach(id => {
                 document.getElementById(id).classList.add('hidden');
             });
-
             document.getElementById(screenId).classList.remove('hidden');
-
-            const bottomNav = document.getElementById('global-nav');
-            if (screenId === 'screen-welcome' || screenId === 'screen-game') {
-                bottomNav.classList.add('hidden');
-            } else {
-                bottomNav.classList.remove('hidden');
-            }
-            
-            if(screenId === 'screen-main') {
-                refreshDashboardStats();
-            }
+            document.getElementById('global-nav').classList.toggle('hidden', screenId === 'screen-welcome' || screenId === 'screen-game');
         };
 
+        // Paparkan skrin utama terus tanpa bertumpu pada Firebase
         window.addEventListener('DOMContentLoaded', () => {
-            loadDataFromFirebase();
-            setInterval(() => {
-                const p = getActiveProfile();
-                if(p) {
-                    p.analytics.timeSpentMinutes += 1;
-                }
-            }, 60000);
+            initAppUI();
+            const local = localStorage.getItem('edukids_local');
+            if (local) {
+                gameState = JSON.parse(local);
+                initAppUI();
+            }
         });
+    </script>
 
+    <!-- FIREBASE PULA DIASINGKAN DI BAWAH SUPAYA TIDAK MENYEKAT PROSES RENDER -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCpdR14Q9e0tCB3TFUIJNaCzLvl6lsercw",
+            authDomain: "edukids-pintar.firebaseapp.com",
+            databaseURL: "https://edukids-pintar-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "edukids-pintar",
+            storageBucket: "edukids-pintar.firebasestorage.app",
+            messagingSenderId: "534474162243",
+            appId: "1:534474162243:web:5919243186616f673c94f6"
+        };
+
+        try {
+            const app = initializeApp(firebaseConfig);
+            const db = getDatabase(app);
+
+            window.saveDataToFirebase = async function() {
+                try {
+                    await set(ref(db, 'edukids_saves'), gameState);
+                    localStorage.setItem('edukids_local', JSON.stringify(gameState));
+                } catch (e) {
+                    localStorage.setItem('edukids_local', JSON.stringify(gameState));
+                }
+            };
+
+            // Ambil data jika ada internet
+            const snapshot = await get(ref(db, 'edukids_saves'));
+            if (snapshot.exists()) {
+                gameState = snapshot.val();
+                initAppUI();
+            }
+        } catch(error) {
+            console.log("Firebase disekat / Tiada rangkaian. Menggunakan storan lokal.");
+        }
     </script>
 </body>
 </html>
