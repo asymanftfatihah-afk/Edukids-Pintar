@@ -235,7 +235,7 @@
                     </button>
                 </div>
 
-                <!-- BORANG TAMBAH ANAK/MURID (TANPA LIMIT) -->
+                <!-- BORANG TAMBAH ANAK/MURID -->
                 <div class="bg-purple-50 p-4 rounded-2xl border border-purple-200 space-y-3">
                     <h3 class="text-sm font-bold text-purple-800 flex items-center"><i data-lucide="user-plus" class="w-4 h-4 mr-1"></i> Tambah Profil Anak / Murid</h3>
                     <div class="space-y-2">
@@ -318,6 +318,7 @@
                 saveDatabase();
             }
             renderChildProfilesSelect();
+            renderParentUsersList();
         }
 
         function saveDatabase() {
@@ -326,24 +327,38 @@
 
         function switchView(viewId) {
             const views = ['view-welcome', 'view-select-child', 'view-home', 'view-map', 'view-game', 'view-congrats', 'view-parents'];
-            views.forEach(v => document.getElementById(v).classList.add('hidden'));
+            views.forEach(v => {
+                const element = document.getElementById(v);
+                if (element) element.classList.add('hidden');
+            });
             
-            document.getElementById(viewId).classList.remove('hidden');
+            const targetView = document.getElementById(viewId);
+            if (targetView) targetView.classList.remove('hidden');
+            
+            // Logik pencetus interaksi setiap paparan (Sebab utama butang tidak bertindak sebelum ini)
+            if (viewId === 'view-select-child') {
+                renderChildProfilesSelect();
+            } else if (viewId === 'view-parents') {
+                renderParentUsersList();
+            }
             
             if (viewId === 'view-home' || viewId === 'view-map' || viewId === 'view-game' || viewId === 'view-congrats') {
                 document.getElementById('main-header').classList.remove('hidden');
             } else {
                 document.getElementById('main-header').classList.add('hidden');
             }
+            
+            lucide.createIcons();
         }
 
         // PENGURUSAN PROFIL ANAK
         function renderChildProfilesSelect() {
             const container = document.getElementById('child-profiles-list');
+            if (!container) return;
             container.innerHTML = '';
             usersDatabase.forEach((user, index) => {
                 container.innerHTML += `
-                    <button onclick="loginAsChild(${index})" class="bg-white border-4 border-emerald-300 rounded-3xl p-4 flex flex-col items-center justify-center space-y-2 pop-button shadow-sm">
+                    <button onclick="loginAsChild(${index})" class="bg-white border-4 border-emerald-300 rounded-3xl p-4 flex flex-col items-center justify-center space-y-2 pop-button shadow-sm w-full">
                         <span class="text-4xl">${user.avatar}</span>
                         <span class="font-kids text-lg text-emerald-800">${user.name}</span>
                     </button>
@@ -359,6 +374,7 @@
         }
 
         function updateChildHeaderUI() {
+            if (activeUserIndex === null) return;
             let user = usersDatabase[activeUserIndex];
             document.getElementById('header-avatar').innerText = user.avatar;
             document.getElementById('header-name').innerText = user.name;
@@ -369,6 +385,7 @@
 
         function renderBadges() {
             const container = document.getElementById('badges-container');
+            if (!container) return;
             container.innerHTML = '';
             let user = usersDatabase[activeUserIndex];
             if(!user.badges || user.badges.length === 0) {
@@ -433,6 +450,7 @@
 
         function renderParentUsersList() {
             const container = document.getElementById('parent-users-list');
+            if (!container) return;
             container.innerHTML = '';
             
             usersDatabase.forEach((user, index) => {
