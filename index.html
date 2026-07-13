@@ -95,8 +95,8 @@
                     <button onclick="enterCategory('matematik')" class="bg-rose-100 hover:bg-rose-200 p-4 rounded-3xl border-b-4 border-rose-300 text-left space-y-2 pop-button flex flex-col justify-between h-36">
                         <span class="text-4xl">🔢</span>
                         <div>
-                            <h3 class="font-kids text-sm text-rose-700">Kira Gambar</h3>
-                            <p class="text-[10px] text-rose-600 font-bold">Tambah & Tolak Visual</p>
+                            <h3 class="font-kids text-sm text-rose-700">Matematik</h3>
+                            <p class="text-[10px] text-rose-600 font-bold">Nombor & Kira Visual</p>
                         </div>
                     </button>
                     <button onclick="enterCategory('bm')" class="bg-amber-100 hover:bg-amber-200 p-4 rounded-3xl border-b-4 border-amber-300 text-left space-y-2 pop-button flex flex-col justify-between h-36">
@@ -104,6 +104,13 @@
                         <div>
                             <h3 class="font-kids text-sm text-amber-700">Abjad Melayu</h3>
                             <p class="text-[10px] text-amber-600 font-bold">Abjad Khas Umur 2-3</p>
+                        </div>
+                    </button>
+                    <button onclick="enterCategory('haiwan')" class="bg-emerald-100 hover:bg-emerald-200 p-4 rounded-3xl border-b-4 border-emerald-300 text-left space-y-2 pop-button flex flex-col justify-between h-36">
+                        <span class="text-4xl">🐯</span>
+                        <div>
+                            <h3 class="font-kids text-sm text-emerald-700">Bunyi Haiwan</h3>
+                            <p class="text-[10px] text-emerald-600 font-bold">Dengar & Teka Bunyi</p>
                         </div>
                     </button>
                 </div>
@@ -131,7 +138,7 @@
                     </div>
                 </div>
 
-                <!-- PETA TAHAP KESUKARAN (3 LEVEL) -->
+                <!-- PETA TAHAP KESUKARAN -->
                 <div class="bg-slate-50 rounded-3xl p-6 min-h-[300px] flex flex-col items-center justify-around relative border-4 border-dashed border-slate-200">
                     <!-- LEVEL 3: PRO -->
                     <div class="flex flex-col items-center z-10">
@@ -163,7 +170,12 @@
 
                 <div class="bg-amber-50 rounded-3xl p-6 border-4 border-amber-300 text-center min-h-[180px] flex flex-col justify-center items-center relative">
                     <h3 id="game-instruction" class="text-sm font-bold text-amber-800 uppercase tracking-wider mb-2"></h3>
-                    <div id="game-main-display" class="font-kids text-4xl text-amber-900 my-4 tracking-widest break-all"></div>
+                    <div id="game-main-display" class="font-kids text-4xl text-amber-900 my-4 tracking-widest break-all flex flex-col items-center justify-center"></div>
+                    
+                    <!-- Buton Pembesar Suara Khas untuk Bunyi Haiwan -->
+                    <button id="btn-sound-trigger" onclick="playCurrentAnimalSound()" class="hidden mt-2 bg-indigo-600 text-white px-4 py-2 rounded-full font-bold text-xs flex items-center space-x-1 shadow pop-button">
+                        <i data-lucide="volume-2" class="w-4 h-4"></i> <span>Dengar Bunyi</span>
+                    </button>
                 </div>
 
                 <div id="game-options" class="grid grid-cols-1 gap-3"></div>
@@ -211,14 +223,24 @@
         let activeUserIndex = null;
         let selectedQuestionCount = 5; 
         let currentCategory = '';
-        let currentLevel = 'mudah'; // mudah, sederhana, pro
+        let currentLevel = 'mudah';
         let currentQuestionIndex = 0;
         let questionsList = [];
         let correctAnswer = null;
+        let currentSoundToPlay = "";
 
         const buahList = ["🍎", "🍌", "🍇", "🍊", "🍓", "🍉"];
         const haiwanList = ["🐱", "🦁", "🐰", "🐼", "🐵", "🐤"];
         const abjadBMList = ["A", "B", "C", "D", "E", "I", "U", "O"];
+        
+        const dataBunyiHaiwan = [
+            { nama: "Kucing 🐱", bunyi: "miau miau" },
+            { nama: "Ayam 🐔", bunyi: "kokok kokok" },
+            { nama: "Anjing 🐶", bunyi: "wong wong" },
+            { nama: "Kambing 🐑", bunyi: "embek embek" },
+            { nama: "Lembu 🐮", bunyi: "mmooo" },
+            { nama: "Burung 🐦", bunyi: "ciak ciak" }
+        ];
 
         window.onload = function() {
             lucide.createIcons();
@@ -226,12 +248,12 @@
         };
 
         function loadDatabase() {
-            let saved = localStorage.getItem('edukids_db_v2');
+            let saved = localStorage.getItem('edukids_db_v3');
             if (saved) {
                 usersDatabase = JSON.parse(saved);
             } else {
                 usersDatabase = [{ name: "Adik", avatar: "👦", stars: 0 }];
-                localStorage.setItem('edukids_db_v2', JSON.stringify(usersDatabase));
+                localStorage.setItem('edukids_db_v3', JSON.stringify(usersDatabase));
             }
             renderChildProfilesSelect();
         }
@@ -285,7 +307,8 @@
 
         function enterCategory(category) {
             currentCategory = category;
-            document.getElementById('map-title').innerText = category === 'matematik' ? "🔢 Kira Gambar" : "📖 Abjad Melayu";
+            const titles = { matematik: "🔢 Matematik Pintar", bm: "📖 Abjad Melayu", haiwan: "🐯 Bunyi Haiwan" };
+            document.getElementById('map-title').innerText = titles[category] || "Pintar";
             switchView('view-map');
         }
 
@@ -303,52 +326,77 @@
             let list = [];
             for (let i = 0; i < count; i++) {
                 if (cat === 'matematik') {
-                    let pool = Math.random() > 0.5 ? buahList : haiwanList;
-                    let icon = pool[Math.floor(Math.random() * pool.length)];
-                    
-                    if (lvl === 'mudah') {
-                        // KIRA ASAS (1 - 4)
-                        let num = Math.floor(Math.random() * 4) + 1;
+                    // TAHAP 1 & TAHAP 2: NOMBOR SAHAJA
+                    if (lvl === 'mudah' || lvl === 'sederhana') {
+                        let targetNum = lvl === 'mudah' ? Math.floor(Math.random() * 5) + 1 : Math.floor(Math.random() * 5) + 6;
+                        let options = shuffle([targetNum, targetNum + 1, targetNum - 1].filter(n => n > 0));
+                        if(options.length < 3) options.push(targetNum + 2);
+                        
                         list.push({
-                            inst: "Jom kira! Ada berapa gambar?",
-                            q: icon.repeat(num),
-                            ans: num,
-                            opts: shuffle([num, num + 1, num - 1].filter(n => n > 0 && n <= 6))
+                            inst: "Pilih nombor yang betul:",
+                            q: targetNum,
+                            ans: targetNum,
+                            opts: shuffle(options),
+                            type: "text"
                         });
-                    } else if (lvl === 'sederhana') {
-                        // TAMBAH VISUAL (Cth: 🍎 + 🍎🍎)
-                        let n1 = Math.floor(Math.random() * 2) + 1;
-                        let n2 = Math.floor(Math.random() * 2) + 1;
-                        let total = n1 + n2;
-                        list.push({
-                            inst: "Kira semua sekali gambar buah/haiwan:",
-                            q: icon.repeat(n1) + " ➕ " + icon.repeat(n2),
-                            ans: total,
-                            opts: shuffle([total, total + 1, total - 1].filter(n => n > 0))
-                        });
-                    } else {
-                        // PRO: TOLAK VISUAL (Cth: 🐯🐯🐯 - 🐯)
-                        let n1 = Math.floor(Math.random() * 2) + 3; // 3 - 4
-                        let n2 = Math.floor(Math.random() * 2) + 1; // 1 - 2
-                        let baki = n1 - n2;
-                        list.push({
-                            inst: "Tolak gambar! Kira berapa yang tinggal:",
-                            q: icon.repeat(n1) + " ➖ " + icon.repeat(n2),
-                            ans: baki,
-                            opts: shuffle([baki, baki + 1, baki + 2])
-                        });
+                    } 
+                    // TAHAP 3 (PRO): KIRA GAMBAR (TAMBAH & TOLAK VISUAL)
+                    else {
+                        let pool = Math.random() > 0.5 ? buahList : haiwanList;
+                        let icon = pool[Math.floor(Math.random() * pool.length)];
+                        
+                        if (Math.random() > 0.5) {
+                            // Tambah Visual
+                            let n1 = Math.floor(Math.random() * 2) + 1;
+                            let n2 = Math.floor(Math.random() * 2) + 1;
+                            let total = n1 + n2;
+                            list.push({
+                                inst: "Kira jumlah semua gambar:",
+                                q: icon.repeat(n1) + " ➕ " + icon.repeat(n2),
+                                ans: total,
+                                opts: shuffle([total, total + 1, total - 1].filter(n => n > 0)),
+                                type: "text"
+                            });
+                        } else {
+                            // Tolak Visual
+                            let n1 = Math.floor(Math.random() * 2) + 3; 
+                            let n2 = Math.floor(Math.random() * 2) + 1; 
+                            let baki = n1 - n2;
+                            list.push({
+                                inst: "Kira gambar yang tinggal:",
+                                q: icon.repeat(n1) + " ➖ " + icon.repeat(n2),
+                                ans: baki,
+                                opts: shuffle([baki, baki + 1, baki + 2]),
+                                type: "text"
+                            });
+                        }
                     }
-                } else {
-                    // BAHASA MELAYU (ABJAD SAHAJA)
+                } else if (cat === 'bm') {
+                    // BAHASA MELAYU: ABJAD SAHAJA
                     let targetAbjad = abjadBMList[Math.floor(Math.random() * abjadBMList.length)];
                     let wrongOpts = abjadBMList.filter(a => a !== targetAbjad);
                     shuffle(wrongOpts);
                     
                     list.push({
-                        inst: `Mana satu abjad yang betul untuk huruf: [ ${targetAbjad} ]`,
+                        inst: `Mana abjad yang sepadan?`,
                         q: targetAbjad,
                         ans: targetAbjad,
-                        opts: shuffle([targetAbjad, wrongOpts[0], wrongOpts[1]])
+                        opts: shuffle([targetAbjad, wrongOpts[0], wrongOpts[1]]),
+                        type: "text"
+                    });
+                } else if (cat === 'haiwan') {
+                    // SOALAN BUNYI HAIWAN
+                    let targetItem = dataBunyiHaiwan[Math.floor(Math.random() * dataBunyiHaiwan.length)];
+                    let wrongItems = dataBunyiHaiwan.filter(h => h.nama !== targetItem.nama);
+                    shuffle(wrongItems);
+
+                    list.push({
+                        inst: "Dengar bunyi ini, haiwan apa ya?",
+                        q: "🔊 ??",
+                        sound: targetItem.bunyi,
+                        ans: targetItem.nama,
+                        opts: shuffle([targetItem.nama, wrongItems[0].nama, wrongItems[1].nama]),
+                        type: "sound"
                     });
                 }
             }
@@ -368,6 +416,18 @@
 
             correctAnswer = currentQ.ans;
 
+            // Logik khas cetusan bunyi haiwan
+            const soundBtn = document.getElementById('btn-sound-trigger');
+            if (currentQ.type === "sound") {
+                soundBtn.classList.remove('hidden');
+                currentSoundToPlay = currentQ.sound;
+                // Mainkan bunyi secara automatik semasa soalan dimuatkan
+                setTimeout(() => { playCurrentAnimalSound(); }, 400);
+            } else {
+                soundBtn.classList.add('hidden');
+                currentSoundToPlay = "";
+            }
+
             let optContainer = document.getElementById('game-options');
             optContainer.innerHTML = '';
             
@@ -380,6 +440,15 @@
             });
         }
 
+        function playCurrentAnimalSound() {
+            if ('speechSynthesis' in window && currentSoundToPlay !== "") {
+                let utterance = new SpeechSynthesisUtterance(currentSoundToPlay);
+                utterance.lang = 'ms-MY'; 
+                utterance.rate = 0.8;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
         function checkAnswer(chosen) {
             let fb = document.getElementById('game-feedback');
             fb.classList.remove('hidden');
@@ -389,7 +458,7 @@
                 fb.innerText = "Hebat! Jawapan Betul! 🎉";
                 
                 usersDatabase[activeUserIndex].stars += 1;
-                localStorage.setItem('edukids_db_v2', JSON.stringify(usersDatabase));
+                localStorage.setItem('edukids_db_v3', JSON.stringify(usersDatabase));
                 document.getElementById('global-stars').innerText = usersDatabase[activeUserIndex].stars;
 
                 setTimeout(() => {
@@ -411,16 +480,18 @@
             return array.sort(() => Math.random() - 0.5);
         }
 
-        function goHome() {
-            switchView('view-home');
-        }
+        function goHome() { switchView('view-home'); }
+        function exitGame() { switchView('view-map'); }
+        function logoutToWelcome() { switchView('view-welcome'); }
 
-        function exitGame() {
-            switchView('view-map');
-        }
-
-        function logoutToWelcome() {
-            switchView('view-welcome');
+        function addNewChildProfile() {
+            let nameInput = document.getElementById('new-child-name').value.trim();
+            if (!nameInput) return alert("Sila isi nama profil!");
+            usersDatabase.push({ name: nameInput, avatar: "👧", stars: 0 });
+            localStorage.setItem('edukids_db_v3', JSON.stringify(usersDatabase));
+            document.getElementById('new-child-name').value = '';
+            renderChildProfilesSelect();
+            alert("Profil berjaya disimpan!");
         }
     </script>
 </body>
