@@ -89,11 +89,11 @@
                 <p class="text-slate-600 font-bold px-6 text-base">Selamat datang, kawan-kawan! Jom pilih menu di bawah untuk mula bermain! 🎉</p>
                 
                 <div class="space-y-5 pt-4 px-2">
-                    <button onclick="switchView('view-select-child'); playSound('click');" class="w-full bg-emerald-400 hover:bg-emerald-500 text-white font-kids text-2xl py-5 rounded-3xl shadow-xl border-b-8 border-emerald-600 pop-button flex items-center justify-center space-x-3 transition-all pulse-slow">
+                    <button onclick="openSelectChild(); playSound('click');" class="w-full bg-emerald-400 hover:bg-emerald-500 text-white font-kids text-2xl py-5 rounded-3xl shadow-xl border-b-8 border-emerald-600 pop-button flex items-center justify-center space-x-3 transition-all pulse-slow">
                         <span>👦👧</span> <span>MASUK BERMAIN</span>
                     </button>
                     
-                    <button onclick="switchView('view-parents'); playSound('click');" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-kids text-lg py-3.5 rounded-2xl shadow-lg border-b-4 border-purple-700 pop-button flex items-center justify-center space-x-3 opacity-90">
+                    <button onclick="openParentsDashboard(); playSound('click');" class="w-full bg-purple-500 hover:bg-purple-600 text-white font-kids text-lg py-3.5 rounded-2xl shadow-lg border-b-4 border-purple-700 pop-button flex items-center justify-center space-x-3 opacity-90">
                         <span>🛠️</span> <span>RUANG IBU BAPA / GURU</span>
                     </button>
                 </div>
@@ -389,18 +389,20 @@
 
         function loadDatabase() {
             let saved = localStorage.getItem('edukids_users_db');
-            if (saved) { usersDatabase = JSON.parse(saved); }
-            else {
+            if (saved) { 
+                usersDatabase = JSON.parse(saved); 
+            } else {
                 usersDatabase = [{
                     name: "Adik", avatar: "👦", stars: 0, badges: [],
                     progress: { matematik: 1, abc: 1, sains: 1, warna: 1, haiwan: 1, buah: 1 }
                 }];
                 saveDatabase();
             }
-            renderChildProfilesSelect();
         }
 
-        function saveDatabase() { localStorage.setItem('edukids_users_db', JSON.stringify(usersDatabase)); }
+        function saveDatabase() { 
+            localStorage.setItem('edukids_users_db', JSON.stringify(usersDatabase)); 
+        }
 
         function switchView(viewId) {
             ['view-welcome', 'view-select-child', 'view-home', 'view-map', 'view-game', 'view-congrats', 'view-parents'].forEach(v => {
@@ -410,6 +412,16 @@
             document.getElementById('main-header').classList.toggle('hidden', ['view-welcome', 'view-select-child', 'view-parents'].includes(viewId));
             if(viewId === 'view-congrats') startConfetti(); else stopConfetti();
             lucide.createIcons();
+        }
+
+        function openSelectChild() {
+            switchView('view-select-child');
+            renderChildProfilesSelect();
+        }
+
+        function openParentsDashboard() {
+            switchView('view-parents');
+            renderParentUsersList();
         }
 
         function renderChildProfilesSelect() {
