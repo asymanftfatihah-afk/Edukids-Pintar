@@ -64,7 +64,7 @@
         <!-- KANDUNGAN UTAMA -->
         <main class="flex-grow p-4 flex flex-col justify-center">
             
-            <!-- 0. HALAMAN PERMULAAN UTAMA (WELCOME DASHBOARD) -->
+            <!-- 0. HALAMAN PERMULAAN UTAMA -->
             <section id="view-welcome" class="space-y-6 text-center">
                 <div class="floating text-6xl my-4">🎒✨🏫</div>
                 <h2 class="font-kids text-4xl text-emerald-600 mb-2">Edukids Pintar</h2>
@@ -224,7 +224,7 @@
                 </button>
             </section>
 
-            <!-- 6. DASHBOARD IBU BAPA / GURU (TAMBAH USERS UNLIMITED) -->
+            <!-- 6. DASHBOARD IBU BAPA / GURU -->
             <section id="view-parents" class="hidden space-y-4">
                 <div class="flex justify-between items-center">
                     <h2 class="font-kids text-2xl text-purple-700 flex items-center">
@@ -335,7 +335,6 @@
             const targetView = document.getElementById(viewId);
             if (targetView) targetView.classList.remove('hidden');
             
-            // Logik pencetus interaksi setiap paparan (Sebab utama butang tidak bertindak sebelum ini)
             if (viewId === 'view-select-child') {
                 renderChildProfilesSelect();
             } else if (viewId === 'view-parents') {
@@ -411,7 +410,7 @@
             switchView('view-home');
         }
 
-        // DASHBOARD ADMIN (IBU BAPA / GURU)
+        // DASHBOARD ADMIN
         function selectNewAvatar(avatar, btn) {
             selectedAvatarForNew = avatar;
             document.querySelectorAll('.avatar-new-opt').forEach(b => {
@@ -471,7 +470,7 @@
             });
         }
 
-        // KATEGORI & KUIZ LOGIK
+        // KATEGORI & KUIZ LOGIK DENGAN ROMBAKAN RAWAK (SHUFFLE)
         function enterCategory(category) {
             currentCategory = category;
             let user = usersDatabase[activeUserIndex];
@@ -520,7 +519,8 @@
         function startLevel(lvl) {
             currentLevel = lvl;
             currentQuestionIndex = 0;
-            questionsList = generateQuestions(currentCategory, lvl);
+            // Menjana soalan dinamik baharu & merombaknya setiap kali tahap bermula
+            questionsList = shuffle(generateQuestions(currentCategory, lvl));
             loadQuestion();
             switchView('view-game');
         }
@@ -529,59 +529,86 @@
             let list = [];
             if(cat === 'matematik') {
                 if(lvl === 1) {
-                    let targets = [2, 5, 3, 7, 6];
-                    targets.forEach(t => {
-                        list.push({inst: "Mana satu nombor?", q: t, opts: shuffle([t, t+1, t-1])});
+                    let targets = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+                    shuffle(targets).slice(0, 5).forEach(t => {
+                        list.push({inst: "Mana satu nombor?", q: t, opts: shuffle([t, (t+1)%10 || 4, Math.abs(t-1) || 9])});
                     });
                 } else if(lvl === 2) {
-                    let targets = [12, 15, 18, 14, 20];
-                    targets.forEach(t => {
+                    let targets = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+                    shuffle(targets).slice(0, 5).forEach(t => {
                         list.push({inst: "Mana satu nombor?", q: t, opts: shuffle([t, t-2, t+1])});
                     });
                 } else if(lvl === 3) {
-                    list = [
+                    let pools = [
                         {inst: "Kira hasil tambah", q: "2 + 3", ans: 5, opts: [4, 5, 6]},
                         {inst: "Kira hasil tambah", q: "1 + 4", ans: 5, opts: [3, 5, 6]},
-                        {inst: "Kira hasil tambah", q: "4 + 2", ans: 6, opts: [5, 6, 7]}
+                        {inst: "Kira hasil tambah", q: "4 + 2", ans: 6, opts: [5, 6, 7]},
+                        {inst: "Kira hasil tambah", q: "5 + 3", ans: 8, opts: [7, 8, 9]},
+                        {inst: "Kira hasil tambah", q: "3 + 3", ans: 6, opts: [5, 6, 4]}
                     ];
+                    list = shuffle(pools).slice(0, 3);
                 } else {
-                    list = [
+                    let pools = [
                         {inst: "Kira hasil tolak", q: "5 - 2", ans: 3, opts: [2, 3, 4]},
-                        {inst: "Kira hasil tolak", q: "4 - 1", ans: 3, opts: [1, 3, 2]}
+                        {inst: "Kira hasil tolak", q: "4 - 1", ans: 3, opts: [1, 3, 2]},
+                        {inst: "Kira hasil tolak", q: "6 - 3", ans: 3, opts: [3, 4, 2]},
+                        {inst: "Kira hasil tolak", q: "9 - 4", ans: 5, opts: [4, 5, 6]}
                     ];
+                    list = shuffle(pools).slice(0, 3);
                 }
             } else if(cat === 'abc') {
-                list = [
+                let pools = [
                     {inst: "Kenali Huruf", q: "A 🍎", ans: "A", opts: ["A", "B", "C"]},
                     {inst: "Pilih gambar bermula huruf B", q: "B", ans: "Bola ⚽", opts: ["Bola ⚽", "Cawan ☕", "Ayam 🐔"]},
-                    {inst: "Kenali Huruf", q: "C ☕️", ans: "C", opts: ["B", "C", "D"]}
+                    {inst: "Kenali Huruf", q: "C 🐱", ans: "C", opts: ["B", "C", "D"]},
+                    {inst: "Pilih gambar bermula huruf D", q: "D", ans: "Daun 🍃", opts: ["Daun 🍃", "Epal 🍎", "Ikan 🐟"]},
+                    {inst: "Kenali Huruf", q: "E 🐘", ans: "E", opts: ["E", "F", "G"]}
                 ];
+                list = shuffle(pools).slice(0, 3);
             } else if(cat === 'bm') {
-                list = [
+                let pools = [
                     {inst: "Pilih gambar perkataan ini:", q: "BOLA ⚽", ans: "⚽", opts: ["⚽", "📚", "🏠"]},
-                    {inst: "Pilih gambar perkataan ini:", q: "BUKU 📚", ans: "📚", opts: ["🐱", "📚", "🏫"]}
+                    {inst: "Pilih gambar perkataan ini:", q: "BUKU 📚", ans: "📚", opts: ["🐱", "📚", "🏫"]},
+                    {inst: "Pilih gambar perkataan ini:", q: "RUMAH 🏠", ans: "🏠", opts: ["🏠", "🚗", "🌳"]},
+                    {inst: "Pilih gambar perkataan ini:", q: "IKAN 🐟", ans: "🐟", opts: ["🐥", "🐟", "🦀"]}
                 ];
+                list = shuffle(pools).slice(0, 3);
             } else if(cat === 'warna') {
-                list = [
+                let pools = [
                     {inst: "Pilih warna MERAH", q: "🔴", ans: "Merah", opts: ["Merah", "Biru", "Kuning"]},
-                    {inst: "Mana satu bentuk BULAT?", q: "⭕", ans: "Bulat", opts: ["Bulat", "Segi Empat", "Segi Tiga"]}
+                    {inst: "Mana satu bentuk BULAT?", q: "⭕", ans: "Bulat", opts: ["Bulat", "Segi Empat", "Segi Tiga"]},
+                    {inst: "Pilih warna BIRU", q: "🔵", ans: "Biru", opts: ["Hijau", "Biru", "Putih"]},
+                    {inst: "Mana satu bentuk SEGI EMPAT?", q: "🟪", ans: "Segi Empat", opts: ["Segi Empat", "Bulat", "Bintang"]}
                 ];
+                list = shuffle(pools).slice(0, 3);
             } else if(cat === 'haiwan') {
-                list = [
+                let pools = [
                     {inst: "Mana satu KUCING?", q: "🐱 Miau", ans: "Kucing", opts: ["Kucing", "Gajah", "Ayam"]},
-                    {inst: "Mana satu AYAM?", q: "🐔 Kokok", ans: "Ayam", opts: ["Anjing", "Ayam", "Harimau"]}
+                    {inst: "Mana satu AYAM?", q: "🐔 Kokok", ans: "Ayam", opts: ["Anjing", "Ayam", "Harimau"]},
+                    {inst: "Mana satu MONYET?", q: "🐒 Keke", ans: "Monyet", opts: ["Ular", "Burung", "Monyet"]},
+                    {inst: "Mana satu SINGA?", q: "🦁 Ngaum", ans: "Singa", opts: ["Singa", "Arnab", "Tikus"]}
                 ];
+                list = shuffle(pools).slice(0, 3);
             } else {
-                list = [
+                let pools = [
                     {inst: "Kenali objek", q: "EPAL 🍎", ans: "🍎", opts: ["🍎", "🍌", "🥕"]},
-                    {inst: "Kenali objek", q: "PISANG 🍌", ans: "🍌", opts: ["🍇", "🍌", "🍉"]}
+                    {inst: "Kenali objek", q: "PISANG 🍌", ans: "🍌", opts: ["🍇", "🍌", "🍉"]},
+                    {inst: "Kenali objek", q: "ANGGUR 🍇", ans: "🍇", opts: ["🍊", "🍓", "🍇"]},
+                    {inst: "Kenali objek", q: "SUSU 🥛", ans: "🥛", opts: ["🥛", "🍕", "🍩"]}
                 ];
+                list = shuffle(pools).slice(0, 3);
             }
             return list;
         }
 
         function shuffle(array) {
-            return array.sort(() => Math.random() - 0.5);
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
         }
 
         function loadQuestion() {
@@ -604,7 +631,9 @@
             let optContainer = document.getElementById('game-options');
             optContainer.innerHTML = '';
             
-            currentQ.opts.forEach(opt => {
+            // Merombak pilihan jawapan secara rawak juga
+            let randomizedOptions = shuffle([...currentQ.opts]);
+            randomizedOptions.forEach(opt => {
                 optContainer.innerHTML += `
                     <button onclick="checkAnswer('${opt}')" class="w-full bg-white hover:bg-amber-100 text-slate-800 font-kids text-xl py-3.5 px-6 rounded-2xl border-2 border-gray-300 shadow-sm pop-button">
                         ${opt}
