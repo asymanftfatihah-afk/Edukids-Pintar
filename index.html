@@ -103,8 +103,8 @@
                     <button onclick="enterCategory('matematik')" class="bg-rose-100 hover:bg-rose-200 p-4 rounded-3xl border-b-4 border-rose-300 text-left space-y-2 pop-button flex flex-col justify-between h-36">
                         <span class="text-4xl">🔢</span>
                         <div>
-                            <h3 class="font-kids text-sm text-rose-700">Matematik Pintar</h3>
-                            <p class="text-[10px] text-rose-600 font-bold">Nombor & Kira-kira</p>
+                            <h3 class="font-kids text-sm text-rose-700">Kira Gambar</h3>
+                            <p class="text-[10px] text-rose-600 font-bold">Buah & Haiwan</p>
                         </div>
                     </button>
                     <button onclick="enterCategory('abc')" class="bg-sky-100 hover:bg-sky-200 p-4 rounded-3xl border-b-4 border-sky-300 text-left space-y-2 pop-button flex flex-col justify-between h-36">
@@ -117,8 +117,8 @@
                     <button onclick="enterCategory('bm')" class="bg-amber-100 hover:bg-amber-200 p-4 rounded-3xl border-b-4 border-amber-300 text-left space-y-2 pop-button flex flex-col justify-between h-36">
                         <span class="text-4xl">📖</span>
                         <div>
-                            <h3 class="font-kids text-sm text-amber-700">Bahasa Melayu</h3>
-                            <p class="text-[10px] text-amber-600 font-bold">Perkataan Mudah</p>
+                            <h3 class="font-kids text-sm text-amber-700">Abjad Bahasa Melayu</h3>
+                            <p class="text-[10px] text-amber-600 font-bold">Huruf Mudah Umur 2-3</p>
                         </div>
                     </button>
                     <button onclick="enterCategory('warna')" class="bg-purple-100 hover:bg-purple-200 p-4 rounded-3xl border-b-4 border-purple-300 text-left space-y-2 pop-button flex flex-col justify-between h-36">
@@ -191,8 +191,8 @@
                 </div>
 
                 <div class="bg-amber-50 rounded-3xl p-6 border-4 border-amber-300 text-center min-h-[180px] flex flex-col justify-center items-center relative">
-                    <h3 id="game-instruction" class="text-xs font-bold text-amber-800 uppercase tracking-wider mb-2">Sila Pilih Jawapan Betul</h3>
-                    <div id="game-main-display" class="font-kids text-5xl text-amber-900 my-4"></div>
+                    <h3 id="game-instruction" class="text-sm font-bold text-amber-800 uppercase tracking-wider mb-2">Sila Pilih Jawapan Betul</h3>
+                    <div id="game-main-display" class="font-kids text-4xl text-amber-900 my-4 tracking-widest break-all"></div>
                     <p id="game-sub-display" class="text-lg font-bold text-slate-600 mt-2"></p>
                 </div>
 
@@ -283,9 +283,9 @@
         let selectedAvatarForNew = "👦";
 
         const badgeData = {
-            matematik: { title: "Juara Nombor", icon: "🏆🔢" },
+            matematik: { title: "Kira Visual", icon: "🏆🍎" },
             abc: { title: "Raja ABC", icon: "🏆🔤" },
-            bm: { title: "Pakar BM", icon: "🏆📖" },
+            bm: { title: "Abjad Melayu", icon: "🏆📖" },
             warna: { title: "Pakar Warna", icon: "🏆🎨" },
             haiwan: { title: "Sahabat Haiwan", icon: "🏆🐯" },
             buah: { title: "Pakar Buah", icon: "🏆🍎" }
@@ -296,6 +296,9 @@
         let currentQuestionIndex = 0;
         let questionsList = [];
         let correctAnswer = null;
+
+        const buahList = ["🍎", "🍌", "🍇", "🍊", "🍓", "🍉", "🍒", "🍍"];
+        const haiwanList = ["🐱", "🦁", "🐰", "🐼", "🐵", "🐤", "🐸", "🐷"];
 
         window.onload = function() {
             lucide.createIcons();
@@ -382,6 +385,7 @@
             document.getElementById('streak-count').innerText = user.stars;
         }
 
+        // BADGES
         function renderBadges() {
             const container = document.getElementById('badges-container');
             if (!container) return;
@@ -423,12 +427,10 @@
 
         function addNewChildProfile() {
             let nameInput = document.getElementById('new-child-name').value.trim();
-
             if (!nameInput) {
                 alert("Sila isi nama profil anak!");
                 return;
             }
-
             let newProfile = {
                 name: nameInput,
                 avatar: selectedAvatarForNew,
@@ -436,12 +438,9 @@
                 badges: [],
                 progress: { matematik: 1, abc: 1, bm: 1, warna: 1, haiwan: 1, buah: 1 }
             };
-
             usersDatabase.push(newProfile);
             saveDatabase();
-            
             document.getElementById('new-child-name').value = '';
-            
             renderChildProfilesSelect();
             renderParentUsersList();
             alert("Profil " + nameInput + " berjaya ditambah!");
@@ -451,7 +450,6 @@
             const container = document.getElementById('parent-users-list');
             if (!container) return;
             container.innerHTML = '';
-            
             usersDatabase.forEach((user, index) => {
                 container.innerHTML += `
                     <div class="flex items-center justify-between p-2.5 bg-gray-50 rounded-xl border border-gray-100 text-xs">
@@ -463,23 +461,23 @@
                             </div>
                         </div>
                         <div class="text-right text-[10px] text-purple-700 font-medium">
-                            MT: T${user.progress.matematik} | ABC: T${user.progress.abc} | BM: T${user.progress.bm}
+                            Kira: T${user.progress.matematik} | ABC: T${user.progress.abc} | BM: T${user.progress.bm}
                         </div>
                     </div>
                 `;
             });
         }
 
-        // KATEGORI & KUIZ LOGIK DENGAN ROMBAKAN RAWAK (SHUFFLE)
+        // GAME MAP
         function enterCategory(category) {
             currentCategory = category;
             let user = usersDatabase[activeUserIndex];
             let currentUnlocked = user.progress[category] || 1;
             
             const titles = {
-                matematik: "🔢 Matematik Pintar",
+                matematik: "🍎 Kira Buah & Haiwan",
                 abc: "🔤 ABC Pintar",
-                bm: "📖 Bahasa Melayu",
+                bm: "📖 Abjad Bahasa Melayu",
                 warna: "🎨 Warna & Bentuk",
                 haiwan: "🐯 Kenali Haiwan",
                 buah: "🍎 Buah & Makanan"
@@ -519,82 +517,112 @@
         function startLevel(lvl) {
             currentLevel = lvl;
             currentQuestionIndex = 0;
-            // Menjana soalan dinamik baharu & merombaknya setiap kali tahap bermula
             questionsList = shuffle(generateQuestions(currentCategory, lvl));
             loadQuestion();
             switchView('view-game');
         }
 
+        // PENJANAAN SOALAN RAWAK
         function generateQuestions(cat, lvl) {
             let list = [];
+            
             if(cat === 'matematik') {
-                if(lvl === 1) {
-                    let targets = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-                    shuffle(targets).slice(0, 5).forEach(t => {
-                        list.push({inst: "Mana satu nombor?", q: t, opts: shuffle([t, (t+1)%10 || 4, Math.abs(t-1) || 9])});
+                // TAHAP 1 & 2: KIRA JUMLAH GAMBAR ASAS (TIADA DIGIT ANGKA KECUALI PADA PILIHAN)
+                if(lvl === 1 || lvl === 2) {
+                    let totalItems = lvl === 1 ? [1, 2, 3] : [3, 4, 5];
+                    shuffle(totalItems).forEach(count => {
+                        let pool = Math.random() > 0.5 ? buahList : haiwanList;
+                        let icon = pool[Math.floor(Math.random() * pool.length)];
+                        let display = icon.repeat(count);
+                        let opts = shuffle([count, count + 1, count - 1].filter(n => n > 0));
+                        if(opts.length < 3) opts.push(count + 2);
+
+                        list.push({
+                            inst: "Jom kira! Ada berapa ya?",
+                            q: display,
+                            ans: count,
+                            opts: shuffle(opts)
+                        });
                     });
-                } else if(lvl === 2) {
-                    let targets = [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-                    shuffle(targets).slice(0, 5).forEach(t => {
-                        list.push({inst: "Mana satu nombor?", q: t, opts: shuffle([t, t-2, t+1])});
-                    });
-                } else if(lvl === 3) {
-                    let pools = [
-                        {inst: "Kira hasil tambah", q: "🍉🍉 + 🍉🍉🍉", ans: 5, opts: [4, 5, 6]},
-                        {inst: "Kira hasil tambah", q: "🥕 + 🥕🥕🥕🥕", ans: 5, opts: [3, 5, 6]},
-                        {inst: "Kira hasil tambah", q: "🍇🍇🍇🍇 + 🍇🍇", ans: 6, opts: [5, 6, 7]},
-                        {inst: "Kira hasil tambah", q: "🦁🦁🦁🦁🦁 + 🦁🦁🦁", ans: 8, opts: [7, 8, 9]},
-                        {inst: "Kira hasil tambah", q: "🦒🦒🦒 + 🦒🦒🦒", ans: 6, opts: [5, 6, 4]}
-                    ];
-                    list = shuffle(pools).slice(0, 3);
-                } else {
-                    let pools = [
-                        {inst: "Kira hasil tolak", q: "5 - 2", ans: 3, opts: [2, 3, 4]},
-                        {inst: "Kira hasil tolak", q: "4 - 1", ans: 3, opts: [1, 3, 2]},
-                        {inst: "Kira hasil tolak", q: "6 - 3", ans: 3, opts: [3, 4, 2]},
-                        {inst: "Kira hasil tolak", q: "9 - 4", ans: 5, opts: [4, 5, 6]}
-                    ];
-                    list = shuffle(pools).slice(0, 3);
+                } 
+                // TAHAP 3: KONSEP TAMBAH DENGAN VISUAL GAMBAR (Cth: 🍎 + 🍎🍎)
+                else if(lvl === 3) {
+                    for(let i=0; i<3; i++) {
+                        let pool = Math.random() > 0.5 ? buahList : haiwanList;
+                        let icon = pool[Math.floor(Math.random() * pool.length)];
+                        let n1 = Math.floor(Math.random() * 2) + 1; // 1-2
+                        let n2 = Math.floor(Math.random() * 2) + 1; // 1-2
+                        let total = n1 + n2;
+                        
+                        let display = icon.repeat(n1) + "  ➕  " + icon.repeat(n2);
+                        let opts = shuffle([total, total+1, Math.abs(total-1) || total+2]);
+
+                        list.push({
+                            inst: "Kira semua sekali gembira!",
+                            q: display,
+                            ans: total,
+                            opts: opts
+                        });
+                    }
+                } 
+                // TAHAP 4: KONSEP TOLAK DENGAN VISUAL GAMBAR (Cth: 🦁🦁🦁 ➖ 🦁)
+                else {
+                    for(let i=0; i<3; i++) {
+                        let pool = Math.random() > 0.5 ? buahList : haiwanList;
+                        let icon = pool[Math.floor(Math.random() * pool.length)];
+                        let n1 = Math.floor(Math.random() * 2) + 3; // 3-4
+                        let n2 = Math.floor(Math.random() * 2) + 1; // 1-2
+                        let baki = n1 - n2;
+                        
+                        let display = icon.repeat(n1) + "  ➖  " + icon.repeat(n2);
+                        let opts = shuffle([baki, baki+1, baki+2]);
+
+                        list.push({
+                            inst: "Kira baki gambar yang tinggal:",
+                            q: display,
+                            ans: baki,
+                            opts: opts
+                        });
+                    }
                 }
-            } else if(cat === 'abc') {
+            } 
+            // BAHASA MELAYU: PENGECAMAN ABJAD MUDAH SESUAI KANAK-KANAK 2-3 TAHUN
+            else if(cat === 'bm') {
+                let bmPool = [
+                    { inst: "Mana satu abjad A?", q: "A", ans: "A", opts: ["A", "B", "C"] },
+                    { inst: "Mana satu abjad B?", q: "B", ans: "B", opts: ["D", "B", "E"] },
+                    { inst: "Mana satu abjad C?", q: "C", ans: "C", opts: ["F", "A", "C"] },
+                    { inst: "Mana satu abjad D?", q: "D", ans: "D", opts: ["D", "E", "B"] },
+                    { inst: "Mana satu abjad E?", q: "E", ans: "E", opts: ["C", "F", "E"] },
+                    { inst: "Mana satu abjad I?", q: "I", ans: "I", opts: ["O", "I", "U"] },
+                    { inst: "Mana satu abjad U?", q: "U", ans: "U", opts: ["A", "U", "I"] }
+                ];
+                list = shuffle(bmPool).slice(0, 3);
+            }
+            // MODUL KOGNITIF LAIN (MAINTAIN RAWAK)
+            else if(cat === 'abc') {
                 let pools = [
                     {inst: "Kenali Huruf", q: "A 🍎", ans: "A", opts: ["A", "B", "C"]},
-                    {inst: "Pilih gambar bermula huruf B", q: "B", ans: "Bola ⚽", opts: ["Bola ⚽", "Cawan ☕", "Ayam 🐔"]},
-                    {inst: "Kenali Huruf", q: "C 🐱", ans: "C", opts: ["B", "C", "D"]},
-                    {inst: "Pilih gambar bermula huruf D", q: "D", ans: "Daun 🍃", opts: ["Daun 🍃", "Epal 🍎", "Ikan 🐟"]},
-                    {inst: "Kenali Huruf", q: "E 🐘", ans: "E", opts: ["E", "F", "G"]}
-                ];
-                list = shuffle(pools).slice(0, 3);
-            } else if(cat === 'bm') {
-                let pools = [
-                    {inst: "Pilih gambar perkataan ini:", q: "BOLA ⚽", ans: "⚽", opts: ["⚽", "📚", "🏠"]},
-                    {inst: "Pilih gambar perkataan ini:", q: "BUKU 📚", ans: "📚", opts: ["🐱", "📚", "🏫"]},
-                    {inst: "Pilih gambar perkataan ini:", q: "RUMAH 🏠", ans: "🏠", opts: ["🏠", "🚗", "🌳"]},
-                    {inst: "Pilih gambar perkataan ini:", q: "IKAN 🐟", ans: "🐟", opts: ["🐥", "🐟", "🦀"]}
+                    {inst: "Pilih objek bermula huruf B", q: "B", ans: "Bola ⚽", opts: ["Bola ⚽", "Cawan ☕", "Ayam 🐔"]},
+                    {inst: "Kenali Huruf", q: "C 🐱", ans: "C", opts: ["B", "C", "D"]}
                 ];
                 list = shuffle(pools).slice(0, 3);
             } else if(cat === 'warna') {
                 let pools = [
                     {inst: "Pilih warna MERAH", q: "🔴", ans: "Merah", opts: ["Merah", "Biru", "Kuning"]},
-                    {inst: "Mana satu bentuk BULAT?", q: "⭕", ans: "Bulat", opts: ["Bulat", "Segi Empat", "Segi Tiga"]},
-                    {inst: "Pilih warna BIRU", q: "🔵", ans: "Biru", opts: ["Hijau", "Biru", "Putih"]},
-                    {inst: "Mana satu bentuk SEGI EMPAT?", q: "🟪", ans: "Segi Empat", opts: ["Segi Empat", "Bulat", "Bintang"]}
+                    {inst: "Mana satu bentuk BULAT?", q: "⭕", ans: "Bulat", opts: ["Bulat", "Segi Empat", "Segi Tiga"]}
                 ];
                 list = shuffle(pools).slice(0, 3);
             } else if(cat === 'haiwan') {
                 let pools = [
                     {inst: "Mana satu KUCING?", q: "🐱 Miau", ans: "Kucing", opts: ["Kucing", "Gajah", "Ayam"]},
-                    {inst: "Mana satu AYAM?", q: "🐔 Kokok", ans: "Ayam", opts: ["Anjing", "Ayam", "Harimau"]},
-                    {inst: "Mana satu MONYET?", q: "🐒 Keke", ans: "Monyet", opts: ["Ular", "Burung", "Monyet"]},
-                    {inst: "Mana satu SINGA?", q: "🦁 Ngaum", ans: "Singa", opts: ["Singa", "Arnab", "Tikus"]}
+                    {inst: "Mana satu AYAM?", q: "🐔 Kokok", ans: "Ayam", opts: ["Anjing", "Ayam", "Harimau"]}
                 ];
                 list = shuffle(pools).slice(0, 3);
             } else {
                 let pools = [
                     {inst: "Kenali objek", q: "EPAL 🍎", ans: "🍎", opts: ["🍎", "🍌", "🥕"]},
-                    {inst: "Kenali objek", q: "PISANG 🍌", ans: "🍌", opts: ["🍇", "🍌", "🍉"]},
-                    {inst: "Kenali objek", q: "ANGGUR 🍇", ans: "🍇", opts: ["🍊", "🍓", "🍇"]},
-                    {inst: "Kenali objek", q: "SUSU 🥛", ans: "🥛", opts: ["🥛", "🍕", "🍩"]}
+                    {inst: "Kenali objek", q: "PISANG 🍌", ans: "🍌", opts: ["🍇", "🍌", "🍉"]}
                 ];
                 list = shuffle(pools).slice(0, 3);
             }
@@ -619,19 +647,13 @@
             document.getElementById('game-instruction').innerText = currentQ.inst;
             document.getElementById('game-main-display').innerText = currentQ.q;
             document.getElementById('game-feedback').classList.add('hidden');
+            document.getElementById('game-sub-display').innerText = "";
 
-            if(currentCategory === 'matematik' && currentLevel <= 2) {
-                correctAnswer = currentQ.q;
-                document.getElementById('game-sub-display').innerText = `Tekan angka ${currentQ.q}`;
-            } else {
-                correctAnswer = currentQ.ans !== undefined ? currentQ.ans : currentQ.q;
-                document.getElementById('game-sub-display').innerText = "";
-            }
+            correctAnswer = currentQ.ans !== undefined ? currentQ.ans : currentQ.q;
 
             let optContainer = document.getElementById('game-options');
             optContainer.innerHTML = '';
             
-            // Merombak pilihan jawapan secara rawak juga
             let randomizedOptions = shuffle([...currentQ.opts]);
             randomizedOptions.forEach(opt => {
                 optContainer.innerHTML += `
