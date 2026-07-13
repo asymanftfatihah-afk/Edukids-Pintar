@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edukids Pintar - Jom Belajar & Bermain!</title>
-    <!-- Tailwind CSS untuk reka bentuk UI yang responsif dan moden -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts untuk font kanak-kanak yang comel -->
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
-    <!-- Lucide Icons untuk ikon yang bersih -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         body {
@@ -21,7 +18,6 @@
             font-family: 'Fredoka', cursive;
             font-weight: 700;
         }
-        /* Kesan Butang 3D Jeli */
         .pop-button {
             transition: all 0.1s ease;
         }
@@ -57,10 +53,8 @@
 </head>
 <body class="select-none overflow-x-hidden text-slate-700 min-h-screen py-4">
 
-    <!-- APP CONTAINER -->
     <div id="app" class="max-w-md mx-auto min-h-[92vh] bg-amber-50 rounded-[40px] shadow-2xl relative flex flex-col justify-between pb-6 border-8 border-white overflow-hidden">
         
-        <!-- CANVAS UNTUK KONFETI HANYA PADA VIEW TAHNIAH -->
         <canvas id="confetti-canvas" class="hidden"></canvas>
 
         <!-- HEADER UTAMA -->
@@ -88,7 +82,7 @@
         <!-- KANDUNGAN UTAMA -->
         <main class="flex-grow p-5 flex flex-col justify-center">
             
-            <!-- 0. HALAMAN PERMULAAN UTAMA -->
+            <!-- HALAMAN PERMULAAN UTAMA -->
             <section id="view-welcome" class="space-y-6 text-center py-4">
                 <div class="floating text-7xl my-4 drop-shadow-lg">🎒✨🏫</div>
                 <h2 class="font-kids text-5xl bg-gradient-to-r from-emerald-500 to-teal-600 bg-clip-text text-transparent drop-shadow-sm">Edukids Pintar</h2>
@@ -105,18 +99,16 @@
                 </div>
             </section>
 
-            <!-- 0.1 PILIH PROFIL ANAK -->
+            <!-- PILIH PROFIL ANAK -->
             <section id="view-select-child" class="hidden space-y-4">
                 <div class="flex items-center space-x-3 mb-4">
                     <button onclick="switchView('view-welcome'); playSound('click');" class="bg-white p-3 rounded-2xl shadow border-b-4 border-gray-300 pop-button text-slate-600"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
                     <h2 class="font-kids text-3xl text-emerald-600">Siapa Nama Kamu?</h2>
                 </div>
-                <div id="child-profiles-list" class="grid grid-cols-2 gap-4 pt-2">
-                    <!-- Senarai anak dijana secara dinamik -->
-                </div>
+                <div id="child-profiles-list" class="grid grid-cols-2 gap-4 pt-2"></div>
             </section>
 
-            <!-- 2. HALAMAN MENU UTAMA KANAK-KANAK -->
+            <!-- HALAMAN MENU UTAMA -->
             <section id="view-home" class="hidden space-y-6">
                 <div class="text-center bg-gradient-to-r from-sky-400 to-blue-500 py-4 px-4 rounded-3xl border-b-4 border-blue-600 shadow-md text-white">
                     <h2 class="font-kids text-2xl">Hai <span id="user-greeting-name">Adik</span>! 👋</h2>
@@ -128,7 +120,7 @@
                         <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">🔢</span>
                         <div>
                             <h3 class="font-kids text-base leading-tight">Kira Matematik</h3>
-                            <p class="text-[11px] text-rose-100 font-bold">Nombor & Visual Gambar</p>
+                            <p class="text-[11px] text-rose-100 font-bold">Nombor & Tambahan Gambar</p>
                         </div>
                     </button>
                     <button onclick="enterCategory('abc'); playSound('click');" class="bg-sky-400 text-white p-4 rounded-[32px] border-b-8 border-sky-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
@@ -156,7 +148,7 @@
                         <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">🐯</span>
                         <div>
                             <h3 class="font-kids text-base leading-tight">Kenali Haiwan</h3>
-                            <p class="text-[11px] text-teal-100 font-bold">Bunyi & Nama</p>
+                            <p class="text-[11px] text-teal-100 font-bold">Nama & Rupa Haiwan</p>
                         </div>
                     </button>
                     <button onclick="enterCategory('buah'); playSound('click');" class="bg-orange-400 text-white p-4 rounded-[32px] border-b-8 border-orange-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
@@ -174,7 +166,7 @@
                 </div>
             </section>
 
-            <!-- 3. PETA LEVEL -->
+            <!-- PETA LEVEL -->
             <section id="view-map" class="hidden space-y-6">
                 <div class="flex justify-between items-center">
                     <button onclick="goHome(); playSound('click');" class="bg-white text-slate-700 font-bold px-4 py-2 rounded-2xl text-xs pop-button border-b-4 border-gray-300 flex items-center shadow shadow-gray-200">
@@ -204,14 +196,14 @@
                 </div>
             </section>
 
-            <!-- 4. PERMAINAN / KUIZ AKTIF -->
+            <!-- PERMAINAN / KUIZ AKTIF -->
             <section id="view-game" class="hidden space-y-6">
                 <div class="flex justify-between items-center bg-white p-2 rounded-2xl shadow-inner border border-slate-100">
                     <button onclick="exitGame(); playSound('click');" class="text-rose-500 font-bold text-xs bg-rose-50 px-3 py-1.5 rounded-xl hover:bg-rose-100">Keluar ❌</button>
                     <div class="w-2/3 bg-slate-100 rounded-full h-4 overflow-hidden p-0.5 border border-slate-200">
-                        <div id="game-progress" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-300" style="width: 20%"></div>
+                        <div id="game-progress" class="bg-gradient-to-r from-emerald-400 to-teal-500 h-full rounded-full transition-all duration-300" style="width: 10%"></div>
                     </div>
-                    <div class="w-4"></div>
+                    <span id="game-score-counter" class="text-xs font-bold text-slate-500">1/10</span>
                 </div>
 
                 <div class="bg-gradient-to-br from-amber-100 to-orange-100 rounded-[32px] p-6 border-4 border-amber-300 text-center min-h-[200px] flex flex-col justify-center items-center relative shadow-md">
@@ -224,19 +216,19 @@
                 <div id="game-feedback" class="hidden p-4 rounded-2xl text-center font-kids text-xl shadow-md border-b-4"></div>
             </section>
 
-            <!-- 5. SKRIN TAHNIAH -->
+            <!-- SKRIN TAHNIAH -->
             <section id="view-congrats" class="hidden text-center space-y-6 relative z-10">
                 <div class="floating text-8xl my-4 drop-shadow-md">🏆🎉⭐</div>
                 <div class="space-y-2">
                     <h2 class="font-kids text-4xl text-amber-600 drop-shadow-sm">Tahniah! Kamu Hebat!</h2>
-                    <p class="text-slate-600 font-bold text-base">Adik berjaya menamatkan tahap ini! 🌟</p>
+                    <p class="text-slate-600 font-bold text-base">Adik berjaya menamatkan 10 soalan! 🌟</p>
                 </div>
 
                 <div class="bg-white p-6 rounded-[32px] border-4 border-yellow-400 inline-block min-w-[240px] shadow-xl">
                     <p class="text-xs font-bold text-amber-800 uppercase tracking-wider">Ganjaran Bintang Bintang</p>
                     <div class="flex justify-center items-center space-x-2 my-3">
                         <span class="text-4xl animate-spin" style="animation-duration: 3s;">⭐</span>
-                        <span id="congrats-stars" class="font-kids text-5xl text-amber-600 font-bold">+5</span>
+                        <span id="congrats-stars" class="font-kids text-5xl text-amber-600 font-bold">+10</span>
                     </div>
                     <div id="congrats-badge-unlock" class="text-xs font-bold text-emerald-800 mt-2 hidden bg-emerald-100 border border-emerald-300 py-1.5 px-4 rounded-full animate-pulse">
                         🏆 Lencana Baru Dibuka!
@@ -248,7 +240,7 @@
                 </button>
             </section>
 
-            <!-- 6. DASHBOARD IBU BAPA / GURU -->
+            <!-- DASHBOARD IBU BAPA / GURU -->
             <section id="view-parents" class="hidden space-y-4">
                 <div class="flex justify-between items-center">
                     <h2 class="font-kids text-2xl text-purple-700 flex items-center">
@@ -259,12 +251,10 @@
                     </button>
                 </div>
 
-                <!-- BORANG TAMBAH ANAK/MURID -->
                 <div class="bg-purple-100/70 p-4 rounded-3xl border-2 border-purple-200 space-y-3">
                     <h3 class="text-sm font-bold text-purple-800 flex items-center"><i data-lucide="user-plus" class="w-4 h-4 mr-1"></i> Tambah Profil Anak / Murid</h3>
                     <div class="space-y-2">
                         <input type="text" id="new-child-name" placeholder="Nama Anak / Murid" class="w-full px-4 py-2.5 border-2 border-purple-200 rounded-xl text-sm focus:outline-none focus:border-purple-500 bg-white">
-                        
                         <div>
                             <label class="block text-xs font-bold text-purple-700 mb-1">Pilih Avatar:</label>
                             <div class="flex space-x-2 overflow-x-auto py-1">
@@ -273,7 +263,6 @@
                                 <button onclick="selectNewAvatar('🐼', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-transparent">🐼</button>
                                 <button onclick="selectNewAvatar('🦁', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-transparent">🦁</button>
                                 <button onclick="selectNewAvatar('🐰', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-transparent">🐰</button>
-                                <button onclick="selectNewAvatar('🐯', this)" class="avatar-new-opt text-2xl p-1.5 bg-white rounded-xl border-4 border-transparent">🐯</button>
                             </div>
                         </div>
                         <button onclick="addNewChildProfile()" class="w-full bg-purple-600 text-white font-bold py-2.5 rounded-xl text-sm border-b-4 border-purple-800 pop-button shadow-md">
@@ -282,25 +271,20 @@
                     </div>
                 </div>
 
-                <!-- SENARAI PROFIL & PRESTASI -->
                 <div class="bg-white p-4 rounded-3xl border-2 border-slate-200 space-y-3 shadow-sm">
                     <h3 class="text-sm font-bold text-slate-700">Senarai Users & Kemajuan Semasa:</h3>
-                    <div id="parent-users-list" class="space-y-3 max-h-48 overflow-y-auto pr-1">
-                        <!-- Senarai dipaparkan secara dinamik -->
-                    </div>
+                    <div id="parent-users-list" class="space-y-3 max-h-48 overflow-y-auto pr-1"></div>
                 </div>
             </section>
 
         </main>
 
-        <!-- FOOTER -->
         <footer class="px-4 pt-2 border-t border-slate-100">
             <p class="text-center text-[10px] text-slate-400 font-medium">Edukids Pintar &copy; 2026 - Aplikasi Pendidikan Selamat</p>
         </footer>
 
     </div>
 
-    <!-- LOGIK JAVASCRIPT PERMAINAN -->
     <script>
         let usersDatabase = [];
         let activeUserIndex = null;
@@ -325,7 +309,6 @@
         const buahList = ["🍎", "🍌", "🍇", "🍊", "🍓", "🍉", "🍒", "🍍"];
         const haiwanList = ["🐱", "🦁", "🐰", "🐼", "🐵", "🐤", "🐸", "🐷"];
 
-        // ELEMEN AUDIO SYNTH
         function playSound(type) {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -337,157 +320,95 @@
                 if (type === 'click') {
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(300, audioCtx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.1);
                     gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.1);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.1);
                 } else if (type === 'correct') {
                     osc.type = 'triangle';
                     osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
                     osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
-                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
                     gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.4);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.3);
                 } else if (type === 'wrong') {
                     osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(180, audioCtx.currentTime);
-                    osc.frequency.linearRampToValueAtTime(120, audioCtx.currentTime + 0.25);
+                    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
                     gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.25);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.2);
                 } else if (type === 'cheer') {
                     osc.type = 'sine';
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
-                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.15); 
-                    osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime + 0.3); 
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.1);
                     gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.6);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.6);
+                    osc.start(); osc.stop(audioCtx.currentTime + 0.5);
                 }
-            } catch (e) {
-                console.log("Audio tidak disokong browser");
-            }
+            } catch (e) {}
         }
 
-        // ANIMASI KONFETI
         function startConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             canvas.classList.remove('hidden');
             const ctx = canvas.getContext('2d');
             canvas.width = canvas.parentElement.offsetWidth;
             canvas.height = canvas.parentElement.offsetHeight;
-
             let particles = [];
-            const colors = ['#f43f5e', '#3b82f6', '#10b981', '#eab308', '#a855f7', '#ff7849'];
-
-            for (let i = 0; i < 60; i++) {
+            for (let i = 0; i < 50; i++) {
                 particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height - canvas.height,
-                    r: Math.random() * 6 + 4,
+                    r: Math.random() * 5 + 3,
                     d: Math.random() * canvas.height,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    tilt: Math.random() * 10 - 5,
-                    tiltAngleIncremental: Math.random() * 0.07 + 0.02,
-                    tiltAngle: 0
+                    color: ['#f43f5e', '#3b82f6', '#10b981', '#eab308'][Math.floor(Math.random() * 4)],
+                    tilt: Math.random() * 10 - 5
                 });
             }
-
             function draw() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                particles.forEach((p, idx) => {
-                    p.tiltAngle += p.tiltAngleIncremental;
-                    p.y += (Math.cos(p.d) + 3 + p.r / 2) / 2;
-                    p.x += Math.sin(p.tiltAngle);
-                    p.tilt = Math.sin(p.tiltAngle - idx / 3) * 15;
-
+                particles.forEach(p => {
+                    p.y += 2;
                     ctx.beginPath();
                     ctx.lineWidth = p.r;
                     ctx.strokeStyle = p.color;
-                    ctx.moveTo(p.x + p.tilt + p.r / 2, p.y);
-                    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r / 2);
+                    ctx.moveTo(p.x + p.tilt, p.y);
+                    ctx.lineTo(p.x, p.y + p.r);
                     ctx.stroke();
-                });
-
-                particles.forEach(p => {
-                    if (p.y > canvas.height) {
-                        p.y = -20;
-                        p.x = Math.random() * canvas.width;
-                    }
+                    if (p.y > canvas.height) p.y = -10;
                 });
             }
-
             if(confettiInterval) clearInterval(confettiInterval);
-            confettiInterval = setInterval(draw, 20);
+            confettiInterval = setInterval(draw, 24);
         }
 
         function stopConfetti() {
             if(confettiInterval) clearInterval(confettiInterval);
-            const canvas = document.getElementById('confetti-canvas');
-            canvas.classList.add('hidden');
+            document.getElementById('confetti-canvas').classList.add('hidden');
         }
 
         window.onload = function() {
             lucide.createIcons();
             loadDatabase();
-            switchView('view-welcome');
         };
 
         function loadDatabase() {
             let saved = localStorage.getItem('edukids_users_db');
-            if (saved) {
-                usersDatabase = JSON.parse(saved);
-            } else {
+            if (saved) { usersDatabase = JSON.parse(saved); }
+            else {
                 usersDatabase = [{
-                    name: "Adik",
-                    avatar: "👦",
-                    stars: 0,
-                    badges: [],
+                    name: "Adik", avatar: "👦", stars: 0, badges: [],
                     progress: { matematik: 1, abc: 1, sains: 1, warna: 1, haiwan: 1, buah: 1 }
                 }];
                 saveDatabase();
             }
             renderChildProfilesSelect();
-            renderParentUsersList();
         }
 
-        function saveDatabase() {
-            localStorage.setItem('edukids_users_db', JSON.stringify(usersDatabase));
-        }
+        function saveDatabase() { localStorage.setItem('edukids_users_db', JSON.stringify(usersDatabase)); }
 
         function switchView(viewId) {
-            const views = ['view-welcome', 'view-select-child', 'view-home', 'view-map', 'view-game', 'view-congrats', 'view-parents'];
-            views.forEach(v => {
-                const element = document.getElementById(v);
-                if (element) element.classList.add('hidden');
+            ['view-welcome', 'view-select-child', 'view-home', 'view-map', 'view-game', 'view-congrats', 'view-parents'].forEach(v => {
+                document.getElementById(v)?.classList.add('hidden');
             });
-            
-            const targetView = document.getElementById(viewId);
-            if (targetView) targetView.classList.remove('hidden');
-            
-            if (viewId === 'view-select-child') {
-                renderChildProfilesSelect();
-            } else if (viewId === 'view-parents') {
-                renderParentUsersList();
-            }
-            
-            if (viewId === 'view-home' || viewId === 'view-map' || viewId === 'view-game' || viewId === 'view-congrats') {
-                document.getElementById('main-header').classList.remove('hidden');
-            } else {
-                document.getElementById('main-header').classList.add('hidden');
-            }
-
-            if(viewId === 'view-congrats') {
-                startConfetti();
-            } else {
-                stopConfetti();
-            }
-            
+            document.getElementById(viewId)?.classList.remove('hidden');
+            document.getElementById('main-header').classList.toggle('hidden', ['view-welcome', 'view-select-child', 'view-parents'].includes(viewId));
+            if(viewId === 'view-congrats') startConfetti(); else stopConfetti();
             lucide.createIcons();
         }
 
@@ -533,118 +454,65 @@
             }
             user.badges.forEach(b => {
                 let item = badgeData[b];
-                if(item) {
-                    container.innerHTML += `<span class="bg-amber-100 border-2 border-amber-300 text-amber-900 px-2.5 py-1 rounded-xl text-xs font-bold shadow-sm animate-pulse">${item.icon} ${item.title}</span>`;
-                }
+                if(item) container.innerHTML += `<span class="bg-amber-100 border-2 border-amber-300 text-amber-900 px-2.5 py-1 rounded-xl text-xs font-bold shadow-sm animate-pulse">${item.icon} ${item.title}</span>`;
             });
         }
 
-        function logoutToWelcome() {
-            activeUserIndex = null;
-            switchView('view-welcome');
-        }
-
-        function goHome() {
-            updateChildHeaderUI();
-            renderBadges();
-            switchView('view-home');
-        }
+        function logoutToWelcome() { activeUserIndex = null; switchView('view-welcome'); }
+        function goHome() { updateChildHeaderUI(); renderBadges(); switchView('view-home'); }
 
         function selectNewAvatar(avatar, btn) {
-            playSound('click');
             selectedAvatarForNew = avatar;
-            document.querySelectorAll('.avatar-new-opt').forEach(b => {
-                b.classList.remove('border-purple-500');
-                b.classList.add('border-transparent');
-            });
-            btn.classList.remove('border-transparent');
-            btn.classList.add('border-purple-500');
+            document.querySelectorAll('.avatar-new-opt').forEach(b => b.classList.replace('border-purple-500', 'border-transparent'));
+            btn.classList.replace('border-transparent', 'border-purple-500');
         }
 
         function addNewChildProfile() {
             let nameInput = document.getElementById('new-child-name').value.trim();
-            if (!nameInput) {
-                alert("Sila isi nama profil anak!");
-                return;
-            }
-            let newProfile = {
-                name: nameInput,
-                avatar: selectedAvatarForNew,
-                stars: 0,
-                badges: [],
+            if (!nameInput) return alert("Sila isi nama!");
+            usersDatabase.push({
+                name: nameInput, avatar: selectedAvatarForNew, stars: 0, badges: [],
                 progress: { matematik: 1, abc: 1, sains: 1, warna: 1, haiwan: 1, buah: 1 }
-            };
-            usersDatabase.push(newProfile);
+            });
             saveDatabase();
             document.getElementById('new-child-name').value = '';
             renderChildProfilesSelect();
             renderParentUsersList();
             playSound('correct');
-            alert("Profil " + nameInput + " berjaya ditambah!");
         }
 
         function renderParentUsersList() {
             const container = document.getElementById('parent-users-list');
             if (!container) return;
             container.innerHTML = '';
-            usersDatabase.forEach((user, index) => {
+            usersDatabase.forEach(user => {
                 container.innerHTML += `
                     <div class="flex items-center justify-between p-3 bg-slate-50 rounded-2xl border-2 border-slate-100 text-xs shadow-sm">
                         <div class="flex items-center space-x-2">
                             <span class="text-3xl">${user.avatar}</span>
-                            <div>
-                                <div class="font-bold text-slate-800">${user.name}</div>
-                                <div class="text-[11px] text-amber-600 font-bold">⭐ ${user.stars} Bintang</div>
-                            </div>
+                            <div><div class="font-bold text-slate-800">${user.name}</div><div class="text-[11px] text-amber-600 font-bold">⭐ ${user.stars} Bintang</div></div>
                         </div>
-                        <div class="text-right text-[10px] text-purple-700 font-bold bg-purple-50 px-2 py-1 rounded-lg">
-                            Matematik: T${user.progress.matematik} | ABC: T${user.progress.abc} | Sains: T${user.progress.sains}
-                        </div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
         function enterCategory(category) {
             currentCategory = category;
-            let user = usersDatabase[activeUserIndex];
-            let currentUnlocked = user.progress[category] || 1;
-            
-            const titles = {
-                matematik: "🔢 Kira Matematik",
-                abc: "🔤 ABC Pintar",
-                sains: "🧬 Sains Pintar (Anggota Badan)",
-                warna: "🎨 Warna & Bentuk",
-                haiwan: "🐯 Kenali Haiwan",
-                buah: "🍎 Buah & Makanan"
-            };
-            document.getElementById('map-title').innerText = titles[category];
+            let currentUnlocked = usersDatabase[activeUserIndex].progress[category] || 1;
+            document.getElementById('map-title').innerText = category.toUpperCase();
 
             for(let i = 1; i <= 4; i++) {
                 let btn = document.getElementById(`btn-lvl-${i}`).querySelector('button');
                 let lbl = document.getElementById(`lbl-lvl-${i}`);
-                
                 if (i < currentUnlocked) {
-                    btn.className = "w-16 h-16 rounded-full font-kids text-xl shadow-lg flex items-center justify-center pop-button border-b-4 bg-emerald-400 border-emerald-600 text-white";
-                    btn.innerHTML = "✅";
-                    lbl.className = "text-xs font-bold mt-1 text-emerald-600";
-                    lbl.innerText = `Tahap ${i} (Selesai)`;
-                    btn.disabled = false;
-                    btn.style.cursor = "pointer";
+                    btn.className = "w-16 h-16 rounded-full font-kids text-xl shadow-lg flex items-center justify-center pop-button bg-emerald-400 text-white";
+                    btn.innerHTML = "✅"; lbl.innerText = `Tahap ${i} (Selesai)`; btn.disabled = false;
                 } else if (i === currentUnlocked) {
-                    btn.className = "w-18 h-18 rounded-full font-kids text-2xl shadow-xl flex items-center justify-center pop-button border-b-8 bg-indigo-500 border-indigo-700 text-white animate-bounce";
-                    btn.innerHTML = i;
-                    lbl.className = "text-xs font-bold mt-1 text-indigo-700 font-black";
-                    lbl.innerText = `Tahap ${i} (Sedia)`;
-                    btn.disabled = false;
-                    btn.style.cursor = "pointer";
+                    btn.className = "w-18 h-18 rounded-full font-kids text-2xl shadow-xl flex items-center justify-center pop-button bg-indigo-500 text-white animate-bounce";
+                    btn.innerHTML = i; lbl.innerText = `Tahap ${i} (Sedia)`; btn.disabled = false;
                 } else {
-                    btn.className = "w-16 h-16 rounded-full font-kids text-xl shadow-md flex items-center justify-center pop-button text-white bg-slate-300 border-slate-400 cursor-not-allowed";
-                    btn.innerHTML = "🔒";
-                    lbl.className = "text-xs font-bold mt-1 text-slate-400";
-                    lbl.innerText = `Tahap ${i}`;
-                    btn.disabled = true;
-                    btn.style.cursor = "not-allowed";
+                    btn.className = "w-16 h-16 rounded-full font-kids text-xl shadow-md flex items-center justify-center bg-slate-300 text-white cursor-not-allowed";
+                    btn.innerHTML = "🔒"; lbl.innerText = `Tahap ${i}`; btn.disabled = true;
                 }
             }
             switchView('view-map');
@@ -653,7 +521,7 @@
         function startLevel(lvl) {
             currentLevel = lvl;
             currentQuestionIndex = 0;
-            questionsList = shuffle(generateQuestions(currentCategory, lvl));
+            questionsList = generateQuestions(currentCategory, lvl);
             loadQuestion();
             switchView('view-game');
         }
@@ -661,130 +529,99 @@
         function generateQuestions(cat, lvl) {
             let list = [];
             
-            if(cat === 'matematik') {
-                // TAHAP 1 & 2: NOMBOR SAHAJA (BUKAN GAMBAR)
-                if(lvl === 1 || lvl === 2) {
-                    let nomborPilihan = lvl === 1 ? [2, 4, 5] : [6, 8, 9];
-                    nomborPilihan.forEach(num => {
-                        let opts = shuffle([num, num + 1, num - 1].filter(n => n > 0));
+            for(let k=0; k<10; k++) {
+                if(cat === 'matematik') {
+                    if(lvl === 1 || lvl === 2) {
+                        let num = lvl === 1 ? Math.floor(Math.random()*5)+1 : Math.floor(Math.random()*5)+5;
                         list.push({
-                            inst: "Kenali Nombor: Ini nombor berapa?",
-                            q: String(num),
-                            ans: num,
-                            opts: opts
+                            inst: "Kenali Nombor: Ini nombor berapa?", q: String(num), ans: String(num),
+                            opts: [String(num), String(num+1), String(num-1)].filter(n => n !== "0")
                         });
-                    });
-                } 
-                // TAHAP 3: TAMBAH BERGAMBAR (ADA GAMBAR)
-                else if(lvl === 3) {
-                    for(let i=0; i<3; i++) {
+                    } else {
                         let pool = Math.random() > 0.5 ? buahList : haiwanList;
                         let icon = pool[Math.floor(Math.random() * pool.length)];
-                        let n1 = Math.floor(Math.random() * 2) + 1;
-                        let n2 = Math.floor(Math.random() * 2) + 1;
+                        let n1 = Math.floor(Math.random() * 3) + 1;
+                        let n2 = Math.floor(Math.random() * 3) + 1;
                         let total = n1 + n2;
-                        
-                        let display = icon.repeat(n1) + " ➕ " + icon.repeat(n2);
-                        let opts = shuffle([total, total+1, Math.abs(total-1) || total+2]);
-
                         list.push({
-                            inst: "Kira jumlah gambar berikut:",
-                            q: display,
-                            ans: total,
-                            opts: opts
-                        });
-                    }
-                } 
-                // TAHAP 4: TOLAK BERGAMBAR (ADA GAMBAR)
-                else {
-                    for(let i=0; i<3; i++) {
-                        let pool = Math.random() > 0.5 ? buahList : haiwanList;
-                        let icon = pool[Math.floor(Math.random() * pool.length)];
-                        let n1 = Math.floor(Math.random() * 2) + 3;
-                        let n2 = Math.floor(Math.random() * 2) + 1;
-                        let baki = n1 - n2;
-                        
-                        let display = icon.repeat(n1) + " ➖ " + icon.repeat(n2);
-                        let opts = shuffle([baki, baki+1, baki+2]);
-
-                        list.push({
-                            inst: "Kira baki gambar selepas ditolak:",
-                            q: display,
-                            ans: baki,
-                            opts: opts
+                            inst: "Jom Tambah! Kira semua gambar:", q: icon.repeat(n1) + " ➕ " + icon.repeat(n2), ans: String(total),
+                            opts: [String(total), String(total+1), String(total-2)].filter(n => n !== "0" && n !== "-1")
                         });
                     }
                 }
-            } 
-            else if(cat === 'sains') {
-                let sainsPool = [
-                    { inst: "Mana satu MATA?", q: "👀", ans: "Mata", opts: ["Mata", "Telinga", "Hidung"] },
-                    { inst: "Mana satu HIDUNG?", q: "👃", ans: "Hidung", opts: ["Mulut", "Hidung", "Tangan"] },
-                    { inst: "Mana satu TELINGA?", q: "👂", ans: "Telinga", opts: ["Telinga", "Mata", "Kaki"] },
-                    { inst: "Mana satu MULUT?", q: "👄", ans: "Mulut", opts: ["Tangan", "Mata", "Mulut"] },
-                    { inst: "Mana satu TANGAN?", q: "✋", ans: "Tangan", opts: ["Kaki", "Tangan", "Hidung"] },
-                    { inst: "Mana satu KAKI?", q: "🦶", ans: "Kaki", opts: ["Mata", "Telinga", "Kaki"] }
-                ];
-                list = shuffle(sainsPool).slice(0, 3);
-            }
-            else if(cat === 'abc') {
-                let pools = [
-                    {inst: "Kenali Huruf", q: "A 🍎", ans: "A", opts: ["A", "B", "C"]},
-                    {inst: "Pilih objek bermula huruf B", q: "B", ans: "Bola ⚽", opts: ["Bola ⚽", "Cawan ☕", "Ayam 🐔"]},
-                    {inst: "Kenali Huruf", q: "C 🐱", ans: "C", opts: ["B", "C", "D"]}
-                ];
-                list = shuffle(pools).slice(0, 3);
-            } else if(cat === 'warna') {
-                let pools = [
-                    {inst: "Pilih warna MERAH", q: "🔴", ans: "Merah", opts: ["Merah 🔴", "Biru🔵", "Kuning🟡"]},
-                    {inst: "Pilih warna MERAH", q: "🟢", ans: "Hijau", opts: ["Merah 🔴", "Hijau 🟢", "Hitam⚫️"]},
-                    {inst: "Pilih warna MERAH", q: "🟡", ans: "Kuning", opts: ["Merah 🔴", "Biru🔵", "Kuning 🟡"]}
-                    {inst: "Pilih warna MERAH", q: "🔵", ans: "Biru", opts: ["Hijau", "Biru", "Merah"]}
-                    {inst: "Mana satu bentuk BULAT?", q: "⭕", ans: "Bulat", opts: ["Bulat", "Segi Empat", "Segi Tiga"]}
-                ];
-                list = shuffle(pools).slice(0, 3);
-            } else if(cat === 'haiwan') {
-                let pools = [
-                    {inst: "Mana satu KUCING?", q: "🐱 Miau", ans: "Kucing", opts: ["Kucing", "Gajah", "Ayam"]},
-                    {inst: "Mana satu AYAM?", q: "🐔 Kokok", ans: "Ayam", opts: ["Anjing", "Ayam", "Harimau"]}
-                ];
-                list = shuffle(pools).slice(0, 3);
-            } else {
-                let pools = [
-                    {inst: "Kenali objek", q: "EPAL 🍎", ans: "🍎", opts: ["🍎", "🍌", "🥕"]},
-                    {inst: "Kenali objek", q: "PISANG 🍌", ans: "🍌", opts: ["🍇", "🍌", "🍉"]}
-                ];
-                list = shuffle(pools).slice(0, 3);
+                else if(cat === 'warna') {
+                    let warnaData = [
+                        {n: "Merah 🔴", e: "🔴"}, {n: "Biru 🔵", e: "🔵"}, {n: "Kuning 🟡", e: "🟡"}, 
+                        {n: "Hijau 🟢", e: "🟢"}, {n: "Ungu 🟣", e: "🟣"}, {n: "Oren 🟠", e: "🟠"}
+                    ];
+                    let pick = warnaData[Math.floor(Math.random()*warnaData.length)];
+                    let filtering = warnaData.filter(w => w.n !== pick.n);
+                    list.push({
+                        inst: `Mana satu warna ${pick.n.split(' ')[0]}?`, q: pick.e, ans: pick.n,
+                        opts: [pick.n, filtering[0].n, filtering[1].n]
+                    });
+                }
+                else if(cat === 'haiwan') {
+                    let haiwanData = [
+                        {n: "Kucing 🐱", e: "🐱"}, {n: "Singa 🦁", e: "🦁"}, {n: "Arnab 🐰", e: "🐰"}, 
+                        {n: "Monyet 🐵", e: "🐵"}, {n: "Katak 🐸", e: "🐸"}, {n: "Burung 🐤", e: "🐤"}
+                    ];
+                    let pick = haiwanData[Math.floor(Math.random()*haiwanData.length)];
+                    let filtering = haiwanData.filter(h => h.n !== pick.n);
+                    list.push({
+                        inst: `Mana satu haiwan bernama ${pick.n.split(' ')[0]}?`, q: pick.e, ans: pick.n,
+                        opts: [pick.n, filtering[0].n, filtering[1].n]
+                    });
+                }
+                else if(cat === 'buah') {
+                    let buahData = [
+                        {n: "Epal 🍎", e: "🍎"}, {n: "Pisang 🍌", e: "🍌"}, {n: "Anggur 🍇", e: "🍇"}, 
+                        {n: "Tembikai 🍉", e: "🍉"}, {n: "Strawberi 🍓", e: "🍓"}, {n: "Nanas 🍍", e: "🍍"}
+                    ];
+                    let pick = buahData[Math.floor(Math.random()*buahData.length)];
+                    let filtering = buahData.filter(b => b.n !== pick.n);
+                    list.push({
+                        inst: `Mana satu buah ${pick.n.split(' ')[0]}?`, q: pick.e, ans: pick.n,
+                        opts: [pick.n, filtering[0].n, filtering[1].n]
+                    });
+                }
+                else if(cat === 'sains') {
+                    let sainsPool = [
+                        { inst: "Mana satu MATA?", q: "👀", ans: "Mata 👀", opts: ["Mata 👀", "Telinga 👂", "Hidung 👃"] },
+                        { inst: "Mana satu HIDUNG?", q: "👃", ans: "Hidung 👃", opts: ["Mulut 👄", "Hidung 👃", "Tangan ✋"] },
+                        { inst: "Mana satu TELINGA?", q: "👂", ans: "Telinga 👂", opts: ["Telinga 👂", "Mata 👀", "Kaki 🦶"] }
+                    ];
+                    let pick = sainsPool[Math.floor(Math.random()*sainsPool.length)];
+                    list.push(pick);
+                }
+                else if(cat === 'abc') {
+                    let abcPool = [
+                        {inst: "Kenali Huruf", q: "A 🍎", ans: "A", opts: ["A", "B", "C"]},
+                        {inst: "Kenali Huruf", q: "B ⚽", ans: "B", opts: ["B", "C", "A"]},
+                        {inst: "Kenali Huruf", q: "C 🐱", ans: "C", opts: ["C", "D", "B"]}
+                    ];
+                    let pick = abcPool[Math.floor(Math.random()*abcPool.length)];
+                    list.push(pick);
+                }
             }
             return list;
         }
 
-        function shuffle(array) {
-            let currentIndex = array.length, randomIndex;
-            while (currentIndex != 0) {
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex--;
-                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
-            }
-            return array;
-        }
-
         function loadQuestion() {
             let currentQ = questionsList[currentQuestionIndex];
-            let pct = ((currentQuestionIndex) / questionsList.length) * 100;
-            document.getElementById('game-progress').style.width = pct + "%";
+            document.getElementById('game-score-counter').innerText = `${currentQuestionIndex + 1}/10`;
+            document.getElementById('game-progress').style.width = ((currentQuestionIndex) / 10) * 100 + "%";
 
             document.getElementById('game-instruction').innerText = currentQ.inst;
             document.getElementById('game-main-display').innerText = currentQ.q;
             document.getElementById('game-feedback').classList.add('hidden');
-            document.getElementById('game-sub-display').innerText = "";
 
-            correctAnswer = currentQ.ans !== undefined ? currentQ.ans : currentQ.q;
+            correctAnswer = currentQ.ans;
 
             let optContainer = document.getElementById('game-options');
             optContainer.innerHTML = '';
             
-            let randomizedOptions = shuffle([...currentQ.opts]);
+            let randomizedOptions = [...currentQ.opts].sort(() => Math.random() - 0.5);
             randomizedOptions.forEach(opt => {
                 optContainer.innerHTML += `
                     <button onclick="checkAnswer('${opt}')" class="w-full bg-white hover:bg-slate-50 text-slate-800 font-kids text-xl py-4 px-6 rounded-2xl border-2 border-slate-300 shadow-sm border-b-6 pop-button">
@@ -809,12 +646,9 @@
 
                 setTimeout(() => {
                     currentQuestionIndex += 1;
-                    if(currentQuestionIndex < questionsList.length) {
-                        loadQuestion();
-                    } else {
-                        endLevel();
-                    }
-                }, 1400);
+                    if(currentQuestionIndex < 10) { loadQuestion(); } 
+                    else { endLevel(); }
+                }, 1200);
             } else {
                 playSound('wrong');
                 fb.className = "p-4 rounded-2xl text-center font-kids text-xl bg-rose-100 text-rose-800 border-rose-300 border-b-4";
@@ -825,33 +659,18 @@
         function endLevel() {
             playSound('cheer');
             let user = usersDatabase[activeUserIndex];
-            if(currentLevel === user.progress[currentCategory]) {
-                if(user.progress[currentCategory] < 4) {
-                    user.progress[currentCategory] += 1;
-                }
+            if(currentLevel === user.progress[currentCategory] && user.progress[currentCategory] < 4) {
+                user.progress[currentCategory] += 1;
             }
-
-            let badgeUnlocked = false;
-            if(!user.badges.includes(currentCategory)) {
-                user.badges.push(currentCategory);
-                badgeUnlocked = true;
-            }
-
+            if(!user.badges.includes(currentCategory)) user.badges.push(currentCategory);
             saveDatabase();
-            document.getElementById('congrats-stars').innerText = `+${questionsList.length}`;
             
-            if(badgeUnlocked) {
-                document.getElementById('congrats-badge-unlock').classList.remove('hidden');
-            } else {
-                document.getElementById('congrats-badge-unlock').classList.add('hidden');
-            }
-
+            document.getElementById('congrats-stars').innerText = "+10";
+            document.getElementById('congrats-badge-unlock').classList.remove('hidden');
             switchView('view-congrats');
         }
 
-        function exitGame() {
-            enterCategory(currentCategory);
-        }
+        function exitGame() { enterCategory(currentCategory); }
     </script>
 </body>
 </html>
