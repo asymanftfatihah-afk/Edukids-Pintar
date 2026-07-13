@@ -138,11 +138,11 @@
                             <p class="text-[11px] text-sky-100 font-bold">Belajar Huruf A-Z</p>
                         </div>
                     </button>
-                    <button onclick="enterCategory('bm'); playSound('click');" class="bg-amber-400 text-white p-4 rounded-[32px] border-b-8 border-amber-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
-                        <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">📖</span>
+                    <button onclick="enterCategory('sains'); playSound('click');" class="bg-emerald-400 text-white p-4 rounded-[32px] border-b-8 border-emerald-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
+                        <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">🧬</span>
                         <div>
-                            <h3 class="font-kids text-base leading-tight">Abjad Melayu</h3>
-                            <p class="text-[11px] text-amber-100 font-bold">Mudah Umur 2-3</p>
+                            <h3 class="font-kids text-base leading-tight">Sains Pintar</h3>
+                            <p class="text-[11px] text-emerald-100 font-bold">Anggota Badan Asas</p>
                         </div>
                     </button>
                     <button onclick="enterCategory('warna'); playSound('click');" class="bg-purple-400 text-white p-4 rounded-[32px] border-b-8 border-purple-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
@@ -152,11 +152,11 @@
                             <p class="text-[11px] text-purple-100 font-bold">Kenali Corak Asas</p>
                         </div>
                     </button>
-                    <button onclick="enterCategory('haiwan'); playSound('click');" class="bg-emerald-400 text-white p-4 rounded-[32px] border-b-8 border-emerald-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
+                    <button onclick="enterCategory('haiwan'); playSound('click');" class="bg-teal-500 text-white p-4 rounded-[32px] border-b-8 border-teal-700 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
                         <span class="text-4xl bg-white/20 p-2 rounded-2xl w-fit">🐯</span>
                         <div>
                             <h3 class="font-kids text-base leading-tight">Kenali Haiwan</h3>
-                            <p class="text-[11px] text-emerald-100 font-bold">Bunyi & Nama</p>
+                            <p class="text-[11px] text-teal-100 font-bold">Bunyi & Nama</p>
                         </div>
                     </button>
                     <button onclick="enterCategory('buah'); playSound('click');" class="bg-orange-400 text-white p-4 rounded-[32px] border-b-8 border-orange-600 text-left space-y-2 pop-button flex flex-col justify-between h-36 shadow-md">
@@ -199,7 +199,7 @@
                     </div>
                     <div id="btn-lvl-1" class="flex flex-col items-center z-10">
                         <button onclick="startLevel(1); playSound('click');" class="w-18 h-18 rounded-full font-kids text-2xl shadow-xl flex items-center justify-center pop-button border-b-8 bg-indigo-500 border-indigo-700 text-white animate-bounce"><span>1</span></button>
-                        <span id="lbl-lvl-1" class="text-xs font-bold mt-1 text-indigo-700">Mula ✨</span>
+                        <span id="lbl-lvl-1" class="text-xs font-bold mt-1 text-indigo-700 font-black">Mula ✨</span>
                     </div>
                 </div>
             </section>
@@ -310,7 +310,7 @@
         const badgeData = {
             matematik: { title: "Kira Visual", icon: "🏆🍎" },
             abc: { title: "Raja ABC", icon: "🏆🔤" },
-            bm: { title: "Abjad Melayu", icon: "🏆📖" },
+            sains: { title: "Sains Cilik", icon: "🏆🧬" },
             warna: { title: "Pakar Warna", icon: "🏆🎨" },
             haiwan: { title: "Sahabat Haiwan", icon: "🏆🐯" },
             buah: { title: "Pakar Buah", icon: "🏆🍎" }
@@ -360,7 +360,6 @@
                     osc.start();
                     osc.stop(audioCtx.currentTime + 0.25);
                 } else if (type === 'cheer') {
-                    // Bunyi Fanfare Tahniah Ringkas
                     osc.type = 'sine';
                     osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
                     osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.15); 
@@ -371,7 +370,7 @@
                     osc.stop(audioCtx.currentTime + 0.6);
                 }
             } catch (e) {
-                console.log("Audio API not supported or context blocked");
+                console.log("Audio API not supported");
             }
         }
 
@@ -415,7 +414,6 @@
                     ctx.stroke();
                 });
 
-                // Reset partikel terkeluar atas balik
                 particles.forEach(p => {
                     if (p.y > canvas.height) {
                         p.y = -20;
@@ -444,13 +442,21 @@
             let saved = localStorage.getItem('edukids_users_db');
             if (saved) {
                 usersDatabase = JSON.parse(saved);
+                // Migrasi sekiranya data lama masih simpan progress bm
+                usersDatabase.forEach(u => {
+                    if (u.progress.bm) {
+                        u.progress.sains = u.progress.bm;
+                        delete u.progress.bm;
+                    }
+                    if (!u.progress.sains) u.progress.sains = 1;
+                });
             } else {
                 usersDatabase = [{
                     name: "Adik",
                     avatar: "👦",
                     stars: 0,
                     badges: [],
-                    progress: { matematik: 1, abc: 1, bm: 1, warna: 1, haiwan: 1, buah: 1 }
+                    progress: { matematik: 1, abc: 1, sains: 1, warna: 1, haiwan: 1, buah: 1 }
                 }];
                 saveDatabase();
             }
@@ -574,7 +580,7 @@
                 avatar: selectedAvatarForNew,
                 stars: 0,
                 badges: [],
-                progress: { matematik: 1, abc: 1, bm: 1, warna: 1, haiwan: 1, buah: 1 }
+                progress: { matematik: 1, abc: 1, sains: 1, warna: 1, haiwan: 1, buah: 1 }
             };
             usersDatabase.push(newProfile);
             saveDatabase();
@@ -600,7 +606,7 @@
                             </div>
                         </div>
                         <div class="text-right text-[10px] text-purple-700 font-bold bg-purple-50 px-2 py-1 rounded-lg">
-                            Kira: T${user.progress.matematik} | ABC: T${user.progress.abc} | BM: T${user.progress.bm}
+                            Kira: T${user.progress.matematik} | ABC: T${user.progress.abc} | Sains: T${user.progress.sains}
                         </div>
                     </div>
                 `;
@@ -615,7 +621,7 @@
             const titles = {
                 matematik: "🍎 Kira Gambar",
                 abc: "🔤 ABC Pintar",
-                bm: "📖 Abjad Bahasa Melayu",
+                sains: "🧬 Sains Pintar (Anggota Badan)",
                 warna: "🎨 Warna & Bentuk",
                 haiwan: "🐯 Kenali Haiwan",
                 buah: "🍎 Buah & Makanan"
@@ -670,8 +676,12 @@
                         let pool = Math.random() > 0.5 ? buahList : haiwanList;
                         let icon = pool[Math.floor(Math.random() * pool.length)];
                         let display = icon.repeat(count);
-                        let opts = shuffle([count, count + 1, count - 1].filter(n => n > 0));
+                        
+                        // Menghasilkan pilihan angka tulen bersih (Nombor sahaja)
+                        let opts = [count, count + 1, count - 1].filter(n => n > 0);
                         if(opts.length < 3) opts.push(count + 2);
+                        opts = Array.from(new Set(opts)); // Buang duplikasi jika ada
+                        while(opts.length < 3) { opts.push(opts[opts.length-1] + 1); }
 
                         list.push({
                             inst: "Jom kira! Ada berapa ya?",
@@ -720,17 +730,17 @@
                     }
                 }
             } 
-            else if(cat === 'bm') {
-                let bmPool = [
-                    { inst: "Mana satu abjad A?", q: "A", ans: "A", opts: ["A", "B", "C"] },
-                    { inst: "Mana satu abjad B?", q: "B", ans: "B", opts: ["D", "B", "E"] },
-                    { inst: "Mana satu abjad C?", q: "C", ans: "C", opts: ["F", "A", "C"] },
-                    { inst: "Mana satu abjad D?", q: "D", ans: "D", opts: ["D", "E", "B"] },
-                    { inst: "Mana satu abjad E?", q: "E", ans: "E", opts: ["C", "F", "E"] },
-                    { inst: "Mana satu abjad I?", q: "I", ans: "I", opts: ["O", "I", "U"] },
-                    { inst: "Mana satu abjad U?", q: "U", ans: "U", opts: ["A", "U", "I"] }
+            else if(cat === 'sains') {
+                // MODUL BARU: ANGGOTA BADAN SAINS
+                let sainsPool = [
+                    { inst: "Mana satu MATA?", q: "👀", ans: "Mata", opts: ["Mata", "Telinga", "Hidung"] },
+                    { inst: "Mana satu HIDUNG?", q: "👃", ans: "Hidung", opts: ["Mulut", "Hidung", "Tangan"] },
+                    { inst: "Mana satu TELINGA?", q: "👂", ans: "Telinga", opts: ["Telinga", "Mata", "Kaki"] },
+                    { inst: "Mana satu MULUT?", q: "👄", ans: "Mulut", opts: ["Tangan", "Mata", "Mulut"] },
+                    { inst: "Mana satu TANGAN?", q: "✋", ans: "Tangan", opts: ["Kaki", "Tangan", "Hidung"] },
+                    { inst: "Mana satu KAKI?", q: "🦶", ans: "Kaki", opts: ["Mata", "Telinga", "Kaki"] }
                 ];
-                list = shuffle(bmPool).slice(0, 3);
+                list = shuffle(sainsPool).slice(0, 3);
             }
             else if(cat === 'abc') {
                 let pools = [
